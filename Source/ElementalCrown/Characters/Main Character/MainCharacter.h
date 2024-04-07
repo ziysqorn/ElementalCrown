@@ -32,7 +32,7 @@ class ELEMENTALCROWN_API AMainCharacter : public ABaseCharacter, public IBaseCha
 {
 	GENERATED_BODY()
 protected:
-	Elemental* CharacterElement[6]{nullptr};
+	Elemental* CharacterElement = nullptr;
 protected:
 	//Spring Arm and Camera Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spring Arm")
@@ -81,19 +81,6 @@ protected:
 	UPaperZDAnimSequence* Slash2 = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Slash Default Combo")
 	UPaperZDAnimSequence* Slash3 = nullptr;
-	//Hand default combo
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Hand-combat Default Combo")
-	UPaperZDAnimSequence* Punch1 = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Hand-combat Default Combo")
-	UPaperZDAnimSequence* Punch2 = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Hand-combat Default Combo")
-	UPaperZDAnimSequence* Punch3 = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Hand-combat Default Combo")
-	UPaperZDAnimSequence* Kick1 = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Hand-combat Default Combo")
-	UPaperZDAnimSequence* Kick2 = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Hand-combat Run-Punch")
-	UPaperZDAnimSequence* RunPunch = nullptr;
 
 	//Sword air combo
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Air Slash Combo")
@@ -102,9 +89,6 @@ protected:
 	UPaperZDAnimSequence* AirSlash2 = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Air Slash Combo")
 	UPaperZDAnimSequence* AirSlash3 = nullptr;
-	//Hand-combat drop kick
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Hand-combat Default Combo")
-	UPaperZDAnimSequence* DropKick = nullptr;
 	//Bow-combat
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Bow-combat")
 	UPaperZDAnimSequence* BowShoot = nullptr;
@@ -129,9 +113,7 @@ protected:
 	FTimerHandle ChangeWeaponHandle;
 	FTimerHandle SlideHandle;
 
-	//Character current element
-	Elemental** ElementIterator = &CharacterElement[0];
-
+	
 	//Weapon properties
 	UPROPERTY(BlueprintReadOnly, Category = "Character Current Weapon")
 	WeaponType CurrentWeapon;
@@ -194,7 +176,6 @@ public:
 	virtual void Attack();
 	virtual void Shoot();
 	void UseSkill();
-	void ChangeWeapon();
 	void ChangeElement();
 	void SheatheSword() {
 		isSwordSheathed = true;

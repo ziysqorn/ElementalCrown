@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"PaperZD",
 				"Paper2D",
-				"Engine"
+				"Engine",
+				"UMG"
 			]
 		}
 	],

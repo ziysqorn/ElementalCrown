@@ -19,23 +19,12 @@ AMainCharacter::AMainCharacter()
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 	//Add Delegates
 	this->OnActorBeginOverlap.AddDynamic(this, &AMainCharacter::BeginOverlap);
-	//Character stats constructor
-	CharacterElement[0] = new Elemental();
-	CharacterElement[1] = new Fire();
-	CharacterElement[2] = new Water();
-	CharacterElement[3] = new Metal();
-	CharacterElement[4] = new Earth();
-	CharacterElement[5] = new Plant();
 
 	Skill = new VolcanicFire();
 }
 
 AMainCharacter::~AMainCharacter()
 {
-	for (Elemental* &Test : CharacterElement) {
-		delete Test;
-		Test = nullptr;
-	}
 	if (Skill) {
 		delete Skill;
 		Skill = nullptr;
@@ -79,7 +68,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EIComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AMainCharacter::CustomJump);
 		EIComponent->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
 		EIComponent->BindAction(IA_Shoot, ETriggerEvent::Triggered, this, &AMainCharacter::Shoot);
-		EIComponent->BindAction(IA_ChangeWeapon, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeWeapon);
 		EIComponent->BindAction(IA_ChangeElement, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeElement);
 	}
 }
@@ -284,55 +272,6 @@ void AMainCharacter::Attack()
 				}
 			}
 			break;
-		case WeaponType::WEAPON_HAND:
-			if (this->GetVelocity().Z == 0) {
-				if (abs(this->GetVelocity().X) < RunSpeed) {
-					if (attackCounter < 5) {
-						if (Punch1 && Punch2 && Punch3 && Kick1 && Kick2) {
-							++attackCounter;
-							CurrentState = CharacterState::ATTACK;
-							switch (attackCounter) {
-							case 1:
-								GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Punch1->GetTotalDuration(), false);
-								GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Punch1->GetTotalDuration() + 0.3, false);
-								break;
-							case 2:
-								GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Punch2->GetTotalDuration(), false);
-								GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Punch2->GetTotalDuration() + 0.3, false);
-								break;
-							case 3:
-								GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Punch3->GetTotalDuration(), false);
-								GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Punch3->GetTotalDuration() + 0.3, false);
-								break;
-							case 4:
-								GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Kick1->GetTotalDuration(), false);
-								GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Kick1->GetTotalDuration() + 0.3, false);
-								break;
-							case 5:
-								GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Kick2->GetTotalDuration(), false);
-								GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Kick2->GetTotalDuration(), false);
-								break;
-							}
-						}
-					}
-				}
-				else {
-					if (RunPunch) {
-						CurrentState = CharacterState::ATTACK;
-						GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, RunPunch->GetTotalDuration() + 0.025, false);
-					}
-				}
-			}
-			else {
-				if (attackCounter == 0) {
-					if (DropKick) {
-						CurrentState = CharacterState::ATTACK;
-						GetWorldTimerManager().ClearTimer(ComboHandle);
-						GetCharacterMovement()->GravityScale = 6;
-					}
-				}
-			}
-			break;
 		}
 	}
 }
@@ -361,49 +300,8 @@ void AMainCharacter::UseSkill()
 	Skill->PerformSkill();
 }
 
-void AMainCharacter::ChangeWeapon()
-{
-	char ChangeWeaponCooldown{ 2 };
-	if (canChangeWeapon == true) {
-		canChangeWeapon = false;
-		if (ChangeWeaponCooldown) {
-			GetWorldTimerManager().SetTimer(ChangeWeaponHandle, FTimerDelegate::CreateLambda([this]() {
-				this->canChangeWeapon = true;
-			}), ChangeWeaponCooldown, false);
-		}
-		if (WeaponIterator < &WeaponArray[0] + sizeof(WeaponArray) - sizeof(WeaponType)) {
-			++WeaponIterator;
-		}
-		else {
-			WeaponIterator = &WeaponArray[0];
-		}
-		CurrentWeapon = *WeaponIterator;
-		switch (CurrentWeapon) {
-		case WeaponType::WEAPON_SWORD:
-			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Sword"));
-			break;
-		case WeaponType::WEAPON_HAND:
-			GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Punch"));
-			isSwordSheathed = true;
-			break;
-		}
-	}
-}
-
 void AMainCharacter::ChangeElement()
 {
-	(*ElementIterator)->SwitchElementDebuff(this);
-	if (ElementIterator != &CharacterElement[5]) {
-		++ElementIterator;
-	}
-	else {
-		ElementIterator = &CharacterElement[0];
-	}
-	(*ElementIterator)->ElementBuff(this);
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("ATK_Damage : %i"), ATK_Damage));
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("MaxHealth : %i"), MaxHealth));
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Resist : %i"), Resist));
-
 }
 
 void AMainCharacter::EndAirAttack()
