@@ -64,9 +64,6 @@ protected:
 	UInputAction* IA_Shoot;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_ChangeWeapon;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_ChangeElement;
 
 	//Input mapping context
@@ -110,30 +107,18 @@ protected:
 	FTimerHandle AttackHandle;
 	FTimerHandle ComboHandle;
 	FTimerHandle SheatheSwordHandle;
-	FTimerHandle ChangeWeaponHandle;
 	FTimerHandle SlideHandle;
 
-	
-	//Weapon properties
-	UPROPERTY(BlueprintReadOnly, Category = "Character Current Weapon")
-	WeaponType CurrentWeapon;
-
-	WeaponType* WeaponIterator = &WeaponArray[0];
-
-	WeaponType WeaponArray[2]{WeaponType::WEAPON_SWORD, WeaponType::WEAPON_HAND};
-
-	bool canChangeWeapon{ true };
-
 	//Sheathe the sword
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Is the Sword Sheathed ?")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Is the Sword Sheathed ?")
 	bool isSwordSheathed{ true };
 
 	//Attack counter
-	UPROPERTY(EditDefaultsOnly,BlueprintReadOnly, Category = "Attack Counter")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Attack Counter")
 	int attackCounter{0};
 
 	//Check character is sliding on the wall
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character hit a wall ?")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character hit a wall ?")
 	bool WallSliding{ false };
 
 public:
@@ -159,10 +144,7 @@ public:
 	int GetATKDamage() {
 		return ATK_Damage;
 	}
-	UFUNCTION(BlueprintCallable)
-	WeaponType GetWeaponType() {
-		return CurrentWeapon;
-	}
+
 	//Actions
 	virtual void Move(const FInputActionValue& value);
 	virtual void StopMoving();

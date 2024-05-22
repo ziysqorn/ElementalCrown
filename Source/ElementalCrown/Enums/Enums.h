@@ -18,9 +18,3 @@ enum class CharacterState : uint8
 	DEATH UMETA(DisplayName = "Dead")
 };
 
-UENUM(BlueprintType)
-enum class WeaponType : uint8
-{
-	WEAPON_SWORD UMETA(DisplayName = "Weapon_Sword"),
-	WEAPON_HAND UMETA(DisplayName = "Weapon_Hand")
-};

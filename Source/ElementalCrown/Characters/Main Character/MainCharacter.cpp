@@ -215,63 +215,59 @@ void AMainCharacter::CustomJump()
 void AMainCharacter::Attack()
 {
 	if (CurrentState == CharacterState::NONE) {
-		switch (CurrentWeapon) {
-		case WeaponType::WEAPON_SWORD:
-			if (this->GetVelocity().Z == 0) {
-				if (attackCounter < 3) {
-					if (Slash1 && Slash2 && Slash3) {
-						++attackCounter;
-						CurrentState = CharacterState::ATTACK;
-						isSwordSheathed = false;
-						switch (attackCounter) {
-						case 1:
-							GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Slash1->GetTotalDuration(), false);
-							GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Slash1->GetTotalDuration() + 0.3, false);
-							GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, Slash1->GetTotalDuration() + 3, false);
-							break;
-						case 2:
-							GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Slash2->GetTotalDuration(), false);
-							GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Slash2->GetTotalDuration() + 0.3, false);
-							GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, Slash2->GetTotalDuration() + 3, false);
-							break;
-						case 3:
-							GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Slash3->GetTotalDuration(), false);
-							GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Slash3->GetTotalDuration(), false);
-							GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, Slash3->GetTotalDuration() + 3, false);
-							break;
-						}
+		if (this->GetVelocity().Z == 0) {
+			if (attackCounter < 3) {
+				if (Slash1 && Slash2 && Slash3) {
+					++attackCounter;
+					CurrentState = CharacterState::ATTACK;
+					isSwordSheathed = false;
+					switch (attackCounter) {
+					case 1:
+						GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Slash1->GetTotalDuration(), false);
+						GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Slash1->GetTotalDuration() + 0.3, false);
+						GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, Slash1->GetTotalDuration() + 3, false);
+						break;
+					case 2:
+						GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Slash2->GetTotalDuration(), false);
+						GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Slash2->GetTotalDuration() + 0.3, false);
+						GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, Slash2->GetTotalDuration() + 3, false);
+						break;
+					case 3:
+						GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAttack, Slash3->GetTotalDuration(), false);
+						GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, Slash3->GetTotalDuration(), false);
+						GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, Slash3->GetTotalDuration() + 3, false);
+						break;
 					}
 				}
 			}
-			else {
-				if (attackCounter < 3) {
-					if (AirSlash1 && AirSlash2 && AirSlash3) {
-						++attackCounter;
-						CurrentState = CharacterState::ATTACK;
-						GetCharacterMovement()->GravityScale = 0.5;
-						isSwordSheathed = false;
-						switch (attackCounter) {
-						case 1:
-							GetCharacterMovement()->StopMovementImmediately();
-							GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAirAttack, AirSlash1->GetTotalDuration(), false);
-							GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, AirSlash1->GetTotalDuration() + 0.2, false);
-							GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, AirSlash1->GetTotalDuration() + 3, false);
-							break;
-						case 2:
-							GetCharacterMovement()->StopMovementImmediately();
-							GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAirAttack, AirSlash2->GetTotalDuration(), false);
-							GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, AirSlash2->GetTotalDuration() + 0.2, false);
-							GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, AirSlash2->GetTotalDuration() + 3, false);
-							break;
-						case 3:
-							GetWorldTimerManager().ClearTimer(ComboHandle);
-							GetCharacterMovement()->GravityScale = 6;
-							break;
-						}
+		}
+		else {
+			if (attackCounter < 3) {
+				if (AirSlash1 && AirSlash2 && AirSlash3) {
+					++attackCounter;
+					CurrentState = CharacterState::ATTACK;
+					GetCharacterMovement()->GravityScale = 0.5;
+					isSwordSheathed = false;
+					switch (attackCounter) {
+					case 1:
+						GetCharacterMovement()->StopMovementImmediately();
+						GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAirAttack, AirSlash1->GetTotalDuration(), false);
+						GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, AirSlash1->GetTotalDuration() + 0.2, false);
+						GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, AirSlash1->GetTotalDuration() + 3, false);
+						break;
+					case 2:
+						GetCharacterMovement()->StopMovementImmediately();
+						GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAirAttack, AirSlash2->GetTotalDuration(), false);
+						GetWorldTimerManager().SetTimer(ComboHandle, this, &AMainCharacter::EndCombo, AirSlash2->GetTotalDuration() + 0.2, false);
+						GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, AirSlash2->GetTotalDuration() + 3, false);
+						break;
+					case 3:
+						GetWorldTimerManager().ClearTimer(ComboHandle);
+						GetCharacterMovement()->GravityScale = 6;
+						break;
 					}
 				}
 			}
-			break;
 		}
 	}
 }
@@ -306,23 +302,14 @@ void AMainCharacter::ChangeElement()
 
 void AMainCharacter::EndAirAttack()
 {
-	switch (CurrentWeapon) {
-	case WeaponType::WEAPON_SWORD:
-		if (attackCounter == 3) {
-			GetCharacterMovement()->GravityScale = 1;
-			AMainCharacter::EndAttack();
-			AMainCharacter::EndCombo();
-		}
-		else {
-			AMainCharacter::EndAttack();
-			GetCharacterMovement()->GravityScale = 1;
-		}
-		break;
-	case WeaponType::WEAPON_HAND:
+	if (attackCounter == 3) {
 		GetCharacterMovement()->GravityScale = 1;
 		AMainCharacter::EndAttack();
 		AMainCharacter::EndCombo();
-		break;
+	}
+	else {
+		AMainCharacter::EndAttack();
+		GetCharacterMovement()->GravityScale = 1;
 	}
 }
 
@@ -332,26 +319,19 @@ void AMainCharacter::Landed(const FHitResult& Hit)
 		GetCharacterMovement()->GroundFriction = 8;
 		GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
 	}
-	switch (CurrentWeapon) {
-	case WeaponType::WEAPON_SWORD:
-		if (CurrentState == CharacterState::ATTACK && attackCounter == 3) {
-			GetAnimInstance()->JumpToNode(FName("AirSlashEnd"), FName("Attack"));
-			GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAirAttack, AirSlash3->GetTotalDuration(), false);
-			if (isSwordSheathed == false) {
-				GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, AirSlash3->GetTotalDuration() + 3, false);
-			}
-		}
-		else {
-			AMainCharacter::EndAttack();
-			AMainCharacter::EndCombo();
-		}
+	if (CurrentState == CharacterState::ATTACK && attackCounter == 3) {
+		GetAnimInstance()->JumpToNode(FName("AirSlashEnd"), FName("Attack"));
+		GetWorldTimerManager().SetTimer(AttackHandle, this, &AMainCharacter::EndAirAttack, AirSlash3->GetTotalDuration(), false);
 		if (isSwordSheathed == false) {
-			GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, 3, false);
+			GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, AirSlash3->GetTotalDuration() + 3, false);
 		}
-		break;
-	case WeaponType::WEAPON_HAND:
-		AMainCharacter::EndAirAttack();
-		break;
+	}
+	else {
+		AMainCharacter::EndAttack();
+		AMainCharacter::EndCombo();
+	}
+	if (isSwordSheathed == false) {
+		GetWorldTimerManager().SetTimer(SheatheSwordHandle, this, &AMainCharacter::SheatheSword, 3, false);
 	}
 }
 
@@ -369,16 +349,7 @@ void AMainCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrim
 void AMainCharacter::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (this->GetVelocity().Z < 0) {
-		if (this->CurrentState == CharacterState::ATTACK) {
-			switch (CurrentWeapon) {
-			case WeaponType::WEAPON_SWORD:
-				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Slash down"));
-				break;
-			case WeaponType::WEAPON_HAND:
-				GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Drop kick"));
-				break;
-			}
-		}
+		if (this->CurrentState == CharacterState::ATTACK) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Slash down"));
 	}
 }
 
