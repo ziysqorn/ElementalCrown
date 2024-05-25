@@ -21,6 +21,9 @@ AMainCharacter::AMainCharacter()
 	this->OnActorBeginOverlap.AddDynamic(this, &AMainCharacter::BeginOverlap);
 
 	Skill = new VolcanicFire();
+	CharElementalList.AddTail(new ElementalNode(new Fire()));
+	CharElementalList.AddTail(new ElementalNode(new Water()));
+	CharacterElement = CharElementalList.GetHead();
 }
 
 AMainCharacter::~AMainCharacter()
@@ -36,6 +39,14 @@ void AMainCharacter::BeginPlay()
 	Super::BeginPlay();
 	//Setup mapping context
 	SetupMappingContext();
+	if (this->GetController() && ElementalSlot->ElementalSlotClass) {
+		ElementalSlot = CreateWidget<UElementalSlot>(Cast<APlayerController>(this->GetController()), ElementalSlot->ElementalSlotClass);
+		if (ElementalSlot) {
+			ElementalSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(ElementalSlot->GetElementalSprite(FName("Water"))));
+			ElementalSlot->AddToViewport(0);
+		}
+	}
+	CharacterElement->GetValue()->TestType();
 
 	/*GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Size of CharacterState : %i"), sizeof(CharacterState)));
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Size of Elemental : %i"), sizeof(Elemental)));

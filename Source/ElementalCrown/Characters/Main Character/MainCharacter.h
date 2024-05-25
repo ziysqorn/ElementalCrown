@@ -16,6 +16,8 @@
 #include "../../Effects/Smoke/RunSmoke/RunSmoke.h"
 #include "../../Skill/ExplodeSkill/VolcanicFire/VolcanicFire.h"
 #include "../../GameplayElemental/Elemental.h"
+#include "../../UI/Elemental/ElementalSlot.h"
+#include "../../UI/Elemental/MainCharacterHUB.h"
 #include "../../Interface/BaseCharacterInterface.h"
 #include "TimerManager.h"
 #include "../../Constants/Constants.h"
@@ -32,43 +34,48 @@ class ELEMENTALCROWN_API AMainCharacter : public ABaseCharacter, public IBaseCha
 {
 	GENERATED_BODY()
 protected:
-	Elemental* CharacterElement = nullptr;
+	ElementalNode* CharacterElement = nullptr;
+	ElementalList CharElementalList;
 protected:
 	//Spring Arm and Camera Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spring Arm")
-	USpringArmComponent* SpringArmComp;
+	USpringArmComponent* SpringArmComp = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
-	UCameraComponent* CameraComp;
+	UCameraComponent* CameraComp = nullptr;
+
+	UMainCharacterHUB* MainHUB = nullptr;
+
+	UElementalSlot* ElementalSlot = nullptr;
 
 	//Input Action 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_Move;
+	UInputAction* IA_Move = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_Run;
+	UInputAction* IA_Run = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_Jump;
+	UInputAction* IA_Jump = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_Crouch;
+	UInputAction* IA_Crouch = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_UseSkill;
+	UInputAction* IA_UseSkill = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_Attack;
+	UInputAction* IA_Attack = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_Shoot;
+	UInputAction* IA_Shoot = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_ChangeElement;
+	UInputAction* IA_ChangeElement = nullptr;
 
 	//Input mapping context
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputMapping")
-	UInputMappingContext* MainMappingContext;
+	UInputMappingContext* MainMappingContext = nullptr;
 
 	//Animation Sequences
 	//Sword default combo
@@ -104,7 +111,6 @@ protected:
 	UPaperZDAnimSequence* DeathSequence = nullptr;
 
 	//Timer Handle
-	FTimerHandle AttackHandle;
 	FTimerHandle ComboHandle;
 	FTimerHandle SheatheSwordHandle;
 	FTimerHandle SlideHandle;

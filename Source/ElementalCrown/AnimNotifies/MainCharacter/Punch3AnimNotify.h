@@ -15,5 +15,6 @@ class ELEMENTALCROWN_API UPunch3AnimNotify : public UPunch1AnimNotify
 	GENERATED_BODY()
 
 public:
+	UPunch3AnimNotify();
 	void SetBuff() override;
 };

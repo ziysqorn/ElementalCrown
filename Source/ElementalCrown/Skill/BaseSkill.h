@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "../GameplayElemental/Elemental.h"
 
-
+class Elemental;
 class ELEMENTALCROWN_API BaseSkill
 {
 protected:

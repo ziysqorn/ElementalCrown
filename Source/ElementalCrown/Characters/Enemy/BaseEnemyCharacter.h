@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "PaperZDCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\PaperZDAnimSequence.h"
 #include "../BaseCharacter/BaseCharacter.h"
 #include "../../Effects/Explode/Explode.h"
 #include "../../GameplayElemental/Elemental.h"

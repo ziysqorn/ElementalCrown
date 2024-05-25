@@ -15,5 +15,5 @@ class ELEMENTALCROWN_API UFireEnergySkillAnimNotify : public USpawnableSkillAnim
 {
 	GENERATED_BODY()
 public:
-	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) override;
+	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
 };

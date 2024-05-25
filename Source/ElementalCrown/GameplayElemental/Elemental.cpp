@@ -13,69 +13,119 @@ Elemental::~Elemental()
 
 Fire::Fire()
 {
+	ElementalName = "Fire";
 	this->Buff = 2;
 }
 
-void Fire::ElementBuff(AMainCharacter* MainCharacter)
+void Fire::ElementBuff()
 {
-	MainCharacter->SetATKDamageByBuff(this->Buff);
+	if(OwningCharacter) OwningCharacter->SetATKDamageByBuff(this->Buff);
 }
 
-void Fire::SwitchElementDebuff(AMainCharacter* MainCharacter)
+void Fire::SwitchElementDebuff()
 {
-	MainCharacter->SetATKDamageByBuff(-this->Buff);
+	if (OwningCharacter) OwningCharacter->SetATKDamageByBuff(-this->Buff);
 }
 
 Water::Water()
 {
+	ElementalName = "Water";
 	this->Buff = 10;
 }
 
-void Water::ElementBuff(AMainCharacter* MainCharacter)
+void Water::ElementBuff()
 {
-	MainCharacter->SetMaxHealthByBuff(this->Buff);
+	if (OwningCharacter) OwningCharacter->SetMaxHealthByBuff(this->Buff);
 }
 
-void Water::SwitchElementDebuff(AMainCharacter* MainCharacter)
+void Water::SwitchElementDebuff()
 {
-	MainCharacter->SetMaxHealthByBuff(-this->Buff);
+	if (OwningCharacter) OwningCharacter->SetMaxHealthByBuff(-this->Buff);
 }
 
 Earth::Earth()
 {
+	ElementalName = "Earth";
 	this->Buff = 3;
 }
 
-void Earth::ElementBuff(AMainCharacter* MainCharacter)
+void Earth::ElementBuff()
 {
-	MainCharacter->SetResistByBuff(this->Buff);
+	if (OwningCharacter) OwningCharacter->SetResistByBuff(this->Buff);
 }
 
-void Earth::SwitchElementDebuff(AMainCharacter* MainCharacter)
+void Earth::SwitchElementDebuff()
 {
-	MainCharacter->SetResistByBuff(-this->Buff);
+	if (OwningCharacter) OwningCharacter->SetResistByBuff(-this->Buff);
 }
 
 Metal::Metal()
 {
+	ElementalName = "Metal";
 }
 
-void Metal::ElementBuff(AMainCharacter* MainCharacter)
+void Metal::ElementBuff()
 {
 }
 
-void Metal::SwitchElementDebuff(AMainCharacter* MainCharacter)
+void Metal::SwitchElementDebuff()
 {
 }
 
 Plant::Plant()
 {
+	ElementalName = "Plant";
 }
 
-void Plant::ElementBuff(AMainCharacter* MainCharacter)
+void Plant::ElementBuff()
 {
 }
 
-void Plant::SwitchElementDebuff(AMainCharacter* MainCharacter)
+void Plant::SwitchElementDebuff()
 {
+}
+
+void ElementalList::AddTail(ElementalNode* node)
+{
+	if (pHead) {
+		pTail->next = node;
+		pTail = pTail->next;
+	}
+	else {
+		pHead = node;
+		pTail = node;
+	}
+	++size;
+}
+
+void ElementalList::ClearNodes()
+{
+	ElementalNode* ptr = pHead;
+	while (ptr) {
+		ElementalNode* current = ptr;
+		ptr = ptr->next;
+		delete current;
+	}
+	pHead = nullptr;
+	pTail = nullptr;
+	size = 0;
+}
+
+void ElementalList::RemoveTail()
+{
+	if (pHead) {
+		ElementalNode* prev = nullptr;
+		ElementalNode* ptr = pHead;
+		while (0 == 0) {
+			if (ptr == pTail) {
+				pTail = prev;
+				delete ptr;
+				ptr = nullptr;
+				return;
+			}
+			prev = ptr;
+			ptr = ptr->next;
+			--size;
+		}
+	}
 }

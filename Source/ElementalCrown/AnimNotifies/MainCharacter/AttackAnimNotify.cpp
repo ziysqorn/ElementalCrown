@@ -4,7 +4,12 @@
 #include "AttackAnimNotify.h"
 
 
-void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance)
+UAttackAnimNotify::UAttackAnimNotify()
+{
+	this->SetBuff();
+}
+
+void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const
 {
 	if (OwningInstance && OwningInstance->GetOwningActor()) {
 		if (ABaseCharacter* Character = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
@@ -19,7 +24,6 @@ void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* Own
 				for (const FHitResult& Result : Hits) {
 					TSubclassOf<UDamageType> DamageType;
 					this->SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
-					this->SetBuff();
 					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(this->Buff), Character->GetController(), Character, DamageType);
 				}
 			}
@@ -27,8 +31,7 @@ void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* Own
 	}
 }
 
-
-void UAttackAnimNotify::SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target)
+void UAttackAnimNotify::SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const
 {
 	FVector ImpactLocation = Target.GetActor()->GetActorLocation();
 	FRotator ImpactRotation = (Character->GetActorLocation().X <= ImpactLocation.X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);

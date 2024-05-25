@@ -2,72 +2,111 @@
 
 #pragma once
 
-#include "../Characters/Main Character/MainCharacter.h"
+#include "../Characters/BaseCharacter/BaseCharacter.h"
 #include "CoreMinimal.h"
 
 /**
  * 
  */
-class AMainCharacter;
+class ABaseCharacter;
 class ELEMENTALCROWN_API Elemental
 {
-public:
+protected:
 	int Buff{0};
+	//Elemental name
+	FName ElementalName;
+	//Owning Character
+	ABaseCharacter* OwningCharacter = nullptr;
+public:
 	//Constructor
 	Elemental();
 	//Destructor
 	virtual ~Elemental();
 	//Print test
 	virtual void TestType() {
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Element Type : None"));
+		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, FString::Printf(TEXT("Element Type : %s"), *ElementalName.ToString()));
+		UE_LOG(LogTemp, Log, TEXT("%s"), *FString::Printf(TEXT("Element Type : %s"), *ElementalName.ToString()));
 	};
 	//Buff character after switching to this element
-	virtual void ElementBuff(AMainCharacter* MainCharacter) {};
+	virtual void ElementBuff() {};
 	//Debuff character after switching to other element
-	virtual void SwitchElementDebuff(AMainCharacter* MainCharacter) {};
+	virtual void SwitchElementDebuff() {};
+	//Set Owning character
+	void SetOwningCharacter(ABaseCharacter* character) { OwningCharacter = character; }
 };
 class Fire :public Elemental {
 public:
 	Fire();
-	void TestType() override {
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Element Type : Fire"));
-	};
-	void ElementBuff(AMainCharacter* MainCharacter) override;
-	void SwitchElementDebuff(AMainCharacter* MainCharacter) override;
+	void ElementBuff() override;
+	void SwitchElementDebuff() override;
 };
 class Water :public Elemental {
 public:
 	Water();
-	void TestType() override {
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Element Type : Water"));
-	};
-	void ElementBuff(AMainCharacter* MainCharacter) override;
-	void SwitchElementDebuff(AMainCharacter* MainCharacter) override;
+	void ElementBuff() override;
+	void SwitchElementDebuff() override;
 };
 class Earth : public Elemental {
 public:
 	Earth();
-	void TestType() override {
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Element Type : Earth"));
-	};
-	void ElementBuff(AMainCharacter* MainCharacter) override;
-	void SwitchElementDebuff(AMainCharacter* MainCharacter) override;
+	void ElementBuff() override;
+	void SwitchElementDebuff() override;
 };
 class Metal : public Elemental {
 public:
 	Metal();
-	void TestType() override {
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Element Type : Metal"));
-	};
-	void ElementBuff(AMainCharacter* MainCharacter) override;
-	void SwitchElementDebuff(AMainCharacter* MainCharacter) override;
+	void ElementBuff() override;
+	void SwitchElementDebuff() override;
 };
 class Plant : public Elemental {
 public:
 	Plant();
-	void TestType() override {
-		GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Element Type : Plant"));
-	};
-	void ElementBuff(AMainCharacter* MainCharacter) override;
-	void SwitchElementDebuff(AMainCharacter* MainCharacter) override;
+	void ElementBuff() override;
+	void SwitchElementDebuff() override;
+};
+
+
+class ELEMENTALCROWN_API ElementalNode {
+protected:
+	Elemental* elemental = nullptr;
+public:
+	ElementalNode* next = nullptr;
+	ElementalNode() : elemental(nullptr), next(nullptr) {}
+	ElementalNode(Elemental* val) : elemental(val), next(nullptr) {}
+	ElementalNode(ElementalNode* node) : elemental(nullptr), next(node) {}
+	ElementalNode(Elemental* val, ElementalNode* node) : elemental(val), next(node) {}
+	virtual ~ElementalNode() {
+		if (elemental) {
+			delete elemental;
+			elemental = nullptr;
+		}
+		if (next) next = nullptr;
+	}
+	Elemental* GetValue() { return this->elemental; }
+};
+
+class ELEMENTALCROWN_API ElementalList {
+protected:
+	ElementalNode* pHead = nullptr;
+	ElementalNode* pTail = nullptr;
+	int size = 0;
+public:
+	ElementalList() : pHead(nullptr), pTail(nullptr) {}
+	ElementalList(ElementalNode* head, ElementalNode* tail) : pHead(head), pTail(tail) {}
+	virtual ~ElementalList() {
+		ElementalNode* ptr = pHead;
+		while (ptr) {
+			ElementalNode* current = ptr;
+			ptr = ptr->next;
+			delete current;
+		}
+		pHead = nullptr;
+		pTail = nullptr;
+	}
+	ElementalNode* GetHead() { return pHead; }
+	ElementalNode* GetTail() { return pTail; }
+	int GetSize() { return size; }
+	void AddTail(ElementalNode* node);
+	void ClearNodes();
+	void RemoveTail();
 };

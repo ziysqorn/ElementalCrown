@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Notifies/PaperZDAnimNotifyState.h"
+#include "PaperZDAnimInstance.h"
 #include "../../Interface/BaseCharacterInterface.h"
 #include "../../Characters/Main Character/MainCharacter.h"
 #include "Kismet/GameplayStatics.h"
@@ -24,9 +25,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Box Extent")
 	FVector BoxExtent;
 public:
+	UAirSlash3EndAnimNotifyState();
 	virtual void SetBuff();
-	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target);
+	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const;
 	//Events
-	void OnNotifyBegin_Implementation(UPaperZDAnimInstance* OwningInstance) override;
-	void OnNotifyEnd_Implementation(UPaperZDAnimInstance* OwningInstance) override;
+	void OnNotifyBegin_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
+	void OnNotifyEnd_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
 };

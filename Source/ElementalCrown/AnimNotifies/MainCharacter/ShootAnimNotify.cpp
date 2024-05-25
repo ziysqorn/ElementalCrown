@@ -3,7 +3,7 @@
 
 #include "ShootAnimNotify.h"
 
-void UShootAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance)
+void UShootAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const
 {
 	if (OwningInstance && OwningInstance->GetOwningActor()) {
 		if (APaperZDCharacter* Character = Cast<APaperZDCharacter>(OwningInstance->GetOwningActor())) {

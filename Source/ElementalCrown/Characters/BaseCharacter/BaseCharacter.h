@@ -16,6 +16,7 @@
  * 
  */
 using namespace Constants;
+class BaseSkill;
 UCLASS()
 class ELEMENTALCROWN_API ABaseCharacter : public APaperZDCharacter
 {

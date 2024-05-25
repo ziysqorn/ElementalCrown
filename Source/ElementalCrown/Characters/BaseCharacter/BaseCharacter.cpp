@@ -6,12 +6,12 @@
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	if (FlashCurveFloat) {
+	/*if (FlashCurveFloat) {
 		FlashTimeline.AddInterpFloat(FlashCurveFloat, FOnTimelineFloatStatic::CreateLambda([this](const float& Value) {
 			UMaterialInstanceDynamic* DynamicMaterial = this->GetSprite()->CreateDynamicMaterialInstance(0);
 			DynamicMaterial->SetScalarParameterValue("FlashMultiplier", Value);
 		}));
-	}
+	}*/
 }
 
 void ABaseCharacter::Tick(float DeltaSeconds)

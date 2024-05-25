@@ -13,5 +13,4 @@ UCLASS()
 class ELEMENTALCROWN_API UAirSlash1AnimNotify : public UAttackAnimNotify
 {
 	GENERATED_BODY()
-
 };

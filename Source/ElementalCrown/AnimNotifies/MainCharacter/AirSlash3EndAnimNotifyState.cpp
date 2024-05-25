@@ -3,7 +3,7 @@
 
 #include "AirSlash3EndAnimNotifyState.h"
 
-void UAirSlash3EndAnimNotifyState::SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target)
+void UAirSlash3EndAnimNotifyState::SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const
 {
 	FVector ImpactLocation = Target.GetActor()->GetActorLocation();
 	FRotator ImpactRotation = (Character->GetActorLocation().X <= ImpactLocation.X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
@@ -20,12 +20,17 @@ void UAirSlash3EndAnimNotifyState::SpawnImpact(APaperZDCharacter* Character, con
 		}
 }
 
+UAirSlash3EndAnimNotifyState::UAirSlash3EndAnimNotifyState()
+{
+	this->SetBuff();
+}
+
 void UAirSlash3EndAnimNotifyState::SetBuff()
 {
 	this->Buff = 5;
 }
 
-void UAirSlash3EndAnimNotifyState::OnNotifyBegin_Implementation(UPaperZDAnimInstance* OwningInstance)
+void UAirSlash3EndAnimNotifyState::OnNotifyBegin_Implementation(UPaperZDAnimInstance* OwningInstance) const
 {
 	if (OwningInstance && OwningInstance->GetOwningActor()) {
 		if (ABaseCharacter* Character = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
@@ -40,7 +45,6 @@ void UAirSlash3EndAnimNotifyState::OnNotifyBegin_Implementation(UPaperZDAnimInst
 				for (const FHitResult& Result : Hits) {
 					UAirSlash3EndAnimNotifyState::SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
 					TSubclassOf<UDamageType> DamageType;
-					this->SetBuff();
 					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(Buff), Character->GetController(), Character, DamageType);
 				}
 			}
@@ -48,6 +52,6 @@ void UAirSlash3EndAnimNotifyState::OnNotifyBegin_Implementation(UPaperZDAnimInst
 	}
 }
 
-void UAirSlash3EndAnimNotifyState::OnNotifyEnd_Implementation(UPaperZDAnimInstance* OwningInstance)
+void UAirSlash3EndAnimNotifyState::OnNotifyEnd_Implementation(UPaperZDAnimInstance* OwningInstance) const
 {
 }

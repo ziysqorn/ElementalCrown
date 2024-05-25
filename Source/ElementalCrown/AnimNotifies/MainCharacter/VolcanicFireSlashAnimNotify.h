@@ -15,12 +15,12 @@ class ELEMENTALCROWN_API UVolcanicFireSlashAnimNotify : public USpawnableSkillAn
 {
 	GENERATED_BODY()
 protected:
-	uint8 CurrentSpawnTime{ 1 };
+	mutable uint8 CurrentSpawnTime{ 1 };
 	const uint8 MaxSpawnTimes{ 6 };
 	//Spawn explosion timer handle
-	FTimerHandle SpawnHandle;
+	mutable FTimerHandle SpawnHandle;
 public:
-	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) override;
-	void SpawnContinuously(ABaseCharacter* OwningCharacter);
+	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
+	void SpawnContinuously(ABaseCharacter* OwningCharacter) const;
 	
 };

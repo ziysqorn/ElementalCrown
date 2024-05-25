@@ -4,10 +4,10 @@
 #include "VolcanicFireSlashAnimNotify.h"
 #include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\Players\PaperZDAnimPlayer.h"
 
-void UVolcanicFireSlashAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance)
+void UVolcanicFireSlashAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const
 {
+	USpawnableSkillAnimNotify::OnReceiveNotify_Implementation(OwningInstance);
 	if (OwningInstance) {
-		this->SetSpawnProperty(OwningInstance);
 		this->SpawnDistanceX = 50.0f;
 		if (OwningInstance->GetOwningActor()) {
 			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
@@ -17,7 +17,7 @@ void UVolcanicFireSlashAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimIn
 	}
 }
 
-void UVolcanicFireSlashAnimNotify::SpawnContinuously(ABaseCharacter* OwningCharacter)
+void UVolcanicFireSlashAnimNotify::SpawnContinuously(ABaseCharacter* OwningCharacter) const
 {
 	if (OwningCharacter) {
 		if (CurrentSpawnTime <= MaxSpawnTimes) {

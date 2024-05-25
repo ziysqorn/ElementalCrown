@@ -2,10 +2,10 @@
 
 #include "FireSlashWaveSkillAnimNotify.h"
 
-void UFireSlashWaveSkillAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance)
+void UFireSlashWaveSkillAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const
 {
+	USpawnableSkillAnimNotify::OnReceiveNotify_Implementation(OwningInstance);
 	if (OwningInstance) {
-		this->SetSpawnProperty(OwningInstance);
 		if (OwningInstance->GetOwningActor()) {
 			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
 				FActorSpawnParameters SpawnParams;

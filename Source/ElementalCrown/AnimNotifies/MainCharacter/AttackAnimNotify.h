@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Notifies/PaperZDAnimNotify.h"
+#include "PaperZDAnimInstance.h"
 #include "../../Interface/BaseCharacterInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "../../Characters/Main Character/MainCharacter.h"
@@ -29,7 +30,8 @@ protected:
 	FVector BoxExtent= FVector(30, 0, 40);
 
 public:
-	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) override;
+	UAttackAnimNotify();
+	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
 	virtual void SetBuff() {};
-	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target);
+	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const;
 };

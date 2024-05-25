@@ -14,5 +14,6 @@ class ELEMENTALCROWN_API UAttack3AnimNotify : public UAttackAnimNotify
 {
 	GENERATED_BODY()
 public:
+	UAttack3AnimNotify();
 	void SetBuff() override;
 };

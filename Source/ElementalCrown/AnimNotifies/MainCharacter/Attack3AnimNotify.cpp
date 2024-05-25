@@ -3,6 +3,11 @@
 
 #include "Attack3AnimNotify.h"
 
+UAttack3AnimNotify::UAttack3AnimNotify()
+{
+	this->SetBuff();
+}
+
 void UAttack3AnimNotify::SetBuff()
 {
 	this->Buff = 2;

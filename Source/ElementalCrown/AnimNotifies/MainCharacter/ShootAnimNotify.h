@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Notifies/PaperZDAnimNotify.h"
+#include "PaperZDAnimInstance.h"
 #include "../../Effects/Skills/MagicArrow/FireArrow.h"
 #include "../../Characters/Main Character/MainCharacter.h"
 #include "PaperZDCharacter.h"
@@ -18,5 +19,5 @@ class ELEMENTALCROWN_API UShootAnimNotify : public UPaperZDAnimNotify
 {
 	GENERATED_BODY()
 public:
-	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) override;
+	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
 };

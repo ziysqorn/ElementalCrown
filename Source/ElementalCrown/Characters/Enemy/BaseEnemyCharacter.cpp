@@ -19,7 +19,6 @@ void ABaseEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	ABaseCharacter::BeginPlay();
-	ElementalType->TestType();
 }
 
 void ABaseEnemyCharacter::Tick(float DeltaSeconds)

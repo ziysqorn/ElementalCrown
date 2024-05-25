@@ -16,6 +16,7 @@ class ELEMENTALCROWN_API UPunch1AnimNotify : public UAttackAnimNotify
 	GENERATED_BODY()
 	
 public:
+	UPunch1AnimNotify();
 	virtual void SetBuff() override;
-	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) override;
+	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const override;
 };
