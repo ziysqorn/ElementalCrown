@@ -33,6 +33,7 @@ public:
 	virtual void SwitchElementDebuff() {};
 	//Set Owning character
 	void SetOwningCharacter(ABaseCharacter* character) { OwningCharacter = character; }
+	FName GetName() { return ElementalName; }
 };
 class Fire :public Elemental {
 public:

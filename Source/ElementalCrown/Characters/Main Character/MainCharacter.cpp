@@ -39,14 +39,11 @@ void AMainCharacter::BeginPlay()
 	Super::BeginPlay();
 	//Setup mapping context
 	SetupMappingContext();
-	if (this->GetController() && ElementalSlot->ElementalSlotClass) {
-		ElementalSlot = CreateWidget<UElementalSlot>(Cast<APlayerController>(this->GetController()), ElementalSlot->ElementalSlotClass);
-		if (ElementalSlot) {
-			ElementalSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(ElementalSlot->GetElementalSprite(FName("Water"))));
-			ElementalSlot->AddToViewport(0);
-		}
+	if (this->GetController() && MainHUBSubClass) {
+		MainHUB = CreateWidget<UMainCharacterHUB>(Cast<APlayerController>(this->GetController()), MainHUBSubClass);
+		SetupHUB();
+		MainHUB->AddToViewport(0);
 	}
-	CharacterElement->GetValue()->TestType();
 
 	/*GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Size of CharacterState : %i"), sizeof(CharacterState)));
 	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, FString::Printf(TEXT("Size of Elemental : %i"), sizeof(Elemental)));
@@ -90,6 +87,20 @@ void AMainCharacter::SetupMappingContext()
 			Subsystem->AddMappingContext(MainMappingContext, 0);
 		}
 	}
+}
+
+void AMainCharacter::SetupHUB()
+{
+	for (ElementalNode* ptr = CharElementalList.GetHead(); ptr != nullptr; ptr = ptr->next) {
+		if (MainHUB->ElementalSlotSubClass) {
+			UElementalSlot* elementalSlot = CreateWidget<UElementalSlot>(Cast<APlayerController>(this->GetController()), MainHUB->ElementalSlotSubClass);
+			if (elementalSlot) {
+				elementalSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(elementalSlot->GetElementalSprite(ptr->GetValue()->GetName())));
+				MainHUB->GetElementalSlotBox()->AddChildToHorizontalBox(elementalSlot);
+			}
+		}
+	}
+	MainHUB->SetOwningPlayer(Cast<APlayerController>(this->GetController()));
 }
 
 void AMainCharacter::Move(const FInputActionValue& value)

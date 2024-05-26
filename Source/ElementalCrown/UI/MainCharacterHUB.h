@@ -11,6 +11,7 @@
 /**
  * 
  */
+
 UCLASS()
 class ELEMENTALCROWN_API UMainCharacterHUB : public UUserWidget
 {
@@ -19,8 +20,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUB", meta = (BindWidget))
 	UHorizontalBox* ElementalSlotBox = nullptr;
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Main Character HUB SubClass")
-	TSubclassOf<UMainCharacterHUB> MainHUBSubClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elemental Slot SubClass")
 	TSubclassOf<UElementalSlot> ElementalSlotSubClass;
 	UHorizontalBox* GetElementalSlotBox() { return ElementalSlotBox; }

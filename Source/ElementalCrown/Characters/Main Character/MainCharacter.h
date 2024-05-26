@@ -16,8 +16,7 @@
 #include "../../Effects/Smoke/RunSmoke/RunSmoke.h"
 #include "../../Skill/ExplodeSkill/VolcanicFire/VolcanicFire.h"
 #include "../../GameplayElemental/Elemental.h"
-#include "../../UI/Elemental/ElementalSlot.h"
-#include "../../UI/Elemental/MainCharacterHUB.h"
+#include "../../UI/MainCharacterHUB.h"
 #include "../../Interface/BaseCharacterInterface.h"
 #include "TimerManager.h"
 #include "../../Constants/Constants.h"
@@ -46,7 +45,8 @@ protected:
 
 	UMainCharacterHUB* MainHUB = nullptr;
 
-	UElementalSlot* ElementalSlot = nullptr;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Main Character HUB SubClass")
+	TSubclassOf<UMainCharacterHUB> MainHUBSubClass;
 
 	//Input Action 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
@@ -150,6 +150,10 @@ public:
 	int GetATKDamage() {
 		return ATK_Damage;
 	}
+	ElementalList GetElementalList() { return CharElementalList; }
+
+	//HUB functions
+	void SetupHUB();
 
 	//Actions
 	virtual void Move(const FInputActionValue& value);
