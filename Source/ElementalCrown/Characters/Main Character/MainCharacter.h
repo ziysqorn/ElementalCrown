@@ -43,11 +43,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	UCameraComponent* CameraComp = nullptr;
 
-	UMainCharacterHUB* MainHUB = nullptr;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Main Character HUB SubClass")
-	TSubclassOf<UMainCharacterHUB> MainHUBSubClass;
-
 	//Input Action 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_Move = nullptr;
@@ -150,10 +145,7 @@ public:
 	int GetATKDamage() {
 		return ATK_Damage;
 	}
-	ElementalList GetElementalList() { return CharElementalList; }
-
-	//HUB functions
-	void SetupHUB();
+	ElementalList& GetElementalList() { return CharElementalList; }
 
 	//Actions
 	virtual void Move(const FInputActionValue& value);

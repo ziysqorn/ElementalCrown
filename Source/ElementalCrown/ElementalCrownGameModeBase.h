@@ -13,5 +13,8 @@ UCLASS()
 class ELEMENTALCROWN_API AElementalCrownGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+public:
+	AElementalCrownGameModeBase();
+	void BeginPlay() override;
 };
