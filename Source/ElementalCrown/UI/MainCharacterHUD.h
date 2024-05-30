@@ -6,21 +6,25 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/HorizontalBox.h"
 #include "Elemental/ElementalSlot.h"
-#include "MainCharacterHUB.generated.h"
+#include "../Characters/Main Character/MainCharacter.h"
+#include "MainCharacterHUD.generated.h"
 
 /**
  * 
  */
 
 UCLASS()
-class ELEMENTALCROWN_API UMainCharacterHUB : public UUserWidget
+class ELEMENTALCROWN_API UMainCharacterHUD : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY(BlueprintReadOnly, Category = "Main character HUB", meta = (BindWidget))
+	ElementalList HUDElementalList;
+	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UHorizontalBox* ElementalSlotBox = nullptr;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elemental Slot SubClass")
 	TSubclassOf<UElementalSlot> ElementalSlotSubClass;
 	UHorizontalBox* GetElementalSlotBox() { return ElementalSlotBox; }
+	void SetupHUD();
+	void HighlightSlotOnSwitch(ElementalNode* SwitchedNode);
 };

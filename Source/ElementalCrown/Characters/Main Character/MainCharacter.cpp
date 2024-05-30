@@ -2,6 +2,7 @@
 
 
 #include "MainCharacter.h"
+#include "../../Controller/MainController.h"
 
 AMainCharacter::AMainCharacter()
 {
@@ -37,8 +38,13 @@ AMainCharacter::~AMainCharacter()
 void AMainCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
 	//Setup mapping context
 	SetupMappingContext();
+
+	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
+		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->HighlightSlotOnSwitch(CharacterElement);
+	}
 }
 
 void AMainCharacter::Tick(float DeltaSeconds)
@@ -294,7 +300,9 @@ void AMainCharacter::ChangeElement()
 	else {
 		if (CharacterElement->next != nullptr) CharacterElement = CharacterElement->next;
 	}
-	CharacterElement->GetValue()->TestType();
+	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
+		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->HighlightSlotOnSwitch(CharacterElement);
+	}
 }
 
 void AMainCharacter::EndAirAttack()

@@ -16,7 +16,6 @@
 #include "../../Effects/Smoke/RunSmoke/RunSmoke.h"
 #include "../../Skill/ExplodeSkill/VolcanicFire/VolcanicFire.h"
 #include "../../GameplayElemental/Elemental.h"
-#include "../../UI/MainCharacterHUB.h"
 #include "../../Interface/BaseCharacterInterface.h"
 #include "TimerManager.h"
 #include "../../Constants/Constants.h"

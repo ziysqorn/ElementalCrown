@@ -5,9 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "PaperSprite.h"
-#include "../UI/MainCharacterHUB.h"
+#include "../UI/MainCharacterHUD.h"
 #include "../GameplayElemental/Elemental.h"
-#include "../Characters/Main Character/MainCharacter.h"
 #include "MainController.generated.h"
 
 /**
@@ -19,11 +18,11 @@ class ELEMENTALCROWN_API AMainController : public APlayerController
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Main HUB sub class")
-	TSubclassOf<UMainCharacterHUB> MainHUBSubClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Main HUD sub class")
+	TSubclassOf<UMainCharacterHUD> MainHUDSubClass;
 
-	UMainCharacterHUB* MainHUB = nullptr;
+	UMainCharacterHUD* MainHUD = nullptr;
 public:
 	void BeginPlay() override;
-	void SetupHUB();
+	UMainCharacterHUD* GetMainHUD() { return MainHUD; }
 };
