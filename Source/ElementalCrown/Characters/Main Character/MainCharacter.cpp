@@ -21,18 +21,14 @@ AMainCharacter::AMainCharacter()
 	//Add Delegates
 	this->OnActorBeginOverlap.AddDynamic(this, &AMainCharacter::BeginOverlap);
 
-	Skill = new VolcanicFire();
-	CharElementalList.AddTail(new ElementalNode(new Fire()));
-	CharElementalList.AddTail(new ElementalNode(new Water()));
-	CharacterElement = CharElementalList.GetHead();
+	CharElementalList = std::make_shared<CustomLinkedList<Elemental>>();
+	CharElementalList->AddTail(new CustomNode<Elemental>(new Fire(this)));
+	CharElementalList->AddTail(new CustomNode<Elemental>(new Water(this)));
+	CharacterElement = CharElementalList->GetHead();
 }
 
 AMainCharacter::~AMainCharacter()
 {
-	if (Skill) {
-		delete Skill;
-		Skill = nullptr;
-	}
 }
 
 void AMainCharacter::BeginPlay()
@@ -43,7 +39,7 @@ void AMainCharacter::BeginPlay()
 	SetupMappingContext();
 
 	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->HighlightSlotOnSwitch(CharacterElement);
+		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->SwitchedSlotHighlight(CharacterElement);
 	}
 }
 
@@ -290,18 +286,16 @@ void AMainCharacter::Shoot()
 
 void AMainCharacter::UseSkill()
 {
-	Skill->SetOwningCharacter(this);
-	Skill->PerformSkill();
 }
 
 void AMainCharacter::ChangeElement()
 {
-	if (CharacterElement == CharElementalList.GetTail()) CharacterElement = CharElementalList.GetHead();
+	if (CharacterElement == CharElementalList->GetTail()) CharacterElement = CharElementalList->GetHead();
 	else {
 		if (CharacterElement->next != nullptr) CharacterElement = CharacterElement->next;
 	}
 	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->HighlightSlotOnSwitch(CharacterElement);
+		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->SwitchedSlotHighlight(CharacterElement);
 	}
 }
 

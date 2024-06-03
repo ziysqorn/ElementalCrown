@@ -18,7 +18,7 @@ class ELEMENTALCROWN_API UMainCharacterHUD : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
-	ElementalList HUDElementalList;
+	std::shared_ptr<CustomLinkedList<Elemental>> HUDElementalList;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UHorizontalBox* ElementalSlotBox = nullptr;
 public:
@@ -26,5 +26,5 @@ public:
 	TSubclassOf<UElementalSlot> ElementalSlotSubClass;
 	UHorizontalBox* GetElementalSlotBox() { return ElementalSlotBox; }
 	void SetupHUD();
-	void HighlightSlotOnSwitch(ElementalNode* SwitchedNode);
+	void SwitchedSlotHighlight(CustomNode<Elemental>* SwitchedNode);
 };

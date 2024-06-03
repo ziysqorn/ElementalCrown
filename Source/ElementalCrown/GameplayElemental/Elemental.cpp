@@ -7,6 +7,11 @@ Elemental::Elemental()
 {
 }
 
+Elemental::Elemental(ABaseCharacter* character)
+{
+	OwningCharacter = character;
+}
+
 Elemental::~Elemental()
 {
 }
@@ -83,49 +88,4 @@ void Plant::ElementBuff()
 
 void Plant::SwitchElementDebuff()
 {
-}
-
-void ElementalList::AddTail(ElementalNode* node)
-{
-	if (pHead) {
-		pTail->next = node;
-		pTail = pTail->next;
-	}
-	else {
-		pHead = node;
-		pTail = node;
-	}
-	++size;
-}
-
-void ElementalList::ClearNodes()
-{
-	ElementalNode* ptr = pHead;
-	while (ptr) {
-		ElementalNode* current = ptr;
-		ptr = ptr->next;
-		delete current;
-	}
-	pHead = nullptr;
-	pTail = nullptr;
-	size = 0;
-}
-
-void ElementalList::RemoveTail()
-{
-	if (pHead) {
-		ElementalNode* prev = nullptr;
-		ElementalNode* ptr = pHead;
-		while (0 == 0) {
-			if (ptr == pTail) {
-				pTail = prev;
-				delete ptr;
-				ptr = nullptr;
-				return;
-			}
-			prev = ptr;
-			ptr = ptr->next;
-			--size;
-		}
-	}
 }

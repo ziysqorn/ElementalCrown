@@ -8,7 +8,7 @@ void UMainCharacterHUD::SetupHUD()
 	if (this->GetOwningPlayer()) {
 		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwningPlayer()->GetPawn())) {
 			HUDElementalList = MainCharacter->GetElementalList();
-			for (ElementalNode* ptr = HUDElementalList.GetHead(); ptr != nullptr; ptr = ptr->next) {
+			for (CustomNode<Elemental>* ptr = HUDElementalList->GetHead(); ptr != nullptr; ptr = ptr->next) {
 				if (this->ElementalSlotSubClass) {
 					UElementalSlot* elementalSlot = CreateWidget<UElementalSlot>(this, this->ElementalSlotSubClass);
 					if (elementalSlot) {
@@ -21,7 +21,7 @@ void UMainCharacterHUD::SetupHUD()
 	}
 }
 
-void UMainCharacterHUD::HighlightSlotOnSwitch(ElementalNode* SwitchedNode)
+void UMainCharacterHUD::SwitchedSlotHighlight(CustomNode<Elemental>* SwitchedNode)
 {
 	TArray<UWidget*> slotArr = ElementalSlotBox->GetAllChildren();
 	if (slotArr.Num() > 0) {
@@ -32,7 +32,7 @@ void UMainCharacterHUD::HighlightSlotOnSwitch(ElementalNode* SwitchedNode)
 		}
 	}
 	int index = 0;
-	for (ElementalNode* ptr = HUDElementalList.GetHead(); ptr != nullptr; ptr = ptr->next) {
+	for (CustomNode<Elemental>* ptr = HUDElementalList->GetHead(); ptr != nullptr; ptr = ptr->next) {
 		if (ptr->GetValue()->GetName() == SwitchedNode->GetValue()->GetName()) {
 			if (UElementalSlot* slot = Cast<UElementalSlot>(ElementalSlotBox->GetChildAt(index))) {
 				slot->ShowOutline();

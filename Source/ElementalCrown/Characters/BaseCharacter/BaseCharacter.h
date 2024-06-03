@@ -33,9 +33,6 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character Current State")
 	CharacterState CurrentState = CharacterState::NONE;
 
-	//Character current skill
-	BaseSkill* Skill = nullptr;
-
 	//Flash when damaged curve float
 	UPROPERTY(EditDefaultsOnly, Category = "DamagedFlash | FlashCurveFloat")
 	UCurveFloat* FlashCurveFloat = nullptr;
@@ -50,10 +47,7 @@ protected:
 public:
 	void BeginPlay() override;
 	void Tick(float DeltaSeconds) override;
-	//Get character's current skill
-	BaseSkill* GetCurrentSkill() {
-		return this->Skill;
-	}
+
 	//Set character's current state
 	void SetCharacterState(const CharacterState&& State) {
 		this->CurrentState = State;

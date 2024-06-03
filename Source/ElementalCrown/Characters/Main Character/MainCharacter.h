@@ -15,7 +15,7 @@
 #include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\PaperZDAnimSequence.h"
 #include "../../Effects/Smoke/RunSmoke/RunSmoke.h"
 #include "../../Skill/ExplodeSkill/VolcanicFire/VolcanicFire.h"
-#include "../../GameplayElemental/Elemental.h"
+#include "../../DataStructs/CustomLinkedList.h"
 #include "../../Interface/BaseCharacterInterface.h"
 #include "TimerManager.h"
 #include "../../Constants/Constants.h"
@@ -32,8 +32,10 @@ class ELEMENTALCROWN_API AMainCharacter : public ABaseCharacter, public IBaseCha
 {
 	GENERATED_BODY()
 protected:
-	ElementalNode* CharacterElement = nullptr;
-	ElementalList CharElementalList;
+	CustomNode<Elemental>* CharacterElement = nullptr;
+	CustomNode<BaseSkill>* CharacterSkill = nullptr;
+	std::shared_ptr<CustomLinkedList<Elemental>> CharElementalList;
+	std::shared_ptr<CustomLinkedList<BaseSkill>> CharSkillList;
 protected:
 	//Spring Arm and Camera Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spring Arm")
@@ -144,7 +146,8 @@ public:
 	int GetATKDamage() {
 		return ATK_Damage;
 	}
-	ElementalList& GetElementalList() { return CharElementalList; }
+	
+	std::shared_ptr<CustomLinkedList<Elemental>> GetElementalList() { return CharElementalList; }
 
 	//Actions
 	virtual void Move(const FInputActionValue& value);
