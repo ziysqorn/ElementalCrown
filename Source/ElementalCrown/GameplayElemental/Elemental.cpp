@@ -22,6 +22,12 @@ Fire::Fire()
 	this->Buff = 2;
 }
 
+Fire::Fire(ABaseCharacter* character) : Elemental(character)
+{
+	ElementalName = "Fire";
+	this->Buff = 2;
+}
+
 void Fire::ElementBuff()
 {
 	if(OwningCharacter) OwningCharacter->SetATKDamageByBuff(this->Buff);
@@ -33,6 +39,12 @@ void Fire::SwitchElementDebuff()
 }
 
 Water::Water()
+{
+	ElementalName = "Water";
+	this->Buff = 10;
+}
+
+Water::Water(ABaseCharacter* character) : Elemental(character)
 {
 	ElementalName = "Water";
 	this->Buff = 10;
@@ -54,6 +66,12 @@ Earth::Earth()
 	this->Buff = 3;
 }
 
+Earth::Earth(ABaseCharacter* character) : Elemental(character)
+{
+	ElementalName = "Earth";
+	this->Buff = 3;
+}
+
 void Earth::ElementBuff()
 {
 	if (OwningCharacter) OwningCharacter->SetResistByBuff(this->Buff);
@@ -69,6 +87,11 @@ Metal::Metal()
 	ElementalName = "Metal";
 }
 
+Metal::Metal(ABaseCharacter* character) : Elemental(character)
+{
+	ElementalName = "Metal";
+}
+
 void Metal::ElementBuff()
 {
 }
@@ -78,6 +101,11 @@ void Metal::SwitchElementDebuff()
 }
 
 Plant::Plant()
+{
+	ElementalName = "Plant";
+}
+
+Plant::Plant(ABaseCharacter* character) : Elemental(character)
 {
 	ElementalName = "Plant";
 }

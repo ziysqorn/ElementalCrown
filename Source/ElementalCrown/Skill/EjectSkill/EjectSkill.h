@@ -17,6 +17,7 @@ protected:
 public:
 	//*************** CONSTRUCTOR *************************
 	EjectSkill();
+	EjectSkill(const TCHAR* Ref);
 	virtual ~EjectSkill();
 	void PerformSkill() override;
 };

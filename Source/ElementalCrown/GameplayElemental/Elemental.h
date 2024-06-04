@@ -50,7 +50,7 @@ public:
 class Fire :public Elemental {
 public:
 	Fire();
-	Fire(ABaseCharacter* character) : Elemental(character) { Fire(); }
+	Fire(ABaseCharacter* character);
 	Fire(const Fire& other) {
 		Buff = other.Buff;
 		ElementalName = other.ElementalName;
@@ -62,7 +62,7 @@ public:
 class Water :public Elemental {
 public:
 	Water();
-	Water(ABaseCharacter* character) : Elemental(character) { Water(); }
+	Water(ABaseCharacter* character);
 	Water(const Water& other) {
 		Buff = other.Buff;
 		ElementalName = other.ElementalName;
@@ -74,7 +74,7 @@ public:
 class Earth : public Elemental {
 public:
 	Earth();
-	Earth(ABaseCharacter* character) : Elemental(character) { Earth(); }
+	Earth(ABaseCharacter* character);
 	Earth(const Earth& other) {
 		Buff = other.Buff;
 		ElementalName = other.ElementalName;
@@ -86,7 +86,7 @@ public:
 class Metal : public Elemental {
 public:
 	Metal();
-	Metal(ABaseCharacter* character) : Elemental(character) { Metal(); }
+	Metal(ABaseCharacter* character);
 	Metal(const Metal& other) {
 		Buff = other.Buff;
 		ElementalName = other.ElementalName;
@@ -98,7 +98,7 @@ public:
 class Plant : public Elemental {
 public:
 	Plant();
-	Plant(ABaseCharacter* character) : Elemental(character) { Plant(); }
+	Plant(ABaseCharacter* character);
 	Plant(const Plant& other) {
 		Buff = other.Buff;
 		ElementalName = other.ElementalName;

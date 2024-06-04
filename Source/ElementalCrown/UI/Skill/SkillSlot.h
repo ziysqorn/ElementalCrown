@@ -4,6 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Image.h"
+#include "Components/Border.h"
+#include "PaperSprite.h"
+#include "PaperFlipbook.h"
 #include "SkillSlot.generated.h"
 
 /**
@@ -13,5 +17,19 @@ UCLASS()
 class ELEMENTALCROWN_API USkillSlot : public UUserWidget
 {
 	GENERATED_BODY()
-	
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
+	UBorder* SkillFrame = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
+	UBorder* SkillOutline = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
+	UImage* SkillIcon = nullptr;
+public:
+	UImage* GetIcon() { return SkillIcon; }
+	void ShowOutline() {
+		if (SkillOutline) SkillOutline->SetVisibility(ESlateVisibility::Visible);
+	}
+	void HideOutline() {
+		if (SkillOutline) SkillOutline->SetVisibility(ESlateVisibility::Hidden);
+	}
 };

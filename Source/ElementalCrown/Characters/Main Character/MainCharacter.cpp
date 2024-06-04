@@ -22,9 +22,13 @@ AMainCharacter::AMainCharacter()
 	this->OnActorBeginOverlap.AddDynamic(this, &AMainCharacter::BeginOverlap);
 
 	CharElementalList = std::make_shared<CustomLinkedList<Elemental>>();
+	CharSkillList = std::make_shared<CustomLinkedList<BaseSkill>>();
 	CharElementalList->AddTail(new CustomNode<Elemental>(new Fire(this)));
 	CharElementalList->AddTail(new CustomNode<Elemental>(new Water(this)));
+	CharSkillList->AddTail(new CustomNode<BaseSkill>(new VolcanicFire()));
+	CharSkillList->AddTail(new CustomNode<BaseSkill>(new FireEnergy()));
 	CharacterElement = CharElementalList->GetHead();
+	CharacterSkill = CharSkillList->GetHead();
 }
 
 AMainCharacter::~AMainCharacter()
@@ -39,7 +43,10 @@ void AMainCharacter::BeginPlay()
 	SetupMappingContext();
 
 	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->SwitchedSlotHighlight(CharacterElement);
+		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
+			MainHUD->SwitchedSlotHighlight(CharacterElement);
+			MainHUD->SwitchedSlotHighlight(CharacterSkill);
+		}
 	}
 }
 
@@ -63,6 +70,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EIComponent->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
 		EIComponent->BindAction(IA_Shoot, ETriggerEvent::Triggered, this, &AMainCharacter::Shoot);
 		EIComponent->BindAction(IA_ChangeElement, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeElement);
+		EIComponent->BindAction(IA_ChangeSkill, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeSkill);
 	}
 }
 
@@ -286,6 +294,10 @@ void AMainCharacter::Shoot()
 
 void AMainCharacter::UseSkill()
 {
+	if (CharacterSkill->GetValue()) {
+		CharacterSkill->GetValue()->SetOwningCharacter(this);
+		CharacterSkill->GetValue()->PerformSkill();
+	}
 }
 
 void AMainCharacter::ChangeElement()
@@ -296,6 +308,17 @@ void AMainCharacter::ChangeElement()
 	}
 	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
 		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->SwitchedSlotHighlight(CharacterElement);
+	}
+}
+
+void AMainCharacter::ChangeSkill()
+{
+	if (CharacterSkill == CharSkillList->GetTail()) CharacterSkill = CharSkillList->GetHead();
+	else {
+		if (CharacterSkill->next != nullptr) CharacterSkill = CharacterSkill->next;
+	}
+	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
+		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->SwitchedSlotHighlight(CharacterSkill);
 	}
 }
 

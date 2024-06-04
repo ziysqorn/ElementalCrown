@@ -1,7 +1,9 @@
 #include "FireEnergy.h"
 
-FireEnergy::FireEnergy()
+FireEnergy::FireEnergy() : EjectSkill(TEXT("/Script/Paper2D.PaperSprite'/Game/Assets/Effect/Skill/FireEnergy/FireEnergyIcon.FireEnergyIcon'"))
 {
+	this->SKillName = "Fire Energy";
+	SkillElement = new Fire();
 }
 
 FireEnergy::~FireEnergy()

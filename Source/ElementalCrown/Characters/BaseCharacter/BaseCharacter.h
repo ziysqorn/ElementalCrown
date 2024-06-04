@@ -7,7 +7,6 @@
 #include "GameFramework/Controller.h"
 #include "Components/TimelineComponent.h"
 #include "PaperFlipbookComponent.h"
-#include "../../Skill/BaseSkill.h"
 #include "../../Constants/Constants.h"
 #include "../../Enums/Enums.h"
 #include "BaseCharacter.generated.h"

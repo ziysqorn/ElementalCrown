@@ -1,9 +1,11 @@
 #include "FireTornado.h"
 
-FireTornadoSkill::FireTornadoSkill()
+FireTornadoSkill::FireTornadoSkill() : EjectSkill(TEXT("/Script/Paper2D.PaperSprite'/Game/Assets/Effect/Skill/FireTornado/FireTonardoIcon.FireTonardoIcon'"))
 {
+	this->SKillName = "Fire Tornado";
 	StunTime = 3.00f;
 	SkillDamage = 4;
+	SkillElement = new Fire();
 }
 
 void FireTornadoSkill::PerformSkill()

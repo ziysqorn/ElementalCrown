@@ -15,6 +15,7 @@
 #include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\PaperZDAnimSequence.h"
 #include "../../Effects/Smoke/RunSmoke/RunSmoke.h"
 #include "../../Skill/ExplodeSkill/VolcanicFire/VolcanicFire.h"
+#include "../../Skill/EjectSkill/FireEnergy/FireEnergy.h"
 #include "../../DataStructs/CustomLinkedList.h"
 #include "../../Interface/BaseCharacterInterface.h"
 #include "TimerManager.h"
@@ -36,6 +37,11 @@ protected:
 	CustomNode<BaseSkill>* CharacterSkill = nullptr;
 	std::shared_ptr<CustomLinkedList<Elemental>> CharElementalList;
 	std::shared_ptr<CustomLinkedList<BaseSkill>> CharSkillList;
+	std::shared_ptr<CustomLinkedList<BaseSkill>> FireSkillList;
+	std::shared_ptr<CustomLinkedList<BaseSkill>> WaterSkillList;
+	std::shared_ptr<CustomLinkedList<BaseSkill>> EarthSkillList;
+	std::shared_ptr<CustomLinkedList<BaseSkill>> MetalSkillList;
+	std::shared_ptr<CustomLinkedList<BaseSkill>> PlantSkillList;
 protected:
 	//Spring Arm and Camera Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spring Arm")
@@ -68,6 +74,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_ChangeElement = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_ChangeSkill = nullptr;
 
 	//Input mapping context
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputMapping")
@@ -148,6 +157,7 @@ public:
 	}
 	
 	std::shared_ptr<CustomLinkedList<Elemental>> GetElementalList() { return CharElementalList; }
+	std::shared_ptr<CustomLinkedList<BaseSkill>> GetSkillList() { return CharSkillList; }
 
 	//Actions
 	virtual void Move(const FInputActionValue& value);
@@ -163,6 +173,7 @@ public:
 	virtual void Shoot();
 	void UseSkill();
 	void ChangeElement();
+	void ChangeSkill();
 	void SheatheSword() {
 		isSwordSheathed = true;
 	}

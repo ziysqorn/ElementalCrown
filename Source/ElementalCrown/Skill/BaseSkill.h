@@ -3,16 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PaperSprite.h"
+#include "PaperZDAnimInstance.h"
+#include "../Characters/BaseCharacter/BaseCharacter.h"
 #include "../GameplayElemental/Elemental.h"
 
 class Elemental;
 class ELEMENTALCROWN_API BaseSkill
 {
 protected:
+	//Skill name
+	FName SKillName;
 	//Skill cooldown time
 	float CooldownTime;
 	//This skill's owner
-	class ABaseCharacter* OwningCharacter = nullptr;
+	ABaseCharacter* OwningCharacter = nullptr;
 	//This skill's element
 	Elemental* SkillElement = nullptr;
 	//Return true if this skill can be used
@@ -24,10 +29,14 @@ protected:
 
 	//*********************TIMER HANDLE**************************
 	FTimerHandle RefreshSkillHandle;
+
+	//*********************SKILL SPRITE**************************
+	UPaperSprite* SkillSprite = nullptr;
 	
 public:	
 	// Sets default values for this actor's properties
 	BaseSkill();
+	BaseSkill(const TCHAR* Ref);
 	virtual ~BaseSkill();
 	//Set this skill's owner;
 	void SetOwningCharacter(ABaseCharacter* Character) {
@@ -43,6 +52,12 @@ public:
 	}
 	int GetSkillDamage() {
 		return this->SkillDamage;
+	}
+	UPaperSprite* GetSkillSprite() {
+		return SkillSprite;
+	}
+	FName GetName() {
+		return SKillName;
 	}
 	//******************** ACTION *******************************
 	//Perform this skill
