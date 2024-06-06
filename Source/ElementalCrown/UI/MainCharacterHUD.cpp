@@ -65,12 +65,30 @@ void UMainCharacterHUD::SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNod
 	}
 	int index = 0;
 	for (CustomNode<BaseSkill>* ptr = HUDSkillList->GetHead(); ptr != nullptr; ptr = ptr->next) {
-		if (ptr->GetValue()->GetName() == SwitchedNode->GetValue()->GetName()) {
+		if (ptr->GetValue() == SwitchedNode->GetValue()) {
 			if (USkillSlot* slot = Cast<USkillSlot>(SkillSlotBox->GetChildAt(index))) {
 				slot->ShowOutline();
 				break;
 			}
 		}
 		++index;
+	}
+}
+
+void UMainCharacterHUD::RefreshSkillSlots(std::shared_ptr<CustomLinkedList<BaseSkill>> skillList)
+{
+	HUDSkillList = skillList;
+	if (SkillSlotBox->HasAnyChildren()) {
+		SkillSlotBox->ClearChildren();
+		for (CustomNode<BaseSkill>* ptr = HUDSkillList->GetHead(); ptr != nullptr; ptr = ptr->next) {
+			if (this->SkillSlotSubClass) {
+				USkillSlot* skillSlot = CreateWidget<USkillSlot>(this, this->SkillSlotSubClass);
+				if (skillSlot) {
+					skillSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(ptr->GetValue()->GetSkillSprite()));
+					SkillSlotBox->AddChildToHorizontalBox(skillSlot);
+				}
+			}
+		}
+		SwitchedSlotHighlight(HUDSkillList->GetHead());
 	}
 }

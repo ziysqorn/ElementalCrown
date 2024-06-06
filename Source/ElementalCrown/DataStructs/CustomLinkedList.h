@@ -43,6 +43,7 @@ public:
 	}
 
 	CustomNode<GameplayType>* GetHead() { return pHead; }
+	void SetHead(CustomNode<GameplayType>* node) { pHead = node; }
 	CustomNode<GameplayType>* GetTail() { return pTail; }
 	int GetSize() { return size; }
 	void AddTail(CustomNode<GameplayType>* node) {

@@ -25,4 +25,20 @@ protected:
 public:
 	virtual void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
 	void SetSpawnProperty(UPaperZDAnimInstance* OwningInstance);
+	template<typename ActorClass>
+	void SpawnSkillActor(UPaperZDAnimInstance* OwningInstance) const;
 };
+
+template<typename ActorClass>
+inline void USpawnableSkillAnimNotify::SpawnSkillActor(UPaperZDAnimInstance* OwningInstance) const
+{
+	if (OwningInstance) {
+		if (OwningInstance->GetOwningActor()) {
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = BaseCharacter;
+				BaseCharacter->GetWorld()->SpawnActor<ActorClass>(ActorClass::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+			}
+		}
+	}
+}

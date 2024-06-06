@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "../../Skill/BaseSkill.h"
 #include "PaperFlipbookComponent.h"
+#include "PaperFlipbook.h"
 #include "SkillEffect.generated.h"
 
 UCLASS()

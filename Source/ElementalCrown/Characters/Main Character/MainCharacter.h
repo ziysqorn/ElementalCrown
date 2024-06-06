@@ -16,6 +16,7 @@
 #include "../../Effects/Smoke/RunSmoke/RunSmoke.h"
 #include "../../Skill/ExplodeSkill/VolcanicFire/VolcanicFire.h"
 #include "../../Skill/EjectSkill/FireEnergy/FireEnergy.h"
+#include "../../Skill/EjectSkill/AquaSphere/AquaSphere.h"
 #include "../../DataStructs/CustomLinkedList.h"
 #include "../../Interface/BaseCharacterInterface.h"
 #include "TimerManager.h"

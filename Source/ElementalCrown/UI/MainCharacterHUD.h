@@ -31,7 +31,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Slot SubClass")
 	TSubclassOf<USkillSlot> SkillSlotSubClass;
 	UHorizontalBox* GetElementalSlotBox() { return ElementalSlotBox; }
+	UHorizontalBox* GetSkillSlotBox() { return SkillSlotBox; }
 	void SetupHUD();
 	void SwitchedSlotHighlight(CustomNode<Elemental>* SwitchedNode);
 	void SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNode);
+	void RefreshSkillSlots(std::shared_ptr<CustomLinkedList<BaseSkill>> skillList);
 };

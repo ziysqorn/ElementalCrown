@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "FireEnergySkillAnimNotify.h"
+#include "AquaSphereSkillAnimNotify.h"
 
-void UFireEnergySkillAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const
+void UAquaSphereSkillAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const
 {
 	USpawnableSkillAnimNotify::OnReceiveNotify_Implementation(OwningInstance);
 	/*if (OwningInstance) {
@@ -11,9 +11,9 @@ void UFireEnergySkillAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInst
 			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
 				FActorSpawnParameters SpawnParams;
 				SpawnParams.Owner = BaseCharacter;
-				BaseCharacter->GetWorld()->SpawnActor<AFireEnergyProjectile>(AFireEnergyProjectile::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+				BaseCharacter->GetWorld()->SpawnActor<AAquaSphereProjectile>(AAquaSphereProjectile::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 			}
 		}
 	}*/
-	SpawnSkillActor<AFireEnergyProjectile>(OwningInstance);
+	SpawnSkillActor<AAquaSphereProjectile>(OwningInstance);
 }

@@ -29,10 +29,6 @@ ASkillEffect::ASkillEffect(const TCHAR* Ref)
 
 ASkillEffect::~ASkillEffect()
 {
-	if (OwningSkill) {
-		delete OwningSkill;
-		OwningSkill = nullptr;
-	}
 }
 
 // Called when the game starts or when spawned

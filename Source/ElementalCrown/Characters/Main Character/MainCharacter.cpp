@@ -22,11 +22,14 @@ AMainCharacter::AMainCharacter()
 	this->OnActorBeginOverlap.AddDynamic(this, &AMainCharacter::BeginOverlap);
 
 	CharElementalList = std::make_shared<CustomLinkedList<Elemental>>();
-	CharSkillList = std::make_shared<CustomLinkedList<BaseSkill>>();
-	CharElementalList->AddTail(new CustomNode<Elemental>(new Fire(this)));
-	CharElementalList->AddTail(new CustomNode<Elemental>(new Water(this)));
-	CharSkillList->AddTail(new CustomNode<BaseSkill>(new VolcanicFire()));
-	CharSkillList->AddTail(new CustomNode<BaseSkill>(new FireEnergy()));
+	FireSkillList = std::make_shared<CustomLinkedList<BaseSkill>>();
+	WaterSkillList = std::make_shared<CustomLinkedList<BaseSkill>>();
+	CharElementalList->AddTail(new CustomNode<Elemental>(new Fire()));
+	CharElementalList->AddTail(new CustomNode<Elemental>(new Water()));
+	FireSkillList->AddTail(new CustomNode<BaseSkill>(new VolcanicFire()));
+	FireSkillList->AddTail(new CustomNode<BaseSkill>(new FireEnergy()));
+	WaterSkillList->AddTail(new CustomNode<BaseSkill>(new AquaSphere()));
+	CharSkillList = FireSkillList;
 	CharacterElement = CharElementalList->GetHead();
 	CharacterSkill = CharSkillList->GetHead();
 }
@@ -306,8 +309,18 @@ void AMainCharacter::ChangeElement()
 	else {
 		if (CharacterElement->next != nullptr) CharacterElement = CharacterElement->next;
 	}
+	if (CharacterElement->GetValue()->GetName().IsEqual("Fire")) CharSkillList = FireSkillList;
+	else if (CharacterElement->GetValue()->GetName().IsEqual("Water")) CharSkillList = WaterSkillList;
+	else if (CharacterElement->GetValue()->GetName().IsEqual("Earth")) CharSkillList = EarthSkillList;
+	else if (CharacterElement->GetValue()->GetName().IsEqual("Metal")) CharSkillList = MetalSkillList;
+	else if (CharacterElement->GetValue()->GetName().IsEqual("Plant")) CharSkillList = PlantSkillList;
+	CharacterSkill = CharSkillList->GetHead();
 	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->SwitchedSlotHighlight(CharacterElement);
+		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) 
+		{
+			MainHUD->SwitchedSlotHighlight(CharacterElement);
+			MainHUD->RefreshSkillSlots(CharSkillList);
+		}
 	}
 }
 
