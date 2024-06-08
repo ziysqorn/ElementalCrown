@@ -33,14 +33,21 @@ void ASkillProjectile::BeginPlay()
 	}
 }
 
-void ASkillProjectile::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+void ASkillProjectile::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	if (Other != this->GetOwner()) {
+	if (OtherActor && this->GetOwner() && OtherActor != this->GetOwner()) {
 		if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
-				TSubclassOf<UDamageType> DamageType;
-				UGameplayStatics::ApplyDamage(Other, OwningCharacter->CalculatedDamage(5), OwningCharacter->GetController(), OwningCharacter, DamageType);
+			TSubclassOf<UDamageType> DamageType;
+			UGameplayStatics::ApplyDamage(OtherActor, SkillDamage, OwningCharacter->GetController(), this, DamageType);
 		}
 		this->SpawnExplosion();
 		this->Destroy();
 	}
 }
+
+void ASkillProjectile::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	this->SpawnExplosion();
+	this->Destroy();
+}
+

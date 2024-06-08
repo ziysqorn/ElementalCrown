@@ -4,7 +4,6 @@ FireTornadoSkill::FireTornadoSkill() : EjectSkill(TEXT("/Script/Paper2D.PaperSpr
 {
 	this->SKillName = "Fire Tornado";
 	StunTime = 3.00f;
-	SkillDamage = 4;
 	SkillElement = new Fire();
 }
 

@@ -19,5 +19,6 @@ public:
 	AAquaSphereProjectile();
 	void BeginPlay() override;
 	void SpawnExplosion() override;
-	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+	UFUNCTION()
+	void SetLoopAtRightPos();
 };

@@ -6,7 +6,7 @@
 AVolcanicFireExplode::AVolcanicFireExplode() : ASkillExplode(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Explosion/VolcanicFireExplosion/Effect_Skill_VolcanicFireExplosion.Effect_Skill_VolcanicFireExplosion'"))
 {
 	this->OnActorBeginOverlap.AddDynamic(this, &AVolcanicFireExplode::BeginOverlap);
-	OwningSkill = new VolcanicFire();
+	EffectElement = new Fire();
 }
 
 void AVolcanicFireExplode::BeginPlay()
@@ -20,16 +20,7 @@ void AVolcanicFireExplode::BeginPlay()
 
 void AVolcanicFireExplode::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Yes sirrr"));
-	if (this->GetOwner()) {
-		if (OtherActor != this->GetOwner()) {
-			if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
-					TSubclassOf<UDamageType> DamageType;
-					UGameplayStatics::ApplyDamage(OtherActor, OwningCharacter->CalculatedDamage(OwningSkill->GetSkillDamage()), OwningCharacter->GetController(), this, DamageType);
-					if (APaperZDCharacter* OverlappedCharacter = Cast<APaperZDCharacter>(OtherActor)) {
-						OverlappedCharacter->LaunchCharacter(FVector(0, 0, 300), false, false);
-					}
-			}
-		}
-	}
+	ASkillExplode::BeginOverlap(OverlappedActor, OtherActor);
+	if (APaperZDCharacter* OverlappedCharacter = Cast<APaperZDCharacter>(OtherActor)) 
+		OverlappedCharacter->LaunchCharacter(FVector(0, 0, 300), false, false);
 }

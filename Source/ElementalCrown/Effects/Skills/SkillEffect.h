@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../../Skill/BaseSkill.h"
+#include "Kismet/GameplayStatics.h"
 #include "PaperFlipbookComponent.h"
 #include "PaperFlipbook.h"
 #include "SkillEffect.generated.h"
@@ -14,11 +15,12 @@ class ELEMENTALCROWN_API ASkillEffect : public AActor
 {
 	GENERATED_BODY()
 protected:
+	float SkillDamage{ 2.00f };
+
 	UPaperFlipbookComponent* FlipbookComponent = nullptr;
 	UPaperFlipbook* Flipbook = nullptr;
 
-	//The skill this effect belongs to
-	BaseSkill* OwningSkill = nullptr;
+	Elemental* EffectElement = nullptr;
 
 	//********************* TIMER HANDLES **************************
 	FTimerHandle DestroyHandle;
@@ -32,5 +34,4 @@ public:
 	//Event On actor begin overlap
 	UFUNCTION()
 	virtual void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor) {};
-	virtual void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override {};
 };

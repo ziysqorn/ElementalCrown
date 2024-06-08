@@ -29,6 +29,10 @@ ASkillEffect::ASkillEffect(const TCHAR* Ref)
 
 ASkillEffect::~ASkillEffect()
 {
+	if (EffectElement) {
+		delete EffectElement;
+		EffectElement = nullptr;
+	}
 }
 
 // Called when the game starts or when spawned

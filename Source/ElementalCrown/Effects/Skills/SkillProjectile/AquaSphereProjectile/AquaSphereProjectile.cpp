@@ -9,8 +9,10 @@ AAquaSphereProjectile::AAquaSphereProjectile() : ASkillProjectile(TEXT("/Script/
 		ProjectileMovement->InitialSpeed = 500;
 		ProjectileMovement->MaxSpeed = 500;
 	}
-	OwningSkill = new AquaSphere();
+	EffectElement = new Water();
+	FlipbookComponent->SetLooping(false);
 	this->OnActorBeginOverlap.AddDynamic(this, &AAquaSphereProjectile::BeginOverlap);
+	FlipbookComponent->OnFinishedPlaying.AddDynamic(this, &AAquaSphereProjectile::SetLoopAtRightPos);
 }
 
 void AAquaSphereProjectile::BeginPlay()
@@ -27,14 +29,8 @@ void AAquaSphereProjectile::SpawnExplosion()
 	GetWorld()->SpawnActor<AAquaSphereExplode>(AAquaSphereExplode::StaticClass(), this->GetActorLocation(), SpawnRotation, SpawnParams);
 }
 
-void AAquaSphereProjectile::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void AAquaSphereProjectile::SetLoopAtRightPos()
 {
-	if (OtherActor && OtherActor != this->GetOwner()) {
-		if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
-			TSubclassOf<UDamageType> DamageType;
-			UGameplayStatics::ApplyDamage(OtherActor, OwningCharacter->CalculatedDamage(OwningSkill->GetSkillDamage()), OwningCharacter->GetController(), this, DamageType);
-		}
-		this->SpawnExplosion();
-		this->Destroy();
-	}
+	FlipbookComponent->SetPlaybackPositionInFrames(6, true);
+	FlipbookComponent->Play();
 }

@@ -12,5 +12,4 @@ public:
 	AFireEnergyProjectile();
 	void BeginPlay() override;
 	void SpawnExplosion() override;
-	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 };

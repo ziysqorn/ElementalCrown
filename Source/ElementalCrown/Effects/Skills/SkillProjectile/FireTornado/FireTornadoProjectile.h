@@ -17,5 +17,4 @@ class ELEMENTALCROWN_API AFireTornadoProjectile : public ASkillProjectile
 public:
 	AFireTornadoProjectile();
 	void BeginPlay() override;
-	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor) override;
 };

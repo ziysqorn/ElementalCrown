@@ -16,4 +16,5 @@ class ELEMENTALCROWN_API AAquaSphereExplode : public AExplode
 	
 public:
 	AAquaSphereExplode();
+	void BeginPlay() override;
 };

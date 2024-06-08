@@ -18,14 +18,11 @@ protected:
 	float CooldownTime;
 	//This skill's owner
 	ABaseCharacter* OwningCharacter = nullptr;
-	//This skill's element
 	Elemental* SkillElement = nullptr;
 	//Return true if this skill can be used
 	bool isAvailable{ true };
 
 	float StunTime{ 0.00f };
-
-	int SkillDamage{ 2 };
 
 	//*********************TIMER HANDLE**************************
 	FTimerHandle RefreshSkillHandle;
@@ -49,9 +46,6 @@ public:
 	}
 	float GetStunTime() {
 		return this->StunTime;
-	}
-	int GetSkillDamage() {
-		return this->SkillDamage;
 	}
 	UPaperSprite* GetSkillSprite() {
 		return SkillSprite;

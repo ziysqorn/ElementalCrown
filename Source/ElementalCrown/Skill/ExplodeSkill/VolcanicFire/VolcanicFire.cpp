@@ -4,7 +4,6 @@ VolcanicFire::VolcanicFire() : ExplodeSkill(TEXT("/Script/Paper2D.PaperSprite'/G
 {
 	this->SKillName = "Volcanic Fire";
 	StunTime = 3.00f;
-	SkillDamage = 5;
 	SkillElement = new Fire();
 }
 

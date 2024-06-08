@@ -7,14 +7,12 @@ ExplodeSkill::ExplodeSkill()
 {
 	CooldownTime = 7.00f;
 	SpawnDistanceX = 50.00f;
-	SkillDamage = 5;
 }
 
 ExplodeSkill::ExplodeSkill(const TCHAR* Ref) : BaseSkill(Ref)
 {
 	CooldownTime = 7.00f;
 	SpawnDistanceX = 50.00f;
-	SkillDamage = 5;
 }
 
 ExplodeSkill::~ExplodeSkill()

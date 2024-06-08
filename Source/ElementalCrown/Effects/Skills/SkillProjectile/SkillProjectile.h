@@ -6,7 +6,6 @@
 #include "../SkillEffect.h"
 #include "PaperFlipbookComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Kismet/GameplayStatics.h"
 #include "../../../Characters/BaseCharacter/BaseCharacter.h"
 #include "../../Explode/Explode.h"
 #include "../../../Interface/BaseCharacterInterface.h"
@@ -16,6 +15,7 @@ UCLASS()
 class ELEMENTALCROWN_API ASkillProjectile : public ASkillEffect
 {
 	GENERATED_BODY()
+
 protected:
 	//Projectile movement component
 	UProjectileMovementComponent* ProjectileMovement = nullptr;
@@ -29,6 +29,6 @@ public:
 	virtual void SpawnExplosion() {};
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	//Event begin hit
+	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor) override;
 	void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
 };

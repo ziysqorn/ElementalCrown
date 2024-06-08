@@ -18,3 +18,13 @@ void ASkillExplode::BeginPlay()
 	Super::BeginPlay();
 	
 }
+
+void ASkillExplode::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+{
+	if (OtherActor && this->GetOwner() && OtherActor != this->GetOwner()) {
+		if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
+			TSubclassOf<UDamageType> DamageType;
+			UGameplayStatics::ApplyDamage(OtherActor, SkillDamage, OwningCharacter->GetController(), this, DamageType);
+		}
+	}
+}
