@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/HorizontalBox.h"
+#include "Components/GridPanel.h"
+#include "Components/VerticalBox.h"
 #include "Elemental/ElementalSlot.h"
 #include "Skill/SkillSlot.h"
 #include "../Characters/Main Character/MainCharacter.h"
@@ -24,15 +26,22 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UHorizontalBox* ElementalSlotBox = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
-	UHorizontalBox* SkillSlotBox = nullptr;
+	UVerticalBox* VerBox_SkillSlotBox = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
+	UTextBlock* Txt_Coin = nullptr;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elemental Slot SubClass")
 	TSubclassOf<UElementalSlot> ElementalSlotSubClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Slot SubClass")
 	TSubclassOf<USkillSlot> SkillSlotSubClass;
 	UHorizontalBox* GetElementalSlotBox() { return ElementalSlotBox; }
-	UHorizontalBox* GetSkillSlotBox() { return SkillSlotBox; }
+	UVerticalBox* GetSkillSlotBox() { return VerBox_SkillSlotBox; }
 	void SetupHUD();
+	void SetupElementalSlotBox(std::shared_ptr<CustomLinkedList<Elemental>> list);
+	void SetupSkillSlotBox(std::shared_ptr<CustomLinkedList<BaseSkill>> list);
+	void SetCoinText(FText inText) {
+		Txt_Coin->SetText(inText);
+	};
 	void SwitchedSlotHighlight(CustomNode<Elemental>* SwitchedNode);
 	void SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNode);
 	void RefreshSkillSlots(std::shared_ptr<CustomLinkedList<BaseSkill>> skillList);

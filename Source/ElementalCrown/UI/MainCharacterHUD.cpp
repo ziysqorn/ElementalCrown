@@ -9,27 +9,45 @@ void UMainCharacterHUD::SetupHUD()
 		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwningPlayer()->GetPawn())) {
 			HUDElementalList = MainCharacter->GetElementalList();
 			HUDSkillList = MainCharacter->GetSkillList();
-			for (CustomNode<Elemental>* ptr = HUDElementalList->GetHead(); ptr != nullptr; ptr = ptr->next) {
-				if (this->ElementalSlotSubClass) {
-					UElementalSlot* elementalSlot = CreateWidget<UElementalSlot>(this, this->ElementalSlotSubClass);
-					if (elementalSlot) {
-						elementalSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(elementalSlot->GetElementalSprite(ptr->GetValue()->GetName())));
-						ElementalSlotBox->AddChildToHorizontalBox(elementalSlot);
-					}
-				}
-			}
-			for (CustomNode<BaseSkill>* ptr = HUDSkillList->GetHead(); ptr != nullptr; ptr = ptr->next) {
-				if (this->SkillSlotSubClass) {
-					USkillSlot* skillSlot = CreateWidget<USkillSlot>(this, this->SkillSlotSubClass);
-					if (skillSlot) {
-						skillSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(ptr->GetValue()->GetSkillSprite()));
-						SkillSlotBox->AddChildToHorizontalBox(skillSlot);
-					}
-				}
+			SetupElementalSlotBox(HUDElementalList);
+			SetupSkillSlotBox(HUDSkillList);
+			SetCoinText(FText::FromString(FString::FromInt(0)));
+		}
+	}
+}
+
+void UMainCharacterHUD::SetupElementalSlotBox(std::shared_ptr<CustomLinkedList<Elemental>> list)
+{
+	if (this->ElementalSlotSubClass) {
+		for (CustomNode<Elemental>* ptr = list->GetHead(); ptr != nullptr; ptr = ptr->next) {
+			UElementalSlot* elementalSlot = CreateWidget<UElementalSlot>(this, this->ElementalSlotSubClass);
+			if (elementalSlot) {
+				elementalSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(elementalSlot->GetElementalSprite(ptr->GetValue()->GetName())));
+				ElementalSlotBox->AddChildToHorizontalBox(elementalSlot);
 			}
 		}
 	}
 }
+
+void UMainCharacterHUD::SetupSkillSlotBox(std::shared_ptr<CustomLinkedList<BaseSkill>> list)
+{
+	if (this->SkillSlotSubClass) {
+		for (CustomNode<BaseSkill>* ptr = list->GetHead(); ptr != nullptr; ptr = ptr->next) {
+			USkillSlot* skillSlot = CreateWidget<USkillSlot>(this, this->SkillSlotSubClass);
+			if (skillSlot) {
+				FText SkillName = FText::FromString(ptr->GetValue()->GetName().ToString());
+				skillSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(ptr->GetValue()->GetSkillSprite()));
+				skillSlot->SetSkillNameText(SkillName);
+				if (ptr != HUDSkillList->GetHead()) {
+					FMargin SlotMargin(0.0f, 5.0f, 0.0f, 0.0f);
+					skillSlot->SetPadding(SlotMargin);
+				}
+				VerBox_SkillSlotBox->AddChildToVerticalBox(skillSlot);
+			}
+		}
+	}
+}
+
 
 void UMainCharacterHUD::SwitchedSlotHighlight(CustomNode<Elemental>* SwitchedNode)
 {
@@ -55,7 +73,7 @@ void UMainCharacterHUD::SwitchedSlotHighlight(CustomNode<Elemental>* SwitchedNod
 
 void UMainCharacterHUD::SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNode)
 {
-	TArray<UWidget*> slotArr = SkillSlotBox->GetAllChildren();
+	TArray<UWidget*> slotArr = VerBox_SkillSlotBox->GetAllChildren();
 	if (slotArr.Num() > 0) {
 		for (int i = 0; i < slotArr.Num(); ++i) {
 			if (USkillSlot* skillSlot = Cast<USkillSlot>(slotArr[i])) {
@@ -66,7 +84,7 @@ void UMainCharacterHUD::SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNod
 	int index = 0;
 	for (CustomNode<BaseSkill>* ptr = HUDSkillList->GetHead(); ptr != nullptr; ptr = ptr->next) {
 		if (ptr->GetValue() == SwitchedNode->GetValue()) {
-			if (USkillSlot* slot = Cast<USkillSlot>(SkillSlotBox->GetChildAt(index))) {
+			if (USkillSlot* slot = Cast<USkillSlot>(VerBox_SkillSlotBox->GetChildAt(index))) {
 				slot->ShowOutline();
 				break;
 			}
@@ -78,17 +96,9 @@ void UMainCharacterHUD::SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNod
 void UMainCharacterHUD::RefreshSkillSlots(std::shared_ptr<CustomLinkedList<BaseSkill>> skillList)
 {
 	HUDSkillList = skillList;
-	if (SkillSlotBox->HasAnyChildren()) {
-		SkillSlotBox->ClearChildren();
-		for (CustomNode<BaseSkill>* ptr = HUDSkillList->GetHead(); ptr != nullptr; ptr = ptr->next) {
-			if (this->SkillSlotSubClass) {
-				USkillSlot* skillSlot = CreateWidget<USkillSlot>(this, this->SkillSlotSubClass);
-				if (skillSlot) {
-					skillSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(ptr->GetValue()->GetSkillSprite()));
-					SkillSlotBox->AddChildToHorizontalBox(skillSlot);
-				}
-			}
-		}
+	if (VerBox_SkillSlotBox->HasAnyChildren()) {
+		VerBox_SkillSlotBox->ClearChildren();
+		SetupSkillSlotBox(HUDSkillList);
 		SwitchedSlotHighlight(HUDSkillList->GetHead());
 	}
 }

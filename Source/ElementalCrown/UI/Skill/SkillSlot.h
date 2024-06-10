@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/Image.h"
 #include "Components/Border.h"
+#include "Components/TextBlock.h"
 #include "PaperSprite.h"
 #include "PaperFlipbook.h"
 #include "SkillSlot.generated.h"
@@ -24,6 +25,8 @@ protected:
 	UBorder* SkillOutline = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
 	UImage* SkillIcon = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
+	UTextBlock* SkillName = nullptr;
 public:
 	UImage* GetIcon() { return SkillIcon; }
 	void ShowOutline() {
@@ -31,5 +34,8 @@ public:
 	}
 	void HideOutline() {
 		if (SkillOutline) SkillOutline->SetVisibility(ESlateVisibility::Hidden);
+	}
+	void SetSkillNameText(FText inText) {
+		SkillName->SetText(inText);
 	}
 };
