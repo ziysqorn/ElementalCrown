@@ -7,6 +7,7 @@
 #include "Components/HorizontalBox.h"
 #include "Components/GridPanel.h"
 #include "Components/VerticalBox.h"
+#include "Components/ProgressBar.h"
 #include "Elemental/ElementalSlot.h"
 #include "Skill/SkillSlot.h"
 #include "../Characters/Main Character/MainCharacter.h"
@@ -29,6 +30,10 @@ protected:
 	UVerticalBox* VerBox_SkillSlotBox = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UTextBlock* Txt_Coin = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
+	UProgressBar* ProgBar_HPBar = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
+	UProgressBar* ProgBar_ManaBar = nullptr;
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elemental Slot SubClass")
 	TSubclassOf<UElementalSlot> ElementalSlotSubClass;
@@ -42,6 +47,12 @@ public:
 	void SetCoinText(FText inText) {
 		Txt_Coin->SetText(inText);
 	};
+	void SetHPBar(float inPercent) {
+		ProgBar_HPBar->SetPercent(inPercent);
+	}
+	void SetManaBar(float inPercent) {
+		ProgBar_ManaBar->SetPercent(inPercent);
+	}
 	void SwitchedSlotHighlight(CustomNode<Elemental>* SwitchedNode);
 	void SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNode);
 	void RefreshSkillSlots(std::shared_ptr<CustomLinkedList<BaseSkill>> skillList);

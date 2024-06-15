@@ -16,6 +16,8 @@ protected:
 	FName SKillName;
 	//Skill cooldown time
 	float CooldownTime;
+	//Mana consumption
+	int ManaConsumption{3};
 	//This skill's owner
 	ABaseCharacter* OwningCharacter = nullptr;
 	Elemental* SkillElement = nullptr;
@@ -52,6 +54,9 @@ public:
 	}
 	FName GetName() {
 		return SKillName;
+	}
+	int GetManaConsumption() {
+		return ManaConsumption;
 	}
 	//******************** ACTION *******************************
 	//Perform this skill

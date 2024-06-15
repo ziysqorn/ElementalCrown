@@ -7,6 +7,7 @@ ExplodeSkill::ExplodeSkill()
 {
 	CooldownTime = 7.00f;
 	SpawnDistanceX = 50.00f;
+	ManaConsumption = 5;
 }
 
 ExplodeSkill::ExplodeSkill(const TCHAR* Ref) : BaseSkill(Ref)

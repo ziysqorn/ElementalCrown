@@ -40,7 +40,8 @@ AMainCharacter::~AMainCharacter()
 
 void AMainCharacter::BeginPlay()
 {
-	Super::BeginPlay();
+
+	ABaseCharacter::BeginPlay();
 
 	//Setup mapping context
 	SetupMappingContext();
@@ -55,7 +56,7 @@ void AMainCharacter::BeginPlay()
 
 void AMainCharacter::Tick(float DeltaSeconds)
 {
-	Super::Tick(DeltaSeconds);
+	ABaseCharacter::Tick(DeltaSeconds);
 }
 
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -386,34 +387,5 @@ void AMainCharacter::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 	if (this->GetVelocity().Z < 0) {
 		if (this->CurrentState == CharacterState::ATTACK) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Slash down"));
 	}
-}
-
-float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
-{
-	if (CurrentState != CharacterState::HURT && CurrentState != CharacterState::DEATH)
-	{
-		if (CurrentHealth > 0) {
-			CurrentHealth -= (int)DamageAmount;
-			if (CurrentHealth <= 0) {
-				CurrentState = CharacterState::DEATH;
-				GetWorldTimerManager().ClearAllTimersForObject(this);
-				if (DeathSequence) {
-					GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
-						this->Destroy();
-						}), DeathSequence->GetTotalDuration() + 1.50f, false);
-				}
-			}
-			else {
-				CurrentState = CharacterState::HURT;
-				if (HurtSequence) {
-					GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {
-						if (this->CurrentState == CharacterState::HURT)
-							this->CurrentState = CharacterState::NONE;
-						}), HurtSequence->GetTotalDuration(), false);
-				}
-			}
-		}
-	}
-	return 0.0f;
 }
 

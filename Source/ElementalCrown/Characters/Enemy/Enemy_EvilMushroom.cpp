@@ -20,6 +20,16 @@ AEnemy_EvilMushroom::~AEnemy_EvilMushroom()
 	}
 }
 
+void AEnemy_EvilMushroom::BeginPlay()
+{
+	ABaseEnemyCharacter::BeginPlay();
+	if (UUserWidget* widget = EnemyHealthBar->GetUserWidgetObject()) {
+		if (UEnemyHealthBar* healthBar = Cast<UEnemyHealthBar>(widget)) {
+			healthBar->SetDelegateForHealthBar(this, FName("GetHealthPercentage"));
+		}
+	}
+}
+
 void AEnemy_EvilMushroom::Tick(float DeltaSeconds)
 {
 	ABaseEnemyCharacter::Tick(DeltaSeconds);

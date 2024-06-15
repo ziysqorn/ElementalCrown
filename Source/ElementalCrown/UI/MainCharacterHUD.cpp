@@ -12,6 +12,8 @@ void UMainCharacterHUD::SetupHUD()
 			SetupElementalSlotBox(HUDElementalList);
 			SetupSkillSlotBox(HUDSkillList);
 			SetCoinText(FText::FromString(FString::FromInt(0)));
+			ProgBar_HPBar->PercentDelegate.BindUFunction(MainCharacter, FName("GetHealthPercentage"));
+			ProgBar_ManaBar->PercentDelegate.BindUFunction(MainCharacter, FName("GetManaPercentage"));
 		}
 	}
 }

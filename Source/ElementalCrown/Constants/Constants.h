@@ -7,6 +7,7 @@ namespace Constants {
 	const float CrouchSpeed{ 200.00f };
 	const float RunSpeed{ 600.00f };
 	const int Default_Character_MaxHealth{ 100 };
+	const int Default_Character_MaxMana{ 20 };
 	const int Default_Character_ATKDamage{ 5 };
 	const int Default_Character_Resist{ 2 };
 	const float Default_Character_AttackSpeed{ 1.50f };

@@ -5,11 +5,13 @@
 #include "CoreMinimal.h"
 #include "PaperZDCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Components/WidgetComponent.h"
 #include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\PaperZDAnimSequence.h"
 #include "../BaseCharacter/BaseCharacter.h"
 #include "../../Effects/Explode/Explode.h"
 #include "../../GameplayElemental/Elemental.h"
 #include "../../Constants/Constants.h"
+#include "../../UI/EnemyHealthBar/EnemyHealthBar.h"
 #include "../../Interface/BaseCharacterInterface.h"
 #include "BaseEnemyCharacter.generated.h"
 
@@ -29,20 +31,13 @@ protected:
 	//Timer Handles
 	FTimerHandle TurnBackHandle;
 	FTimerHandle AttackRecoverHandle;
-	//Animation sequences
-	//Attack sequence
-	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
-	UPaperZDAnimSequence* AttackSequence = nullptr;
-	//Hurt sequence
-	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
-	UPaperZDAnimSequence* HurtSequence = nullptr;
-	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
-	UPaperZDAnimSequence* DeathSequence = nullptr;
 	//Size of the box that detects player
 	FVector PlayerDetectBox{ FVector(150, 0, 40) };
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character current state")
 	//Decide if character can attack
 	bool AttackRecovered{ true };
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy Health Bar")
+	UWidgetComponent* EnemyHealthBar = nullptr;
 public:
 	//************************************* CONSTRUCTOR *****************************************
 	ABaseEnemyCharacter();

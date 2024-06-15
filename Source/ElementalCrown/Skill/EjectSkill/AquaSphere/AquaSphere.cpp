@@ -12,9 +12,17 @@ AquaSphere::~AquaSphere()
 
 void AquaSphere::PerformSkill()
 {
-	if (isAvailable) {
-		EjectSkill::PerformSkill();
-		if (OwningCharacter) {
+	int OwnerMana = OwningCharacter->GetCurrentMana();
+	if (OwnerMana >= 0) {
+		if (OwningCharacter && abs(OwningCharacter->GetVelocity().Z) <= 0.001f && isAvailable && OwnerMana > 0) {
+			EjectSkill::PerformSkill();
+			OwningCharacter->GetAnimInstance()->JumpToNode(SKillName);
+			OwningCharacter->SetManaAfterConsume(ManaConsumption);
+		}
+	}
+	else {
+		if (OwningCharacter && abs(OwningCharacter->GetVelocity().Z) <= 0.001f && isAvailable) {
+			EjectSkill::PerformSkill();
 			OwningCharacter->GetAnimInstance()->JumpToNode(SKillName);
 		}
 	}

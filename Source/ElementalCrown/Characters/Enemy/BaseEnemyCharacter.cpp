@@ -7,8 +7,15 @@ ABaseEnemyCharacter::ABaseEnemyCharacter()
 {
 	//Stats setup
 	DeStun = Default_Enemy_DeStun;
+	MaxMana = -1;
+	CurrentMana = MaxMana;
 	//CharacterMovement setup
 	GetCharacterMovement()->MaxWalkSpeed = BaseEnemySpeed;
+	//
+	EnemyHealthBar = CreateDefaultSubobject<UWidgetComponent>("Health Bar");
+	EnemyHealthBar->SetupAttachment(RootComponent);
+	EnemyHealthBar->SetWidgetSpace(EWidgetSpace::Screen);
+	EnemyHealthBar->SetDrawAtDesiredSize(true);
 }
 
 ABaseEnemyCharacter::~ABaseEnemyCharacter()
@@ -57,6 +64,16 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 						this->SetActorRotation(CharacterRotation);
 					}
 				}), HurtSequence->GetTotalDuration(), false);
+			}
+		}
+		if (StatsPopoutSubclass) {
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			if (AStatsPopout* stats = GetWorld()->SpawnActor<AStatsPopout>(StatsPopoutSubclass, this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
+				if (UStatsPopoutUI* statsUI = stats->GetStatsPopoutUI()) {
+					FText inText = FText::FromString(FString::FromInt((int)DamageAmount));
+					statsUI->SetText(inText);
+				}
 			}
 		}
 	}

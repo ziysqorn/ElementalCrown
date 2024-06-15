@@ -7,8 +7,10 @@
 #include "GameFramework/Controller.h"
 #include "Components/TimelineComponent.h"
 #include "PaperFlipbookComponent.h"
+#include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\PaperZDAnimSequence.h"
 #include "../../Constants/Constants.h"
 #include "../../Enums/Enums.h"
+#include "../../Effects/StatsPopout/StatsPopout.h"
 #include "BaseCharacter.generated.h"
 
 /**
@@ -23,18 +25,32 @@ class ELEMENTALCROWN_API ABaseCharacter : public APaperZDCharacter
 protected:
 	//Character's base stats
 	int MaxHealth{ Default_Character_MaxHealth };
+	int MaxMana{ Default_Character_MaxMana };
 	int ATK_Damage{ Default_Character_ATKDamage };
 	int Resist{ Default_Character_Resist };
 	uint8 DeStun{ Default_Character_DeStun };
 	//Character's gameplay temporary stats
 	int CurrentHealth{ MaxHealth };
+	int CurrentMana{ MaxMana };
+	//Animation sequences
+	//Attack sequence
+	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
+	UPaperZDAnimSequence* AttackSequence = nullptr;
+	//Hurt sequence
+	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
+	UPaperZDAnimSequence* HurtSequence = nullptr;
+	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
+	UPaperZDAnimSequence* DeathSequence = nullptr;
 	//Character's Current State
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character Current State")
 	CharacterState CurrentState = CharacterState::NONE;
 
 	//Flash when damaged curve float
-	UPROPERTY(EditDefaultsOnly, Category = "DamagedFlash | FlashCurveFloat")
+	UPROPERTY(EditDefaultsOnly, Category = "CurveFloats | FlashCurveFloat")
 	UCurveFloat* FlashCurveFloat = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Stats pop out subclass")
+	TSubclassOf<AStatsPopout> StatsPopoutSubclass;
 
 	FTimerHandle HurtHandle;
 	FTimerHandle DeathHandle;
@@ -43,10 +59,29 @@ protected:
 
 	//Flash when damaged timeline
 	FTimeline FlashTimeline;
+
 public:
 	void BeginPlay() override;
 	void Tick(float DeltaSeconds) override;
-
+	//Event taking damage
+	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	float GetMaxHealth() {
+		return (float)MaxHealth;
+	}
+	float GetCurrentHealth() {
+		return (float)CurrentHealth;
+	}
+	int GetCurrentMana() {
+		return CurrentMana;
+	}
+	UFUNCTION()
+	float GetHealthPercentage() const {
+		return (float)CurrentHealth / MaxHealth;
+	}
+	UFUNCTION()
+	float GetManaPercentage() {
+		return (float)CurrentMana / MaxMana;
+	}
 	//Set character's current state
 	void SetCharacterState(const CharacterState&& State) {
 		this->CurrentState = State;
@@ -111,5 +146,9 @@ public:
 			return ATK_Damage + Buff;
 		}
 		return 0;
+	}
+	void SetManaAfterConsume(const int& Amount) {
+		CurrentMana -= Amount;
+		CurrentMana < 0 ? this->CurrentMana = 0 : this->CurrentMana = this->CurrentMana;
 	}
 };

@@ -12,7 +12,6 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "PaperFlipbookComponent.h"
-#include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\PaperZDAnimSequence.h"
 #include "../../Effects/Smoke/RunSmoke/RunSmoke.h"
 #include "../../Skill/ExplodeSkill/VolcanicFire/VolcanicFire.h"
 #include "../../Skill/EjectSkill/FireEnergy/FireEnergy.h"
@@ -109,13 +108,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Slide")
 	UPaperZDAnimSequence* Sliding = nullptr;
 
-	//Hurt sequence
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation Sequences|Hurt")
-	UPaperZDAnimSequence* HurtSequence = nullptr;
-	//Death sequence
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Animation Sequences|Death")
-	UPaperZDAnimSequence* DeathSequence = nullptr;
-
 	//Timer Handle
 	FTimerHandle ComboHandle;
 	FTimerHandle SheatheSwordHandle;
@@ -200,6 +192,4 @@ public:
 	//Event begin overlap
 	UFUNCTION()
 	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
-	//Event taking damage
-	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 };
