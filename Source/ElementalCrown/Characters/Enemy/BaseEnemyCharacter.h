@@ -32,7 +32,9 @@ protected:
 	FTimerHandle TurnBackHandle;
 	FTimerHandle AttackRecoverHandle;
 	//Size of the box that detects player
-	FVector PlayerDetectBox{ FVector(150, 0, 40) };
+	FVector PlayerDetectBox = FVector(150, 0, 40);
+	//Size of the box that detects wall
+	FVector WallDetectBox = FVector(20, 0, 40);
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character current state")
 	//Decide if character can attack
 	bool AttackRecovered{ true };

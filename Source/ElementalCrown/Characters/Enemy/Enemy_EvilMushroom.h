@@ -16,10 +16,6 @@ class ELEMENTALCROWN_API AEnemy_EvilMushroom : public ABaseEnemyCharacter
 public:
 	//************************************* CONSTRUCTOR *****************************************
 	AEnemy_EvilMushroom();
-	~AEnemy_EvilMushroom();
 	//************************************* EVENTS **********************************************************
-	void BeginPlay() override;
-	//Event Tick
-	void Tick(float DeltaSeconds) override;
 	//************************************* ACTIONS *********************************************************
 };

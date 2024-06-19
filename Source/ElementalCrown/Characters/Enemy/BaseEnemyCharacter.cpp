@@ -11,29 +11,39 @@ ABaseEnemyCharacter::ABaseEnemyCharacter()
 	CurrentMana = MaxMana;
 	//CharacterMovement setup
 	GetCharacterMovement()->MaxWalkSpeed = BaseEnemySpeed;
-	//
+	//Setup enemy health bar component
 	EnemyHealthBar = CreateDefaultSubobject<UWidgetComponent>("Health Bar");
 	EnemyHealthBar->SetupAttachment(RootComponent);
 	EnemyHealthBar->SetWidgetSpace(EWidgetSpace::Screen);
 	EnemyHealthBar->SetDrawAtDesiredSize(true);
+	//
+	
 }
 
 ABaseEnemyCharacter::~ABaseEnemyCharacter()
 {
+	if (ElementalType) {
+		delete ElementalType;
+		ElementalType = nullptr;
+	}
 }
 
 void ABaseEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	ABaseCharacter::BeginPlay();
+	if (UUserWidget* widget = EnemyHealthBar->GetUserWidgetObject()) {
+		if (UEnemyHealthBar* healthBar = Cast<UEnemyHealthBar>(widget)) {
+			healthBar->SetDelegateForHealthBar(this, FName("GetHealthPercentage"));
+		}
+	}
 }
 
 void ABaseEnemyCharacter::Tick(float DeltaSeconds)
 {
 	ABaseCharacter::Tick(DeltaSeconds);
-	if (!DetectingPlayer() && !DetectingWall()) {
-		this->Move();
-	}
+	if (!DetectingPlayer() && !DetectingWall()) this->Move();
+	else if (DetectingPlayer()) this->Attack();
 }
 
 float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -132,10 +142,9 @@ bool ABaseEnemyCharacter::DetectingPlayer()
 bool ABaseEnemyCharacter::DetectingWall()
 {
 	FHitResult WallDetectResult;
-	FVector WallDetectBoxExtent(20, 0, 40);
 	FVector BoxPosition(20 * GetSprite()->GetForwardVector().X, 0, 0);
-	bool WallDetected{ GetWorld()->SweepSingleByObjectType(WallDetectResult, this->GetActorLocation() + BoxPosition, this->GetActorLocation() + BoxPosition, FQuat(0, 0, 0, 0), FCollisionObjectQueryParams::AllStaticObjects, FCollisionShape::MakeBox(WallDetectBoxExtent)) };
-	DrawDebugBox(GetWorld(), this->GetActorLocation() + BoxPosition, WallDetectBoxExtent, FColor::Red);
+	bool WallDetected{ GetWorld()->SweepSingleByObjectType(WallDetectResult, this->GetActorLocation() + BoxPosition, this->GetActorLocation() + BoxPosition, FQuat(0, 0, 0, 0), FCollisionObjectQueryParams::AllStaticObjects, FCollisionShape::MakeBox(WallDetectBox)) };
+	DrawDebugBox(GetWorld(), this->GetActorLocation() + BoxPosition, WallDetectBox, FColor::Red);
 	if (WallDetected) {
 		FRotator CharacterRotation = (WallDetectResult.Location.X > this->GetActorLocation().X) ? FRotator(0, 180, 0) : FRotator(0, 0, 0);
 		if (!GetWorldTimerManager().IsTimerActive(TurnBackHandle)) {

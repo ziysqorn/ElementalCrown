@@ -12,29 +12,4 @@ AEnemy_EvilMushroom::AEnemy_EvilMushroom()
 	ElementalType = new Plant();
 }
 
-AEnemy_EvilMushroom::~AEnemy_EvilMushroom()
-{
-	if (ElementalType) {
-		delete ElementalType;
-		ElementalType = nullptr;
-	}
-}
-
-void AEnemy_EvilMushroom::BeginPlay()
-{
-	ABaseEnemyCharacter::BeginPlay();
-	if (UUserWidget* widget = EnemyHealthBar->GetUserWidgetObject()) {
-		if (UEnemyHealthBar* healthBar = Cast<UEnemyHealthBar>(widget)) {
-			healthBar->SetDelegateForHealthBar(this, FName("GetHealthPercentage"));
-		}
-	}
-}
-
-void AEnemy_EvilMushroom::Tick(float DeltaSeconds)
-{
-	ABaseEnemyCharacter::Tick(DeltaSeconds);
-	if (DetectingPlayer()) {
-		this->Attack();
-	}
-}
 
