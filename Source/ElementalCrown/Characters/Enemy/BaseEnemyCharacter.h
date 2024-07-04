@@ -3,16 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PaperZDCharacter.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Components/WidgetComponent.h"
-#include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\PaperZDAnimSequence.h"
 #include "../BaseCharacter/BaseCharacter.h"
-#include "../../Effects/Explode/Explode.h"
-#include "../../GameplayElemental/Elemental.h"
-#include "../../Constants/Constants.h"
 #include "../../UI/EnemyHealthBar/EnemyHealthBar.h"
-#include "../../Interface/BaseCharacterInterface.h"
 #include "BaseEnemyCharacter.generated.h"
 
 /**
@@ -20,13 +12,12 @@
  */
 using namespace Constants;
 UCLASS()
-class ELEMENTALCROWN_API ABaseEnemyCharacter : public ABaseCharacter, public IBaseCharacterInterface
+class ELEMENTALCROWN_API ABaseEnemyCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
 protected:
 	float AttackSpeed{ Default_Character_AttackSpeed };
-	Elemental *ElementalType = nullptr;
 protected:
 	//Timer Handles
 	FTimerHandle TurnBackHandle;

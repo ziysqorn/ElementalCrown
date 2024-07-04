@@ -3,11 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "../../Skill/BaseSkill.h"
-#include "Kismet/GameplayStatics.h"
-#include "PaperFlipbookComponent.h"
-#include "PaperFlipbook.h"
+#include "../../ProjectIncludes.h"
+#include "../../GameplayElemental/Elemental.h"
 #include "SkillEffect.generated.h"
 
 UCLASS()

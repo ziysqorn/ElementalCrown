@@ -3,8 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "Components/ProgressBar.h"
+#include "../../ProjectIncludes.h"
 #include "EnemyHealthBar.generated.h"
 
 /**

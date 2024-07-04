@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Components/TimelineComponent.h"
-#include "Components/WidgetComponent.h"
+#include "../../ProjectIncludes.h"
 #include "../../UI/StatsPopoutUI/StatsPopoutUI.h"
 #include "StatsPopout.generated.h"
 

@@ -9,7 +9,7 @@ AEnemy_EvilMushroom::AEnemy_EvilMushroom()
 	MaxHealth = Default_Character_MaxHealth - 50;
 	CurrentHealth = MaxHealth;
 	//Set character's element
-	ElementalType = new Plant();
+	CharacterElement = new CustomNode<Elemental>(new Plant());
 }
 
 

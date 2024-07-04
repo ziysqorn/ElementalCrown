@@ -3,12 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PaperSprite.h"
-#include "PaperZDAnimInstance.h"
+#include "../ProjectIncludes.h"
 #include "../Characters/BaseCharacter/BaseCharacter.h"
-#include "../GameplayElemental/Elemental.h"
 
-class Elemental;
+
 class ELEMENTALCROWN_API BaseSkill
 {
 protected:

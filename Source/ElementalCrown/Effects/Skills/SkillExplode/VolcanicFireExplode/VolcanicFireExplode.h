@@ -3,10 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../../../../Characters/BaseCharacter/BaseCharacter.h"
 #include "../SkillExplode.h"
-#include "../../../../Skill/ExplodeSkill/VolcanicFire/VolcanicFire.h"
-#include "Kismet/GameplayStatics.h"
 #include "VolcanicFireExplode.generated.h"
 
 /**

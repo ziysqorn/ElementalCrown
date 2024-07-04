@@ -16,5 +16,4 @@ class ELEMENTALCROWN_API UAttack2AnimNotify : public UAttackAnimNotify
 	
 public:
 	UAttack2AnimNotify();
-	void SetBuff() override;
 };

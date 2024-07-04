@@ -3,10 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/PlayerController.h"
-#include "PaperSprite.h"
 #include "../UI/MainCharacterHUD.h"
-#include "../GameplayElemental/Elemental.h"
 #include "MainController.generated.h"
 
 /**

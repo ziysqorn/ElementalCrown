@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "../SkillProjectile.h"
 #include "../../../Explode/AquaSphereExplode/AquaSphereExplode.h"
-#include "../../../../Skill/EjectSkill/AquaSphere/AquaSphere.h"
 #include "AquaSphereProjectile.generated.h"
 
 /**

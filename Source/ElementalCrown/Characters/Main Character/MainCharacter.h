@@ -3,24 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PaperZDCharacter.h"
 #include "../BaseCharacter/BaseCharacter.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
-#include "GameFramework/SpringArmComponent.h"
-#include "Components/CapsuleComponent.h"
-#include "Camera/CameraComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "PaperFlipbookComponent.h"
+#include "../../Skill/BaseSkill.h"
 #include "../../Effects/Smoke/RunSmoke/RunSmoke.h"
-#include "../../Skill/ExplodeSkill/VolcanicFire/VolcanicFire.h"
-#include "../../Skill/EjectSkill/FireEnergy/FireEnergy.h"
-#include "../../Skill/EjectSkill/AquaSphere/AquaSphere.h"
-#include "../../DataStructs/CustomLinkedList.h"
-#include "../../Interface/BaseCharacterInterface.h"
-#include "TimerManager.h"
-#include "../../Constants/Constants.h"
-#include "../../Enums/Enums.h"
+#include "../../SkillsIncludes.h"
 #include "MainCharacter.generated.h"
 
 /**
@@ -29,19 +15,18 @@
 
 using namespace Constants;
 UCLASS() 
-class ELEMENTALCROWN_API AMainCharacter : public ABaseCharacter, public IBaseCharacterInterface
+class ELEMENTALCROWN_API AMainCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 protected:
-	CustomNode<Elemental>* CharacterElement = nullptr;
 	CustomNode<BaseSkill>* CharacterSkill = nullptr;
-	std::shared_ptr<CustomLinkedList<Elemental>> CharElementalList;
-	std::shared_ptr<CustomLinkedList<BaseSkill>> CharSkillList;
-	std::shared_ptr<CustomLinkedList<BaseSkill>> FireSkillList;
-	std::shared_ptr<CustomLinkedList<BaseSkill>> WaterSkillList;
-	std::shared_ptr<CustomLinkedList<BaseSkill>> EarthSkillList;
-	std::shared_ptr<CustomLinkedList<BaseSkill>> MetalSkillList;
-	std::shared_ptr<CustomLinkedList<BaseSkill>> PlantSkillList;
+	TSharedPtr<CustomLinkedList<Elemental>> CharElementalList;
+	TSharedPtr<CustomLinkedList<BaseSkill>> CharSkillList;
+	TSharedPtr<CustomLinkedList<BaseSkill>> FireSkillList;
+	TSharedPtr<CustomLinkedList<BaseSkill>> WaterSkillList;
+	TSharedPtr<CustomLinkedList<BaseSkill>> EarthSkillList;
+	TSharedPtr<CustomLinkedList<BaseSkill>> MetalSkillList;
+	TSharedPtr<CustomLinkedList<BaseSkill>> PlantSkillList;
 protected:
 	//Spring Arm and Camera Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spring Arm")
@@ -149,8 +134,8 @@ public:
 		return ATK_Damage;
 	}
 	
-	std::shared_ptr<CustomLinkedList<Elemental>> GetElementalList() { return CharElementalList; }
-	std::shared_ptr<CustomLinkedList<BaseSkill>> GetSkillList() { return CharSkillList; }
+	TSharedPtr<CustomLinkedList<Elemental>> GetElementalList() { return CharElementalList; }
+	TSharedPtr<CustomLinkedList<BaseSkill>> GetSkillList() { return CharSkillList; }
 
 	//Actions
 	virtual void Move(const FInputActionValue& value);

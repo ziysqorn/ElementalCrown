@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../MainCharacter/SpawnableSkillAnimNotify.h"
+#include "SpawnableSkillAnimNotify.h"
 #include "../../Effects/Skills/SkillProjectile/FireEnergyProjectile/FireEnergyProjectile.h"
 #include "FireEnergySkillAnimNotify.generated.h"
 

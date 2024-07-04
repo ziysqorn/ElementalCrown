@@ -3,11 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Notifies/PaperZDAnimNotify.h"
-#include "PaperZDAnimInstance.h"
-#include "../../Interface/BaseCharacterInterface.h"
-#include "Kismet/GameplayStatics.h"
-#include "../../Characters/Main Character/MainCharacter.h"
+#include "../../ProjectIncludes.h"
+#include "../../Characters/BaseCharacter/BaseCharacter.h"
 #include "../../Effects/Impact/AttackImpact/BloodSlashImpact.h"
 #include "../../Effects/Impact/AttackImpact/NoBloodSlashImpact.h"
 #include "AttackAnimNotify.generated.h"
@@ -32,6 +29,8 @@ protected:
 public:
 	UAttackAnimNotify();
 	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
-	virtual void SetBuff() {};
+	virtual void SetBuff(const int& inBuff) {
+		this->Buff = inBuff;
+	}
 	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const;
 };

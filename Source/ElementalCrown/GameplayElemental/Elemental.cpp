@@ -2,6 +2,7 @@
 
 
 #include "Elemental.h"
+#include "../Characters/BaseCharacter/BaseCharacter.h"
 
 Elemental::Elemental()
 {
@@ -36,6 +37,22 @@ void Fire::ElementBuff()
 void Fire::SwitchElementDebuff()
 {
 	if (OwningCharacter) OwningCharacter->SetATKDamageByBuff(-this->Buff);
+}
+
+void Fire::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
+{
+	TSharedPtr<CustomLinkedList<BaseStatusEffect>> CurEffectList = AffectedCharacter->GetStatusList();
+	CustomNode<BaseStatusEffect>* prev = nullptr;
+	for (CustomNode<BaseStatusEffect>* ptr = CurEffectList->GetHead(); ptr != nullptr; ptr = ptr->next) {
+		if (BaseStatusEffect* value = ptr->GetValue()) {
+			if (value->GetStatusName().IsEqual("Burn")) return;
+		}
+	}
+	BaseStatusEffect* newStatus = new BurnStatus();
+	CurEffectList->AddTail(new CustomNode<BaseStatusEffect>(newStatus));
+	newStatus->SetOwningCharacter(OwningCharacter);
+	newStatus->SetAffectedCharacter(AffectedCharacter);
+	newStatus->ExecuteStatus();
 }
 
 Water::Water()

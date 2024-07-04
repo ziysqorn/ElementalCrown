@@ -5,10 +5,6 @@
 
 UAttack2AnimNotify::UAttack2AnimNotify()
 {
-	this->SetBuff();
+	this->SetBuff(1);
 }
 
-void UAttack2AnimNotify::SetBuff()
-{
-	this->Buff = 1;
-}

@@ -3,12 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "Components/Image.h"
-#include "Components/Border.h"
-#include "Components/TextBlock.h"
-#include "PaperSprite.h"
-#include "PaperFlipbook.h"
+#include "../../ProjectIncludes.h"
 #include "SkillSlot.generated.h"
 
 /**

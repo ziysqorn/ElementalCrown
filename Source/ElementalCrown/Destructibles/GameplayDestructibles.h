@@ -3,12 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "../Interface/GameplayInterface.h"
-#include "../Effects/Impact/AttackImpact/AttackImpact.h"
-#include "PaperSprite.h"
-#include "PaperSpriteComponent.h"
-#include "Components/TimelineComponent.h"
+#include "../ProjectIncludes.h"
 #include "GameplayDestructibles.generated.h"
 
 UCLASS()

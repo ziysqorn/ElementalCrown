@@ -10,7 +10,7 @@ AEnemy_MetalKnight::AEnemy_MetalKnight()
 	CurrentHealth = MaxHealth;
 	GetCharacterMovement()->MaxWalkSpeed = 100.0f;
 	//Set character's element
-	ElementalType = new Metal();
+	CharacterElement = new CustomNode<Elemental>(new Metal());
 	//
 	PlayerDetectBox = FVector(150, 0, 50);
 	WallDetectBox = FVector(20, 0, 50);

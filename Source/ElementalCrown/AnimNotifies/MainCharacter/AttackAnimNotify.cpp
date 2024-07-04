@@ -6,7 +6,7 @@
 
 UAttackAnimNotify::UAttackAnimNotify()
 {
-	this->SetBuff();
+	this->SetBuff(0);
 }
 
 void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const
@@ -25,6 +25,10 @@ void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* Own
 					TSubclassOf<UDamageType> DamageType;
 					this->SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
 					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(this->Buff), Character->GetController(), Character, DamageType);
+					if (ABaseCharacter* AffectedCharacter = Cast<ABaseCharacter>(Result.GetActor())) {
+						Elemental* CharacterElemental = Character->GetCharacterElemental();
+						CharacterElemental->ApplyStatusEffect(AffectedCharacter);
+					}
 				}
 			}
 		}

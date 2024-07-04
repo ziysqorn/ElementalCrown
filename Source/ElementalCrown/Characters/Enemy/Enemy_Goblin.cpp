@@ -9,7 +9,7 @@ AEnemy_Goblin::AEnemy_Goblin()
 	MaxHealth = Default_Character_MaxHealth - 50;
 	CurrentHealth = MaxHealth;
 	//Set character's element
-	ElementalType = new Metal();
+	CharacterElement = new CustomNode<Elemental>(new Metal());
 	//
 	WallDetectBox = FVector(20, 0, 37);
 }

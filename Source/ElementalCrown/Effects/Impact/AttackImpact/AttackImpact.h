@@ -3,11 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "PaperFlipbookComponent.h"
-#include "../../../Characters/Main Character/MainCharacter.h"
-#include "TimerManager.h"
-#include "PaperFlipbook.h"
+#include "../../../ProjectIncludes.h"
 #include "AttackImpact.generated.h"
 
 UCLASS()

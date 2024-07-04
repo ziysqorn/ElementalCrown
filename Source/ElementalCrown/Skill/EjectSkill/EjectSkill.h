@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "../BaseSkill.h"
-#include "../../Effects/Skills/SkillProjectile/SkillProjectile.h"
 
 /**
  * 

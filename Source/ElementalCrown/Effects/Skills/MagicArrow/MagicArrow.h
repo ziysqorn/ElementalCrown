@@ -3,14 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "PaperFlipbookComponent.h"
-#include "../../../Interface/GameplayInterface.h"
-#include "Kismet/GameplayStatics.h"
+#include "../../../ProjectIncludes.h"
 #include "../../Explode/FireArrowExplode/FireArrowExplode.h"
-#include "../../../Characters/Main Character/MainCharacter.h"
-#include "GameFramework/ProjectileMovementComponent.h"
-#include "TimerManager.h"
+#include "../../../Characters/BaseCharacter/BaseCharacter.h"
 #include "MagicArrow.generated.h"
 
 UCLASS()

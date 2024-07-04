@@ -1,8 +1,8 @@
 #pragma once
 
+#include "CoreMinimal.h"
 #include "../SkillProjectile.h"
 #include "../../../Explode/FireSlashWaveExplode/FireSlashWaveExplode.h"
-#include "../../../../Skill/EjectSkill/FireSlashWaveSkill/FireSlashWaveSkill.h"
 #include "FireSlashWave.generated.h"
 
 UCLASS()

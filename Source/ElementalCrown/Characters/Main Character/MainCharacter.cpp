@@ -21,11 +21,11 @@ AMainCharacter::AMainCharacter()
 	//Add Delegates
 	this->OnActorBeginOverlap.AddDynamic(this, &AMainCharacter::BeginOverlap);
 
-	CharElementalList = std::make_shared<CustomLinkedList<Elemental>>();
-	FireSkillList = std::make_shared<CustomLinkedList<BaseSkill>>();
-	WaterSkillList = std::make_shared<CustomLinkedList<BaseSkill>>();
-	CharElementalList->AddTail(new CustomNode<Elemental>(new Fire()));
-	CharElementalList->AddTail(new CustomNode<Elemental>(new Water()));
+	CharElementalList = MakeShared<CustomLinkedList<Elemental>>();
+	FireSkillList = MakeShared<CustomLinkedList<BaseSkill>>();
+	WaterSkillList = MakeShared<CustomLinkedList<BaseSkill>>();
+	CharElementalList->AddTail(new CustomNode<Elemental>(new Fire(this)));
+	CharElementalList->AddTail(new CustomNode<Elemental>(new Water(this)));
 	FireSkillList->AddTail(new CustomNode<BaseSkill>(new VolcanicFire()));
 	FireSkillList->AddTail(new CustomNode<BaseSkill>(new FireEnergy()));
 	WaterSkillList->AddTail(new CustomNode<BaseSkill>(new AquaSphere()));

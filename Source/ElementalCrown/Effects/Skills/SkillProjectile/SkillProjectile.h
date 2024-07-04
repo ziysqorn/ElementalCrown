@@ -4,11 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../SkillEffect.h"
-#include "PaperFlipbookComponent.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 #include "../../../Characters/BaseCharacter/BaseCharacter.h"
-#include "../../Explode/Explode.h"
-#include "../../../Interface/BaseCharacterInterface.h"
 #include "SkillProjectile.generated.h"
 
 UCLASS()

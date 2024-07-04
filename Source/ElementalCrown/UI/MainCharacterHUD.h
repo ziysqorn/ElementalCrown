@@ -3,13 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Blueprint/UserWidget.h"
-#include "Components/HorizontalBox.h"
-#include "Components/GridPanel.h"
-#include "Components/VerticalBox.h"
-#include "Components/ProgressBar.h"
-#include "Elemental/ElementalSlot.h"
-#include "Skill/SkillSlot.h"
+#include "../ProjectIncludes.h"
+#include "../DataStructs/CustomLinkedList.h"
+#include "../GameplayElemental/Elemental.h"
+#include "../Skill/BaseSkill.h"
+#include "../UI/Elemental/ElementalSlot.h"
+#include "../UI/Skill/SkillSlot.h"
 #include "../Characters/Main Character/MainCharacter.h"
 #include "MainCharacterHUD.generated.h"
 
@@ -22,8 +21,8 @@ class ELEMENTALCROWN_API UMainCharacterHUD : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
-	std::shared_ptr<CustomLinkedList<Elemental>> HUDElementalList;
-	std::shared_ptr<CustomLinkedList<BaseSkill>> HUDSkillList;
+	TSharedPtr<CustomLinkedList<Elemental>> HUDElementalList;
+	TSharedPtr<CustomLinkedList<BaseSkill>> HUDSkillList;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UHorizontalBox* ElementalSlotBox = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
@@ -42,8 +41,8 @@ public:
 	UHorizontalBox* GetElementalSlotBox() { return ElementalSlotBox; }
 	UVerticalBox* GetSkillSlotBox() { return VerBox_SkillSlotBox; }
 	void SetupHUD();
-	void SetupElementalSlotBox(std::shared_ptr<CustomLinkedList<Elemental>> list);
-	void SetupSkillSlotBox(std::shared_ptr<CustomLinkedList<BaseSkill>> list);
+	void SetupElementalSlotBox(TSharedPtr<CustomLinkedList<Elemental>> list);
+	void SetupSkillSlotBox(TSharedPtr<CustomLinkedList<BaseSkill>> list);
 	void SetCoinText(FText inText) {
 		Txt_Coin->SetText(inText);
 	};
@@ -55,5 +54,5 @@ public:
 	}
 	void SwitchedSlotHighlight(CustomNode<Elemental>* SwitchedNode);
 	void SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNode);
-	void RefreshSkillSlots(std::shared_ptr<CustomLinkedList<BaseSkill>> skillList);
+	void RefreshSkillSlots(TSharedPtr<CustomLinkedList<BaseSkill>> skillList);
 };

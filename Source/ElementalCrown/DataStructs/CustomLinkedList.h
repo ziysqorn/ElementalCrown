@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "memory"
-#include "../GameplayElemental/Elemental.h"
+#include "../ProjectIncludes.h"
 
 /**
  * 
@@ -63,6 +63,34 @@ public:
 			pHead = current->next;
 			delete current;
 			current = pHead;
+		}
+	}
+	void RemoveNodeByNode(CustomNode<GameplayType>* node) {
+		CustomNode<GameplayType>* prev = nullptr;
+		for (CustomNode<GameplayType>* ptr = pHead; ptr != nullptr; ptr = ptr->next) {
+			if (ptr == node) {
+				if (ptr == pHead) pHead = pHead->next;
+				else prev->next = ptr->next;
+				delete ptr;
+				ptr = nullptr;
+				--size;
+				return;
+			}
+			prev = ptr;
+		}
+	}
+	void RemoveNodeByValue(GameplayType* Value) {
+		CustomNode<GameplayType>* prev = nullptr;
+		for (CustomNode<GameplayType>* ptr = pHead; ptr != nullptr; ptr = ptr->next) {
+			if (ptr->GetValue() == Value) {
+				if (ptr == pHead) pHead = pHead->next;
+				else prev->next = ptr->next;
+				delete ptr;
+				ptr = nullptr;
+				--size;
+				return;
+			}
+			prev = ptr;
 		}
 	}
 	void RemoveTail() {

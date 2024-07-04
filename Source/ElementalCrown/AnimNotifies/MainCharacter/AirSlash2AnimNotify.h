@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AttackAnimNotify.h"
 #include "Attack2AnimNotify.h"
 #include "AirSlash2AnimNotify.generated.h"
 

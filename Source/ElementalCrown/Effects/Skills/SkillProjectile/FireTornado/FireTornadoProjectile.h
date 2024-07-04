@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "../SkillProjectile.h"
-#include "../../../../Skill/EjectSkill/FireTornado/FireTornado.h"
 #include "FireTornadoProjectile.generated.h"
 
 /**

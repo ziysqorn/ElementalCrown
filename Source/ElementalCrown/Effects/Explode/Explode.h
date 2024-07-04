@@ -3,9 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "PaperFlipbookComponent.h"
-#include "PaperFlipbook.h"
+#include "../../ProjectIncludes.h"
 #include "Explode.generated.h"
 
 UCLASS()

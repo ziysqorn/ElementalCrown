@@ -3,10 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "PaperFlipbookComponent.h"
-#include "PaperFlipbook.h"
-#include "TimerManager.h"
+#include "../../ProjectIncludes.h"
 #include "Smoke.generated.h"
 
 UCLASS()

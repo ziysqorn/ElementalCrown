@@ -3,11 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Notifies/PaperZDAnimNotifyState.h"
-#include "PaperZDAnimInstance.h"
-#include "../../Interface/BaseCharacterInterface.h"
-#include "../../Characters/Main Character/MainCharacter.h"
-#include "Kismet/GameplayStatics.h"
+#include "../../ProjectIncludes.h"
+#include "../../Characters/BaseCharacter/BaseCharacter.h"
 #include "../../Effects/Impact/AttackImpact/BloodSlashImpact.h"
 #include "../../Effects/Impact/AttackImpact/NoBloodSlashImpact.h"
 #include "AirSlash3EndAnimNotifyState.generated.h"
@@ -26,7 +23,9 @@ protected:
 	FVector BoxExtent;
 public:
 	UAirSlash3EndAnimNotifyState();
-	virtual void SetBuff();
+	virtual void SetBuff(const int& inBuff) {
+		this->Buff = inBuff;
+	}
 	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const;
 	//Events
 	void OnNotifyBegin_Implementation(UPaperZDAnimInstance* OwningInstance) const override;

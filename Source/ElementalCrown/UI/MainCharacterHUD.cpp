@@ -18,7 +18,7 @@ void UMainCharacterHUD::SetupHUD()
 	}
 }
 
-void UMainCharacterHUD::SetupElementalSlotBox(std::shared_ptr<CustomLinkedList<Elemental>> list)
+void UMainCharacterHUD::SetupElementalSlotBox(TSharedPtr<CustomLinkedList<Elemental>> list)
 {
 	if (this->ElementalSlotSubClass) {
 		for (CustomNode<Elemental>* ptr = list->GetHead(); ptr != nullptr; ptr = ptr->next) {
@@ -31,7 +31,7 @@ void UMainCharacterHUD::SetupElementalSlotBox(std::shared_ptr<CustomLinkedList<E
 	}
 }
 
-void UMainCharacterHUD::SetupSkillSlotBox(std::shared_ptr<CustomLinkedList<BaseSkill>> list)
+void UMainCharacterHUD::SetupSkillSlotBox(TSharedPtr<CustomLinkedList<BaseSkill>> list)
 {
 	if (this->SkillSlotSubClass) {
 		for (CustomNode<BaseSkill>* ptr = list->GetHead(); ptr != nullptr; ptr = ptr->next) {
@@ -95,7 +95,7 @@ void UMainCharacterHUD::SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNod
 	}
 }
 
-void UMainCharacterHUD::RefreshSkillSlots(std::shared_ptr<CustomLinkedList<BaseSkill>> skillList)
+void UMainCharacterHUD::RefreshSkillSlots(TSharedPtr<CustomLinkedList<BaseSkill>> skillList)
 {
 	HUDSkillList = skillList;
 	if (VerBox_SkillSlotBox->HasAnyChildren()) {

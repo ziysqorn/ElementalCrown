@@ -22,9 +22,9 @@ ABaseEnemyCharacter::ABaseEnemyCharacter()
 
 ABaseEnemyCharacter::~ABaseEnemyCharacter()
 {
-	if (ElementalType) {
-		delete ElementalType;
-		ElementalType = nullptr;
+	if (CharacterElement) {
+		delete CharacterElement;
+		CharacterElement = nullptr;
 	}
 }
 

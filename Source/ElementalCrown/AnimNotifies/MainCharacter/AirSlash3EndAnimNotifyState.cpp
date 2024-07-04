@@ -22,12 +22,7 @@ void UAirSlash3EndAnimNotifyState::SpawnImpact(APaperZDCharacter* Character, con
 
 UAirSlash3EndAnimNotifyState::UAirSlash3EndAnimNotifyState()
 {
-	this->SetBuff();
-}
-
-void UAirSlash3EndAnimNotifyState::SetBuff()
-{
-	this->Buff = 5;
+	this->SetBuff(5);
 }
 
 void UAirSlash3EndAnimNotifyState::OnNotifyBegin_Implementation(UPaperZDAnimInstance* OwningInstance) const
@@ -46,6 +41,10 @@ void UAirSlash3EndAnimNotifyState::OnNotifyBegin_Implementation(UPaperZDAnimInst
 					UAirSlash3EndAnimNotifyState::SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
 					TSubclassOf<UDamageType> DamageType;
 					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(Buff), Character->GetController(), Character, DamageType);
+					if (ABaseCharacter* AffectedCharacter = Cast<ABaseCharacter>(Result.GetActor())) {
+						Elemental* CharacterElemental = Character->GetCharacterElemental();
+						CharacterElemental->ApplyStatusEffect(AffectedCharacter);
+					}
 				}
 			}
 		}

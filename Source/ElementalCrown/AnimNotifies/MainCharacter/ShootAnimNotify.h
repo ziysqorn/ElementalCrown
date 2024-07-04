@@ -3,12 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Notifies/PaperZDAnimNotify.h"
-#include "PaperZDAnimInstance.h"
+#include "../../ProjectIncludes.h"
 #include "../../Effects/Skills/MagicArrow/FireArrow.h"
-#include "../../Characters/Main Character/MainCharacter.h"
-#include "PaperZDCharacter.h"
-#include "PaperFlipbookComponent.h"
 #include "ShootAnimNotify.generated.h"
 
 /**

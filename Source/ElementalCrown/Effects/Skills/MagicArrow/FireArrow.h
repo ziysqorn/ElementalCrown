@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../MagicArrow/MagicArrow.h"
+#include "MagicArrow.h"
 #include "FireArrow.generated.h"
 
 /**

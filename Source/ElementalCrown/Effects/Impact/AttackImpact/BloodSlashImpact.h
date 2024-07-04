@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../AttackImpact/AttackImpact.h"
+#include "AttackImpact.h"
 #include "BloodSlashImpact.generated.h"
 
 /**

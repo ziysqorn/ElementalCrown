@@ -3,10 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../MainCharacter/AttackAnimNotify.h"
+#include "AttackAnimNotify.h"
 #include "../../Characters/BaseCharacter/BaseCharacter.h"
-#include "TimerManager.h"
-#include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\Players\PaperZDAnimPlayer.h"
 #include "SpawnableSkillAnimNotify.generated.h"
 
 /**
@@ -25,20 +23,17 @@ protected:
 public:
 	virtual void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
 	void SetSpawnProperty(UPaperZDAnimInstance* OwningInstance);
-	template<typename ActorClass>
-	void SpawnSkillActor(UPaperZDAnimInstance* OwningInstance) const;
-};
 
-template<typename ActorClass>
-inline void USpawnableSkillAnimNotify::SpawnSkillActor(UPaperZDAnimInstance* OwningInstance) const
-{
-	if (OwningInstance) {
-		if (OwningInstance->GetOwningActor()) {
-			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
-				FActorSpawnParameters SpawnParams;
-				SpawnParams.Owner = BaseCharacter;
-				BaseCharacter->GetWorld()->SpawnActor<ActorClass>(ActorClass::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+	template<typename ActorClass>
+	void SpawnSkillActor(UPaperZDAnimInstance* OwningInstance) const {
+		if (OwningInstance) {
+			if (OwningInstance->GetOwningActor()) {
+				if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
+					FActorSpawnParameters SpawnParams;
+					SpawnParams.Owner = BaseCharacter;
+					BaseCharacter->GetWorld()->SpawnActor<ActorClass>(ActorClass::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+				}
 			}
 		}
-	}
-}
+	};
+};

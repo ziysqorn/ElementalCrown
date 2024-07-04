@@ -3,6 +3,11 @@
 
 #include "BaseCharacter.h"
 
+ABaseCharacter::ABaseCharacter()
+{
+	StatusList = MakeShared<CustomLinkedList<BaseStatusEffect>>();
+}
+
 void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();

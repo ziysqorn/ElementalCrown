@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Destructibles/GameplayDestructibles.h"
+#include "GameplayDestructibles.h"
 #include "Barrel.generated.h"
 
 /**

@@ -2,13 +2,16 @@
 
 #pragma once
 
-#include "../Characters/BaseCharacter/BaseCharacter.h"
 #include "CoreMinimal.h"
+#include "../ProjectIncludes.h"
+#include "../StatusEffect/BurnStatus.h"
 
 /**
  * 
  */
-class ABaseCharacter;
+
+class BaseCharacter;
+
 class ELEMENTALCROWN_API Elemental
 {
 protected:
@@ -44,6 +47,7 @@ public:
 	virtual void ElementBuff() {};
 	//Debuff character after switching to other element
 	virtual void SwitchElementDebuff() {};
+	virtual void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) {}
 	FName GetName() { return ElementalName; }
 
 };
@@ -58,6 +62,7 @@ public:
 	}
 	void ElementBuff() override;
 	void SwitchElementDebuff() override;
+	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) override;
 };
 class Water :public Elemental {
 public:

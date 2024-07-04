@@ -2,7 +2,6 @@
 
 
 #include "VolcanicFireSlashAnimNotify.h"
-#include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\Players\PaperZDAnimPlayer.h"
 
 void UVolcanicFireSlashAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const
 {

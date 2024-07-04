@@ -3,13 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PaperZDCharacter.h"
-#include "GameFramework/Controller.h"
-#include "Components/TimelineComponent.h"
-#include "PaperFlipbookComponent.h"
-#include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\PaperZDAnimSequence.h"
-#include "../../Constants/Constants.h"
-#include "../../Enums/Enums.h"
+#include "../../ProjectIncludes.h"
+#include "../../DataStructs/CustomLinkedList.h"
+#include "../../GameplayElemental/Elemental.h"
+#include "../../StatusEffect/BaseStatusEffect.h"
 #include "../../Effects/StatsPopout/StatsPopout.h"
 #include "BaseCharacter.generated.h"
 
@@ -17,12 +14,14 @@
  * 
  */
 using namespace Constants;
-class BaseSkill;
+
 UCLASS()
 class ELEMENTALCROWN_API ABaseCharacter : public APaperZDCharacter
 {
 	GENERATED_BODY()
 protected:
+	CustomNode<Elemental>* CharacterElement = nullptr;
+	TSharedPtr<CustomLinkedList<BaseStatusEffect>> StatusList;
 	//Character's base stats
 	int MaxHealth{ Default_Character_MaxHealth };
 	int MaxMana{ Default_Character_MaxMana };
@@ -61,6 +60,7 @@ protected:
 	FTimeline FlashTimeline;
 
 public:
+	ABaseCharacter();
 	void BeginPlay() override;
 	void Tick(float DeltaSeconds) override;
 	//Event taking damage
@@ -82,6 +82,10 @@ public:
 	float GetManaPercentage() {
 		return (float)CurrentMana / MaxMana;
 	}
+
+	Elemental* GetCharacterElemental() { return CharacterElement->GetValue(); }
+	TSharedPtr<CustomLinkedList<BaseStatusEffect>> GetStatusList() { return StatusList; }
+
 	//Set character's current state
 	void SetCharacterState(const CharacterState&& State) {
 		this->CurrentState = State;
