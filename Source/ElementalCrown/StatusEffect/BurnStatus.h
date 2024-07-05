@@ -15,7 +15,6 @@ protected:
 	int BurnDamage = 1;
 	float TimeBetweenEachBurn = 0.75f;
 	FTimerHandle EffectHandle;
-	FTimerHandle ChangeToEndFBookHandle;
 public:
 	BurnStatus();
 	~BurnStatus() override;

@@ -10,7 +10,7 @@ AEnemy_SwordSkeleton::AEnemy_SwordSkeleton()
 	CurrentHealth = MaxHealth;
 	GetCharacterMovement()->MaxWalkSpeed = 110.0f;
 	//Set character's element
-	CharacterElement = new CustomNode<Elemental>(new Metal());
+	CharacterElement = new CustomNode<Elemental>(new Metal(this));
 	//
 	PlayerDetectBox = FVector(150, 0, 40);
 	WallDetectBox = FVector(20, 0, 40);

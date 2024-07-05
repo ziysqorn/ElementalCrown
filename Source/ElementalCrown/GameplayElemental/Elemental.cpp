@@ -20,23 +20,11 @@ Elemental::~Elemental()
 Fire::Fire()
 {
 	ElementalName = "Fire";
-	this->Buff = 2;
 }
 
 Fire::Fire(ABaseCharacter* character) : Elemental(character)
 {
 	ElementalName = "Fire";
-	this->Buff = 2;
-}
-
-void Fire::ElementBuff()
-{
-	if(OwningCharacter) OwningCharacter->SetATKDamageByBuff(this->Buff);
-}
-
-void Fire::SwitchElementDebuff()
-{
-	if (OwningCharacter) OwningCharacter->SetATKDamageByBuff(-this->Buff);
 }
 
 void Fire::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
@@ -58,46 +46,27 @@ void Fire::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
 Water::Water()
 {
 	ElementalName = "Water";
-	this->Buff = 10;
 }
 
 Water::Water(ABaseCharacter* character) : Elemental(character)
 {
 	ElementalName = "Water";
-	this->Buff = 10;
 }
 
-void Water::ElementBuff()
+void Water::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
 {
-	if (OwningCharacter) OwningCharacter->SetMaxHealthByBuff(this->Buff);
-}
-
-void Water::SwitchElementDebuff()
-{
-	if (OwningCharacter) OwningCharacter->SetMaxHealthByBuff(-this->Buff);
 }
 
 Earth::Earth()
 {
 	ElementalName = "Earth";
-	this->Buff = 3;
 }
 
 Earth::Earth(ABaseCharacter* character) : Elemental(character)
 {
 	ElementalName = "Earth";
-	this->Buff = 3;
 }
 
-void Earth::ElementBuff()
-{
-	if (OwningCharacter) OwningCharacter->SetResistByBuff(this->Buff);
-}
-
-void Earth::SwitchElementDebuff()
-{
-	if (OwningCharacter) OwningCharacter->SetResistByBuff(-this->Buff);
-}
 
 Metal::Metal()
 {
@@ -109,12 +78,19 @@ Metal::Metal(ABaseCharacter* character) : Elemental(character)
 	ElementalName = "Metal";
 }
 
-void Metal::ElementBuff()
+void Metal::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
 {
-}
-
-void Metal::SwitchElementDebuff()
-{
+	TSharedPtr<CustomLinkedList<BaseStatusEffect>> CurEffectList = AffectedCharacter->GetStatusList();
+	for (CustomNode<BaseStatusEffect>* ptr = CurEffectList->GetHead(); ptr != nullptr; ptr = ptr->next) {
+		if (BaseStatusEffect* value = ptr->GetValue()) {
+			if (value->GetStatusName().IsEqual("Bleed")) return;
+		}
+	}
+	BaseStatusEffect* newStatus = new BleedStatus();
+	CurEffectList->AddTail(new CustomNode<BaseStatusEffect>(newStatus));
+	newStatus->SetOwningCharacter(OwningCharacter);
+	newStatus->SetAffectedCharacter(AffectedCharacter);
+	newStatus->ExecuteStatus();
 }
 
 Plant::Plant()
@@ -125,12 +101,4 @@ Plant::Plant()
 Plant::Plant(ABaseCharacter* character) : Elemental(character)
 {
 	ElementalName = "Plant";
-}
-
-void Plant::ElementBuff()
-{
-}
-
-void Plant::SwitchElementDebuff()
-{
 }

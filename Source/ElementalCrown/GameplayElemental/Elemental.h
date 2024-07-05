@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../ProjectIncludes.h"
 #include "../StatusEffect/BurnStatus.h"
+#include "../StatusEffect/BleedStatus.h"
 
 /**
  * 
@@ -15,7 +16,6 @@ class BaseCharacter;
 class ELEMENTALCROWN_API Elemental
 {
 protected:
-	int Buff{0};
 	//Elemental name
 	FName ElementalName;
 	ABaseCharacter* OwningCharacter = nullptr;
@@ -24,29 +24,16 @@ public:
 	Elemental();
 	Elemental(ABaseCharacter* character);
 	Elemental(const Elemental &other) {
-		Buff = other.Buff;
 		ElementalName = other.ElementalName;
 		OwningCharacter = other.OwningCharacter;
 	}
 	//Destructor
 	virtual ~Elemental();
-	//Overload = operator
-	Elemental& operator=(const Elemental& other) {
-		if (this == &other) return *this;
-		Buff = other.Buff;
-		ElementalName = other.ElementalName;
-		OwningCharacter = other.OwningCharacter;
-		return *this;
-	}
 	//Print test
 	virtual void TestType() {
 		//GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, FString::Printf(TEXT("Element Type : %s"), *ElementalName.ToString()));
 		UE_LOG(LogTemp, Log, TEXT("%s"), *FString::Printf(TEXT("Element Type : %s"), *ElementalName.ToString()));
 	};
-	//Buff character after switching to this element
-	virtual void ElementBuff() {};
-	//Debuff character after switching to other element
-	virtual void SwitchElementDebuff() {};
 	virtual void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) {}
 	FName GetName() { return ElementalName; }
 
@@ -56,12 +43,9 @@ public:
 	Fire();
 	Fire(ABaseCharacter* character);
 	Fire(const Fire& other) {
-		Buff = other.Buff;
 		ElementalName = other.ElementalName;
 		OwningCharacter = other.OwningCharacter;
 	}
-	void ElementBuff() override;
-	void SwitchElementDebuff() override;
 	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) override;
 };
 class Water :public Elemental {
@@ -69,48 +53,38 @@ public:
 	Water();
 	Water(ABaseCharacter* character);
 	Water(const Water& other) {
-		Buff = other.Buff;
 		ElementalName = other.ElementalName;
 		OwningCharacter = other.OwningCharacter;
 	}
-	void ElementBuff() override;
-	void SwitchElementDebuff() override;
+	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) override;
 };
 class Earth : public Elemental {
 public:
 	Earth();
 	Earth(ABaseCharacter* character);
 	Earth(const Earth& other) {
-		Buff = other.Buff;
 		ElementalName = other.ElementalName;
 		OwningCharacter = other.OwningCharacter;
 	}
-	void ElementBuff() override;
-	void SwitchElementDebuff() override;
 };
 class Metal : public Elemental {
 public:
 	Metal();
 	Metal(ABaseCharacter* character);
 	Metal(const Metal& other) {
-		Buff = other.Buff;
 		ElementalName = other.ElementalName;
 		OwningCharacter = other.OwningCharacter;
 	}
-	void ElementBuff() override;
-	void SwitchElementDebuff() override;
+	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) override;
 };
 class Plant : public Elemental {
 public:
 	Plant();
 	Plant(ABaseCharacter* character);
 	Plant(const Plant& other) {
-		Buff = other.Buff;
 		ElementalName = other.ElementalName;
 		OwningCharacter = other.OwningCharacter;
 	}
-	void ElementBuff() override;
-	void SwitchElementDebuff() override;
 };
 
 
