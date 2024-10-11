@@ -1,22 +1,21 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Enemy_Metal.h"
-#include "Enemy_MetalKnight.generated.h"
+#include "BaseEnemyCharacter.h"
+#include "Enemy_Metal.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
-class ELEMENTALCROWN_API AEnemy_MetalKnight : public AEnemy_Metal
+class ELEMENTALCROWN_API AEnemy_Metal : public ABaseEnemyCharacter
 {
 	GENERATED_BODY()
 public:
 	//************************************* CONSTRUCTOR *****************************************
-	AEnemy_MetalKnight();
+	AEnemy_Metal();
 	//************************************* EVENTS **********************************************************
+	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	//************************************* ACTIONS *********************************************************
 
 };

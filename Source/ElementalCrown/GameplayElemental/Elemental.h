@@ -18,6 +18,7 @@ class ELEMENTALCROWN_API Elemental
 protected:
 	//Elemental name
 	FName ElementalName;
+	int ApplyEffectChanceRange = 0;
 	ABaseCharacter* OwningCharacter = nullptr;
 public:
 	//Constructor

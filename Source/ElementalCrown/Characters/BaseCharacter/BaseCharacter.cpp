@@ -5,7 +5,7 @@
 
 ABaseCharacter::ABaseCharacter()
 {
-	StatusList = MakeShared<CustomLinkedList<BaseStatusEffect>>();
+	StatusList = MakeShared<TArray<TSharedPtr<BaseStatusEffect>>>();
 }
 
 void ABaseCharacter::BeginPlay()

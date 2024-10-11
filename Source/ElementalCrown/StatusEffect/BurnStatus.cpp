@@ -31,7 +31,11 @@ void BurnStatus::ExecuteStatus()
 		AffectedCharacter->GetWorldTimerManager().SetTimer(EffectEndHandle, FTimerDelegate::CreateLambda([this]() {
 			if (OwningCharacter && AffectedCharacter) {
 				StatusFlipbookComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-				AffectedCharacter->GetStatusList()->RemoveNodeByValue(this);
+				auto CurStatusList = AffectedCharacter->GetStatusList();
+				for (int i = 0; i < CurStatusList->Num(); ++i) {
+					TSharedPtr<BaseStatusEffect> cur = (*CurStatusList)[i];
+					if (cur->GetStatusName() == "Burn") CurStatusList->RemoveAt(i);
+				}
 			}
 		}), AffectingTime, false);
 		AffectedCharacter->GetWorldTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this]() {

@@ -41,10 +41,6 @@ void UAirSlash3EndAnimNotifyState::OnNotifyBegin_Implementation(UPaperZDAnimInst
 					UAirSlash3EndAnimNotifyState::SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
 					TSubclassOf<UDamageType> DamageType;
 					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(Buff), Character->GetController(), Character, DamageType);
-					if (ABaseCharacter* AffectedCharacter = Cast<ABaseCharacter>(Result.GetActor())) {
-						Elemental* CharacterElemental = Character->GetCharacterElemental();
-						CharacterElemental->ApplyStatusEffect(AffectedCharacter);
-					}
 				}
 			}
 		}

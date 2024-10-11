@@ -22,10 +22,6 @@ ABaseEnemyCharacter::ABaseEnemyCharacter()
 
 ABaseEnemyCharacter::~ABaseEnemyCharacter()
 {
-	if (CharacterElement) {
-		delete CharacterElement;
-		CharacterElement = nullptr;
-	}
 }
 
 void ABaseEnemyCharacter::BeginPlay()

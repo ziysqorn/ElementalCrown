@@ -8,6 +8,7 @@
 #include "../../GameplayElemental/Elemental.h"
 #include "../../StatusEffect/BaseStatusEffect.h"
 #include "../../Effects/StatsPopout/StatsPopout.h"
+#include "../../Interface/GameplayInterface.h"
 #include "BaseCharacter.generated.h"
 
 /**
@@ -16,12 +17,12 @@
 using namespace Constants;
 
 UCLASS()
-class ELEMENTALCROWN_API ABaseCharacter : public APaperZDCharacter
+class ELEMENTALCROWN_API ABaseCharacter : public APaperZDCharacter, public IGameplayInterface
 {
 	GENERATED_BODY()
 protected:
-	CustomNode<Elemental>* CharacterElement = nullptr;
-	TSharedPtr<CustomLinkedList<BaseStatusEffect>> StatusList;
+	TSharedPtr<Elemental> CharacterElement;
+	TSharedPtr<TArray<TSharedPtr<BaseStatusEffect>>> StatusList;
 	//Character's base stats
 	int MaxHealth{ Default_Character_MaxHealth };
 	int MaxMana{ Default_Character_MaxMana };
@@ -83,8 +84,8 @@ public:
 		return (float)CurrentMana / MaxMana;
 	}
 
-	Elemental* GetCharacterElemental() { return CharacterElement->GetValue(); }
-	TSharedPtr<CustomLinkedList<BaseStatusEffect>> GetStatusList() { return StatusList; }
+	Elemental* GetElemental() override { return CharacterElement.Get(); }
+	TSharedPtr<TArray<TSharedPtr<BaseStatusEffect>>> GetStatusList() { return StatusList; }
 
 	//Set character's current state
 	void SetCharacterState(const CharacterState&& State) {

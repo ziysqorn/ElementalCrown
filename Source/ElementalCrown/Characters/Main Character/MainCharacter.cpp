@@ -21,17 +21,11 @@ AMainCharacter::AMainCharacter()
 	//Add Delegates
 	this->OnActorBeginOverlap.AddDynamic(this, &AMainCharacter::BeginOverlap);
 
-	CharElementalList = MakeShared<CustomLinkedList<Elemental>>();
-	FireSkillList = MakeShared<CustomLinkedList<BaseSkill>>();
-	WaterSkillList = MakeShared<CustomLinkedList<BaseSkill>>();
-	CharElementalList->AddTail(new CustomNode<Elemental>(new Fire(this)));
-	CharElementalList->AddTail(new CustomNode<Elemental>(new Water(this)));
-	FireSkillList->AddTail(new CustomNode<BaseSkill>(new VolcanicFire()));
-	FireSkillList->AddTail(new CustomNode<BaseSkill>(new FireEnergy()));
-	WaterSkillList->AddTail(new CustomNode<BaseSkill>(new AquaSphere()));
-	CharSkillList = FireSkillList;
-	CharacterElement = CharElementalList->GetHead();
-	CharacterSkill = CharSkillList->GetHead();
+	CharSkillList = MakeShared<TArray<TSharedPtr<BaseSkill>>>();
+	CharSkillList->Add(MakeShared<FireSlashWaveSkill>());
+	CharSkillList->Add(MakeShared<FireTornadoSkill>());
+	CharSkillList->Add(MakeShared<FireEnergy>());
+	CharSkillList->Add(MakeShared<AquaSphere>());
 }
 
 AMainCharacter::~AMainCharacter()
@@ -48,8 +42,7 @@ void AMainCharacter::BeginPlay()
 
 	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
 		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-			MainHUD->SwitchedSlotHighlight(CharacterElement);
-			MainHUD->SwitchedSlotHighlight(CharacterSkill);
+			MainHUD->SwitchedSlotHighlight(CurSkillId);
 		}
 	}
 }
@@ -73,7 +66,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EIComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AMainCharacter::CustomJump);
 		EIComponent->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
 		EIComponent->BindAction(IA_Shoot, ETriggerEvent::Triggered, this, &AMainCharacter::Shoot);
-		EIComponent->BindAction(IA_ChangeElement, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeElement);
 		EIComponent->BindAction(IA_ChangeSkill, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeSkill);
 	}
 }
@@ -298,41 +290,21 @@ void AMainCharacter::Shoot()
 
 void AMainCharacter::UseSkill()
 {
-	if (CharacterSkill->GetValue()) {
-		CharacterSkill->GetValue()->SetOwningCharacter(this);
-		CharacterSkill->GetValue()->PerformSkill();
+	if (CharSkillList->IsValidIndex(CurSkillId) && (*CharSkillList)[CurSkillId].IsValid()) {
+		(*CharSkillList)[CurSkillId]->SetOwningCharacter(this);
+		(*CharSkillList)[CurSkillId]->PerformSkill();
 	}
 }
 
-void AMainCharacter::ChangeElement()
-{
-	if (CharacterElement == CharElementalList->GetTail()) CharacterElement = CharElementalList->GetHead();
-	else {
-		if (CharacterElement->next != nullptr) CharacterElement = CharacterElement->next;
-	}
-	if (CharacterElement->GetValue()->GetName().IsEqual("Fire")) CharSkillList = FireSkillList;
-	else if (CharacterElement->GetValue()->GetName().IsEqual("Water")) CharSkillList = WaterSkillList;
-	else if (CharacterElement->GetValue()->GetName().IsEqual("Earth")) CharSkillList = EarthSkillList;
-	else if (CharacterElement->GetValue()->GetName().IsEqual("Metal")) CharSkillList = MetalSkillList;
-	else if (CharacterElement->GetValue()->GetName().IsEqual("Plant")) CharSkillList = PlantSkillList;
-	CharacterSkill = CharSkillList->GetHead();
-	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) 
-		{
-			MainHUD->SwitchedSlotHighlight(CharacterElement);
-			MainHUD->RefreshSkillSlots(CharSkillList);
-		}
-	}
-}
 
 void AMainCharacter::ChangeSkill()
 {
-	if (CharacterSkill == CharSkillList->GetTail()) CharacterSkill = CharSkillList->GetHead();
+	if (CurSkillId == CharSkillList->Num() - 1) CurSkillId = 0;
 	else {
-		if (CharacterSkill->next != nullptr) CharacterSkill = CharacterSkill->next;
+		if (CharSkillList->IsValidIndex(CurSkillId + 1)) ++CurSkillId;
 	}
 	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->SwitchedSlotHighlight(CharacterSkill);
+		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->SwitchedSlotHighlight(CurSkillId);
 	}
 }
 

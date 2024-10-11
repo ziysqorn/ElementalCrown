@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "../../ProjectIncludes.h"
 #include "../../GameplayElemental/Elemental.h"
+#include "../../Interface/GameplayInterface.h"
 #include "SkillEffect.generated.h"
 
 UCLASS()
-class ELEMENTALCROWN_API ASkillEffect : public AActor
+class ELEMENTALCROWN_API ASkillEffect : public AActor, public IGameplayInterface
 {
 	GENERATED_BODY()
 protected:
@@ -26,6 +27,7 @@ public:
 	ASkillEffect();
 	ASkillEffect(const TCHAR* Ref);
 	~ASkillEffect();
+	Elemental* GetElemental() override { return EffectElement; }
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	//Event On actor begin overlap

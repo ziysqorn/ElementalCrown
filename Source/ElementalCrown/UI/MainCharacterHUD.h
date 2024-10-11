@@ -21,8 +21,7 @@ class ELEMENTALCROWN_API UMainCharacterHUD : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
-	TSharedPtr<CustomLinkedList<Elemental>> HUDElementalList;
-	TSharedPtr<CustomLinkedList<BaseSkill>> HUDSkillList;
+	TSharedPtr<TArray<TSharedPtr<BaseSkill>>> HUDSkillList;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UHorizontalBox* ElementalSlotBox = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
@@ -41,8 +40,7 @@ public:
 	UHorizontalBox* GetElementalSlotBox() { return ElementalSlotBox; }
 	UVerticalBox* GetSkillSlotBox() { return VerBox_SkillSlotBox; }
 	void SetupHUD();
-	void SetupElementalSlotBox(TSharedPtr<CustomLinkedList<Elemental>> list);
-	void SetupSkillSlotBox(TSharedPtr<CustomLinkedList<BaseSkill>> list);
+	void SetupSkillSlotBox(TSharedPtr<TArray<TSharedPtr<BaseSkill>>> list);
 	void SetCoinText(FText inText) {
 		Txt_Coin->SetText(inText);
 	};
@@ -52,7 +50,6 @@ public:
 	void SetManaBar(float inPercent) {
 		ProgBar_ManaBar->SetPercent(inPercent);
 	}
-	void SwitchedSlotHighlight(CustomNode<Elemental>* SwitchedNode);
-	void SwitchedSlotHighlight(CustomNode<BaseSkill>* SwitchedNode);
-	void RefreshSkillSlots(TSharedPtr<CustomLinkedList<BaseSkill>> skillList);
+	void SwitchedSlotHighlight(int SwitchedNodeId);
+	void RefreshSkillSlots(TSharedPtr<TArray<TSharedPtr<BaseSkill>>> skillList);
 };

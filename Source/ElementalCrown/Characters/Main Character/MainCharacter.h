@@ -19,14 +19,8 @@ class ELEMENTALCROWN_API AMainCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 protected:
-	CustomNode<BaseSkill>* CharacterSkill = nullptr;
-	TSharedPtr<CustomLinkedList<Elemental>> CharElementalList;
-	TSharedPtr<CustomLinkedList<BaseSkill>> CharSkillList;
-	TSharedPtr<CustomLinkedList<BaseSkill>> FireSkillList;
-	TSharedPtr<CustomLinkedList<BaseSkill>> WaterSkillList;
-	TSharedPtr<CustomLinkedList<BaseSkill>> EarthSkillList;
-	TSharedPtr<CustomLinkedList<BaseSkill>> MetalSkillList;
-	TSharedPtr<CustomLinkedList<BaseSkill>> PlantSkillList;
+	int CurSkillId = 0;
+	TSharedPtr<TArray<TSharedPtr<BaseSkill>>> CharSkillList;
 protected:
 	//Spring Arm and Camera Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spring Arm")
@@ -56,9 +50,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_Shoot = nullptr;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_ChangeElement = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_ChangeSkill = nullptr;
@@ -134,8 +125,7 @@ public:
 		return ATK_Damage;
 	}
 	
-	TSharedPtr<CustomLinkedList<Elemental>> GetElementalList() { return CharElementalList; }
-	TSharedPtr<CustomLinkedList<BaseSkill>> GetSkillList() { return CharSkillList; }
+	TSharedPtr<TArray<TSharedPtr<BaseSkill>>> GetSkillList() { return CharSkillList; }
 
 	//Actions
 	virtual void Move(const FInputActionValue& value);
@@ -150,7 +140,6 @@ public:
 	virtual void Attack();
 	virtual void Shoot();
 	void UseSkill();
-	void ChangeElement();
 	void ChangeSkill();
 	void SheatheSword() {
 		isSwordSheathed = true;

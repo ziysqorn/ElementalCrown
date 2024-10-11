@@ -10,7 +10,7 @@
 class ELEMENTALCROWN_API BleedStatus : public BaseStatusEffect {
 protected:
 	int BleedDamage = 1;
-	float TimeBetweenEachHit = 0.75f;
+	float TimeBetweenEachHit = 1.5f;
 	FTimerHandle EffectHandle;
 public:
 	BleedStatus();
