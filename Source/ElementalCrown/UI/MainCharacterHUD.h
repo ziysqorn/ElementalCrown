@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "../ProjectIncludes.h"
-#include "../DataStructs/CustomLinkedList.h"
 #include "../GameplayElemental/Elemental.h"
 #include "../Skill/BaseSkill.h"
 #include "../UI/Elemental/ElementalSlot.h"
@@ -50,6 +49,9 @@ public:
 	void SetManaBar(float inPercent) {
 		ProgBar_ManaBar->SetPercent(inPercent);
 	}
+	void UpdateSkillCountdownProgUI(BaseSkill* Skill, const float& inPercentage);
+	void ShowSkillLoaderUI(BaseSkill* Skill);
+	void HideSkillLoaderUI(BaseSkill* Skill);
 	void SwitchedSlotHighlight(int SwitchedNodeId);
 	void RefreshSkillSlots(TSharedPtr<TArray<TSharedPtr<BaseSkill>>> skillList);
 };

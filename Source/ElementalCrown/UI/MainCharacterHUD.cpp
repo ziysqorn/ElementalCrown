@@ -31,7 +31,55 @@ void UMainCharacterHUD::SetupSkillSlotBox(TSharedPtr<TArray<TSharedPtr<BaseSkill
 					FMargin SlotMargin(0.0f, 5.0f, 0.0f, 0.0f);
 					skillSlot->SetPadding(SlotMargin);
 				}
+				skillSlot->UpdateCountdownProgress(0.0f);
+				skillSlot->HideLoadBorder();
 				VerBox_SkillSlotBox->AddChildToVerticalBox(skillSlot);
+			}
+		}
+	}
+}
+
+void UMainCharacterHUD::UpdateSkillCountdownProgUI(BaseSkill* Skill, const float& inPercentage)
+{
+	if (Skill) {
+		TArray<UWidget*> slotArr = VerBox_SkillSlotBox->GetAllChildren();
+		if (slotArr.Num() > 0 && slotArr.Num() == HUDSkillList->Num()) {
+			for (int i = 0; i < slotArr.Num(); ++i) {
+				if ((*HUDSkillList)[i].Get() == Skill) {
+					if (USkillSlot* skillSlot = Cast<USkillSlot>(slotArr[i]))
+						skillSlot->UpdateCountdownProgress(inPercentage);
+				}
+			}
+		}
+	}
+}
+
+void UMainCharacterHUD::ShowSkillLoaderUI(BaseSkill* Skill)
+{
+	if (Skill) {
+		TArray<UWidget*> slotArr = VerBox_SkillSlotBox->GetAllChildren();
+		if (slotArr.Num() > 0 && slotArr.Num() == HUDSkillList->Num()) {
+			for (int i = 0; i < slotArr.Num(); ++i) {
+				if ((*HUDSkillList)[i].Get() == Skill) {
+					if (USkillSlot* skillSlot = Cast<USkillSlot>(slotArr[i])) skillSlot->ShowLoadBorder();
+				}
+			}
+		}
+	}
+}
+
+void UMainCharacterHUD::HideSkillLoaderUI(BaseSkill* Skill)
+{
+	if (Skill) {
+		TArray<UWidget*> slotArr = VerBox_SkillSlotBox->GetAllChildren();
+		if (slotArr.Num() > 0 && slotArr.Num() == HUDSkillList->Num()) {
+			for (int i = 0; i < slotArr.Num(); ++i) {
+				if ((*HUDSkillList)[i].Get() == Skill) {
+					if (USkillSlot* skillSlot = Cast<USkillSlot>(slotArr[i])) {
+						skillSlot->UpdateCountdownProgress(0.0f);
+						skillSlot->HideLoadBorder();
+					}
+				}
 			}
 		}
 	}
@@ -40,7 +88,7 @@ void UMainCharacterHUD::SetupSkillSlotBox(TSharedPtr<TArray<TSharedPtr<BaseSkill
 void UMainCharacterHUD::SwitchedSlotHighlight(int SwitchedNodeId)
 {
 	TArray<UWidget*> slotArr = VerBox_SkillSlotBox->GetAllChildren();
-	if (slotArr.Num() > 0) {
+	if (slotArr.Num() > 0 && slotArr.Num() == HUDSkillList->Num()) {
 		for (int i = 0; i < slotArr.Num(); ++i) {
 			if (USkillSlot* skillSlot = Cast<USkillSlot>(slotArr[i])) {
 				skillSlot->HideOutline();

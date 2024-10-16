@@ -21,6 +21,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
 	UImage* SkillIcon = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
+	UBorder* LoadBorder = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
+	UImage* RoundProgressBar = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
 	UTextBlock* SkillName = nullptr;
 public:
 	UImage* GetIcon() { return SkillIcon; }
@@ -29,6 +33,18 @@ public:
 	}
 	void HideOutline() {
 		if (SkillOutline) SkillOutline->SetVisibility(ESlateVisibility::Hidden);
+	}
+	void ShowLoadBorder() {
+		if (LoadBorder) LoadBorder->SetVisibility(ESlateVisibility::Visible);
+	}
+	void HideLoadBorder() {
+		if (LoadBorder) LoadBorder->SetVisibility(ESlateVisibility::Hidden);
+	}
+	void UpdateCountdownProgress(const float& inPercentage) {
+		if (RoundProgressBar) {
+			if (UMaterialInstanceDynamic* MaterialIns = RoundProgressBar->GetDynamicMaterial())
+				MaterialIns->SetScalarParameterValue("Percentage", inPercentage);
+		}
 	}
 	void SetSkillNameText(FText inText) {
 		SkillName->SetText(inText);

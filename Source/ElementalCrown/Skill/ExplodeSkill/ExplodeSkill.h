@@ -18,5 +18,4 @@ public:
 	ExplodeSkill();
 	ExplodeSkill(const TCHAR* Ref);
 	virtual ~ExplodeSkill();
-	void PerformSkill() override;
 };

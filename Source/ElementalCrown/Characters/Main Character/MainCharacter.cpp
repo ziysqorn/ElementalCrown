@@ -6,7 +6,6 @@
 
 AMainCharacter::AMainCharacter()
 {
-	//Allocate pointers
 	//Components setup
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
@@ -18,8 +17,6 @@ AMainCharacter::AMainCharacter()
 	GetCharacterMovement()->MaxFlySpeed = RunSpeed;
 	GetCharacterMovement()->AirControl = 0.75;
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
-	//Add Delegates
-	this->OnActorBeginOverlap.AddDynamic(this, &AMainCharacter::BeginOverlap);
 
 	CharSkillList = MakeShared<TArray<TSharedPtr<BaseSkill>>>();
 	CharSkillList->Add(MakeShared<FireSlashWaveSkill>());
@@ -347,17 +344,6 @@ void AMainCharacter::OnJumped_Implementation()
 {
 	if (attackCounter > 0) {
 		AMainCharacter::EndCombo();
-	}
-}
-
-void AMainCharacter::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
-{
-}
-
-void AMainCharacter::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
-{
-	if (this->GetVelocity().Z < 0) {
-		if (this->CurrentState == CharacterState::ATTACK) GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Yellow, TEXT("Slash down"));
 	}
 }
 

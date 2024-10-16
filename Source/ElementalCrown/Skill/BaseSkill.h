@@ -13,6 +13,7 @@ protected:
 	//Skill name
 	FName SKillName;
 	//Skill cooldown time
+	float CurrentCooldown = 0.0f;
 	float CooldownTime;
 	//Mana consumption
 	int ManaConsumption{3};
@@ -25,7 +26,7 @@ protected:
 	float StunTime{ 0.00f };
 
 	//*********************TIMER HANDLE**************************
-	FTimerHandle RefreshSkillHandle;
+	FTimerHandle CountdownProgHandle;
 
 	//*********************SKILL SPRITE**************************
 	UPaperSprite* SkillSprite = nullptr;
@@ -58,5 +59,5 @@ public:
 	}
 	//******************** ACTION *******************************
 	//Perform this skill
-	virtual void PerformSkill() {};
+	virtual void PerformSkill();
 };

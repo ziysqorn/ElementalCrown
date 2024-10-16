@@ -8,6 +8,4 @@ public:
 	FireSlashWaveSkill();
 	//Destructor
 	~FireSlashWaveSkill();
-	//Perform this skill
-	void PerformSkill() override;
 };

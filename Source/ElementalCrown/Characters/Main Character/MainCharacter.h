@@ -161,9 +161,4 @@ public:
 	void Landed(const FHitResult& Hit) override;
 	//Event on jumped
 	void OnJumped_Implementation() override;
-	//Event begin hit
-	void NotifyHit(class UPrimitiveComponent* MyComp, AActor* Other, class UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit) override;
-	//Event begin overlap
-	UFUNCTION()
-	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 };
