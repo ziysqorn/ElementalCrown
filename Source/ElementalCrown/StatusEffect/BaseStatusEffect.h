@@ -19,21 +19,17 @@ protected:
 
 	float AffectingTime;
 
-	UPaperFlipbookComponent* StatusFlipbookComp = nullptr;
-
 	UPaperSprite* StatusAvt = nullptr;
-
-	UPaperFlipbook* StatusFlipbook = nullptr;
 
 	ABaseCharacter* OwningCharacter = nullptr;
 
 	ABaseCharacter* AffectedCharacter = nullptr;
 
-	FTimerHandle EffectEndHandle;
+	FTimerHandle EffectHandle;
 public:
 	BaseStatusEffect();
-	BaseStatusEffect(const TCHAR* AvtRef, const TCHAR* FlipbookRef);
-	virtual ~BaseStatusEffect();
+	BaseStatusEffect(const TCHAR* AvtRef);
+	virtual ~BaseStatusEffect() {};
 	FName GetStatusName() {
 		return StatusName;
 	}
@@ -43,6 +39,5 @@ public:
 	void SetAffectedCharacter(ABaseCharacter* Character) {
 		AffectedCharacter = Character;
 	}
-	virtual void SetAvtFromRef(const TCHAR* AvtRef);
 	virtual void ExecuteStatus() {};
 };

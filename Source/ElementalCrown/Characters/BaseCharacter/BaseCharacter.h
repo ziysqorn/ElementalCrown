@@ -56,6 +56,7 @@ protected:
 	FTimerHandle DeathHandle;
 	FTimerHandle AttackHandle;
 	FTimerHandle StunHandle;
+	FTimerHandle HitStopHandle;
 
 	//Flash when damaged timeline
 	FTimeline FlashTimeline;
@@ -85,6 +86,8 @@ public:
 	}
 
 	Elemental* GetElemental() override { return CharacterElement.Get(); }
+	CharacterState GetCharacterState() { return CurrentState; }
+	FTimerHandle& GetHitStopHandle() { return HitStopHandle; }
 	TSharedPtr<TArray<TSharedPtr<BaseStatusEffect>>> GetStatusList() { return StatusList; }
 
 	//Set character's current state

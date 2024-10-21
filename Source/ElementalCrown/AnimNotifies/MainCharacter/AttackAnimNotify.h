@@ -26,6 +26,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Box Extent")
 	FVector BoxExtent= FVector(30, 0, 40);
 
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stop dilation")
+	float HitStopDilation = 0.5f;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Hit stop duration")
+	float HitStopDuration = 0.05f;
+
 public:
 	UAttackAnimNotify();
 	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;

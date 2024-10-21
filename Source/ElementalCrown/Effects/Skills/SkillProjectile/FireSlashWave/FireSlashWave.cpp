@@ -7,7 +7,7 @@ AFireSlashWave::AFireSlashWave(): ASkillProjectile(TEXT("/Script/Paper2D.PaperFl
 		ProjectileMovement->InitialSpeed = 650;
 		ProjectileMovement->ProjectileGravityScale = 0;
 	}
-	EffectElement = new Fire();
+	EffectElement = new Metal();
 	this->OnActorBeginOverlap.AddDynamic(this, &AFireSlashWave::BeginOverlap);
 }
 

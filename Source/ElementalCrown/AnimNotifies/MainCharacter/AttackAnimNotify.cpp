@@ -24,6 +24,10 @@ void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* Own
 				for (const FHitResult& Result : Hits) {
 					TSubclassOf<UDamageType> DamageType;
 					this->SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
+					UGameplayStatics::SetGlobalTimeDilation(this, HitStopDilation);
+					GetWorld()->GetTimerManager().SetTimer(Character->GetHitStopHandle(), FTimerDelegate::CreateLambda([this]() {
+						UGameplayStatics::SetGlobalTimeDilation(this, 1.0f);
+					}), HitStopDuration, false);
 					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(this->Buff), Character->GetController(), Character, DamageType);
 				}
 			}

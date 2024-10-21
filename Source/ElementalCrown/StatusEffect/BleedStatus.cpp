@@ -1,7 +1,7 @@
 #include "BleedStatus.h"
 #include "../Characters/BaseCharacter/BaseCharacter.h"
 
-BleedStatus::BleedStatus() : BaseStatusEffect(TEXT("/Script/Paper2D.PaperSprite'/Game/Assets/Effect/Impact/AttackHit/Blood/1_007_Sprite.1_007_Sprite'"), TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Impact/AttackHit/Blood/Effect_Impact_AttackHit_Blood.Effect_Impact_AttackHit_Blood'"))
+BleedStatus::BleedStatus() : BaseStatusEffect(TEXT("/Script/Paper2D.PaperSprite'/Game/Assets/Effect/Impact/AttackHit/Blood/1_007_Sprite.1_007_Sprite'"))
 {
 	StatusName = "Bleed";
 	AffectingTime = 8.0f;
@@ -9,38 +9,34 @@ BleedStatus::BleedStatus() : BaseStatusEffect(TEXT("/Script/Paper2D.PaperSprite'
 
 BleedStatus::~BleedStatus()
 {
-	if (AffectedCharacter) {
-		if (AffectedCharacter->GetWorldTimerManager().IsTimerActive(EffectHandle)) AffectedCharacter->GetWorldTimerManager().ClearTimer(EffectHandle);
-		if (AffectedCharacter->GetWorldTimerManager().IsTimerActive(EffectEndHandle)) AffectedCharacter->GetWorldTimerManager().ClearTimer(EffectEndHandle);
-	}
 }
 
 void BleedStatus::ExecuteStatus()
 {
 	if (OwningCharacter && AffectedCharacter) {
-		StatusFlipbookComp = NewObject<UPaperFlipbookComponent>(AffectedCharacter, UPaperFlipbookComponent::StaticClass());
-		StatusFlipbookComp->RegisterComponent();
-		StatusFlipbookComp->AttachToComponent(AffectedCharacter->GetSprite(), FAttachmentTransformRules::KeepRelativeTransform);
-		StatusFlipbookComp->SetRelativeLocation(FVector(0.0f, 5.0f, -5.0f));
-		StatusFlipbookComp->SetRelativeScale3D(FVector(1.0f, 0.0f, 1.0f));
-		StatusFlipbookComp->SetFlipbook(StatusFlipbook);
-		StatusFlipbookComp->SetLooping(false);
-		AffectedCharacter->GetWorldTimerManager().SetTimer(EffectEndHandle, FTimerDelegate::CreateLambda([this]() {
-			if (OwningCharacter && AffectedCharacter) {
-				StatusFlipbookComp->DetachFromComponent(FDetachmentTransformRules::KeepRelativeTransform);
-				auto CurStatusList = AffectedCharacter->GetStatusList();
-				for (int i = 0; i < CurStatusList->Num(); ++i) {
-					TSharedPtr<BaseStatusEffect> cur = (*CurStatusList)[i];
-					if (cur->GetStatusName() == "Bleed") CurStatusList->RemoveAt(i);
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = OwningCharacter;
+		if (ABleed* BleedEffect = AffectedCharacter->GetWorld()->SpawnActor<ABleed>(ABleed::StaticClass(), AffectedCharacter->GetActorLocation(), AffectedCharacter->GetActorRotation(), SpawnParams)) {
+			BleedEffect->AttachToActor(AffectedCharacter, FAttachmentTransformRules::KeepRelativeTransform);
+			BleedEffect->SetActorRelativeLocation(FVector(0.0f, 3.0f, 2.0f));
+			BleedEffect->SetActorRelativeScale3D(FVector(2.0f, 0.0f, 3.0f));
+			AffectedCharacter->GetWorldTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this, BleedEffect]() {
+				if (OwningCharacter && AffectedCharacter) {
+					TSubclassOf<UDamageType> DamageType;
+					UGameplayStatics::ApplyDamage(AffectedCharacter, BleedDamage, OwningCharacter->GetController(), OwningCharacter, DamageType);
+					if(AffectedCharacter->GetCharacterState() != CharacterState::DEATH) BleedEffect->BloodSpray();
+					TimeElapsed += TimeBetweenEachHit;
+					if (TimeElapsed >= AffectingTime) {
+						AffectedCharacter->GetWorldTimerManager().ClearTimer(EffectHandle);
+						BleedEffect->Destroy();
+						auto CurStatusList = AffectedCharacter->GetStatusList();
+						for (int i = 0; i < CurStatusList->Num(); ++i) {
+							TSharedPtr<BaseStatusEffect> cur = (*CurStatusList)[i];
+							if (cur->GetStatusName() == "Bleed") CurStatusList->RemoveAt(i);
+						}
+					}
 				}
-			}
-			}), AffectingTime, false);
-		AffectedCharacter->GetWorldTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this]() {
-			if (OwningCharacter && AffectedCharacter) {
-				TSubclassOf<UDamageType> DamageType;
-				StatusFlipbookComp->PlayFromStart();
-				UGameplayStatics::ApplyDamage(AffectedCharacter, BleedDamage, OwningCharacter->GetController(), OwningCharacter, DamageType);
-			}
-			}), TimeBetweenEachHit, true);
+				}), TimeBetweenEachHit, true);
+		}
 	}
 }

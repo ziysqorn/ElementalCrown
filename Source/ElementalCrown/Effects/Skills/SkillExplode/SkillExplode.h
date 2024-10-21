@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../SkillEffect.h"
+#include "../../../Characters/BaseCharacter/BaseCharacter.h"
 #include "SkillExplode.generated.h"
 
 UCLASS()

@@ -15,13 +15,6 @@ BaseSkill::BaseSkill(const TCHAR* Ref)
 	SkillSprite = SpriteRef.Object;
 }
 
-BaseSkill::~BaseSkill()
-{
-	if (SkillElement) {
-		delete SkillElement;
-		SkillElement = nullptr;
-	}
-}
 
 void BaseSkill::PerformSkill()
 {

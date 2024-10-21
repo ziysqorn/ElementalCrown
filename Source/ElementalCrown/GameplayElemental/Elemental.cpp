@@ -21,12 +21,14 @@ Fire::Fire()
 
 void Fire::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
 {
-	auto CurEffectList = AffectedCharacter->GetStatusList();
-	for (int i = 0; i < CurEffectList->Num(); ++i) {
-		TSharedPtr<BaseStatusEffect> value = (*CurEffectList)[i];
-		if (value.IsValid() && value->GetStatusName().IsEqual("Burn")) return;
-	}
-	if (FMath::RandRange(1, ApplyEffectChanceRange) == 1) {
+	if (AffectedCharacter) {
+		auto CurEffectList = AffectedCharacter->GetStatusList();
+		for (int i = 0; i < CurEffectList->Num(); ++i) {
+			TSharedPtr<BaseStatusEffect> value = (*CurEffectList)[i];
+			if (value.IsValid() && value->GetStatusName().IsEqual("Burn")) return;
+		}
+		/*if (FMath::RandRange(1, ApplyEffectChanceRange) == 1) {
+		}*/
 		TSharedPtr<BaseStatusEffect> newStatus = MakeShared<BurnStatus>();
 		CurEffectList->Add(newStatus);
 		newStatus->SetOwningCharacter(OwningCharacter);
@@ -58,17 +60,19 @@ Metal::Metal()
 
 void Metal::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
 {
-	auto CurEffectList = AffectedCharacter->GetStatusList();
-	for (int i = 0; i < CurEffectList->Num(); ++i) {
-		TSharedPtr<BaseStatusEffect> value = (*CurEffectList)[i];
-		if (value.IsValid() && value->GetStatusName().IsEqual("Bleed")) return;
-	}
-	if (FMath::RandRange(1, ApplyEffectChanceRange) == 1) {
-		TSharedPtr<BaseStatusEffect> newStatus = MakeShared<BleedStatus>();
-		CurEffectList->Add(newStatus);
-		newStatus->SetOwningCharacter(OwningCharacter);
-		newStatus->SetAffectedCharacter(AffectedCharacter);
-		newStatus->ExecuteStatus();
+	if (AffectedCharacter) {
+		auto CurEffectList = AffectedCharacter->GetStatusList();
+		for (int i = 0; i < CurEffectList->Num(); ++i) {
+			TSharedPtr<BaseStatusEffect> value = (*CurEffectList)[i];
+			if (value.IsValid() && value->GetStatusName().IsEqual("Bleed")) return;
+		}
+		if (FMath::RandRange(1, ApplyEffectChanceRange) == 1) {
+			TSharedPtr<BaseStatusEffect> newStatus = MakeShared<BleedStatus>();
+			CurEffectList->Add(newStatus);
+			newStatus->SetOwningCharacter(OwningCharacter);
+			newStatus->SetAffectedCharacter(AffectedCharacter);
+			newStatus->ExecuteStatus();
+		}
 	}
 }
 

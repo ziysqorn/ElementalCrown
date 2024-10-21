@@ -35,10 +35,9 @@ public:
 	// Sets default values for this actor's properties
 	BaseSkill();
 	BaseSkill(const TCHAR* Ref);
-	virtual ~BaseSkill();
 	//Set this skill's owner;
 	void SetOwningCharacter(ABaseCharacter* Character) {
-		OwningCharacter = Character;
+		if (Character) OwningCharacter = Character;
 	}
 	//******************** GETTER *******************************
 	//Get this skill's availability

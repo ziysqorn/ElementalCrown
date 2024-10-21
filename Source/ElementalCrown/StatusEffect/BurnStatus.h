@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BaseStatusEffect.h"
+#include "../Effects/StatusEffect/Burn.h"
 
 /**
  * 
@@ -14,7 +15,7 @@ class ELEMENTALCROWN_API BurnStatus : public BaseStatusEffect
 protected:
 	int BurnDamage = 1;
 	float TimeBetweenEachBurn = 0.75f;
-	FTimerHandle EffectHandle;
+	float TimeElapsed = 0.0f;
 public:
 	BurnStatus();
 	~BurnStatus() override;

@@ -39,6 +39,12 @@ void ASkillProjectile::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 		if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
 			TSubclassOf<UDamageType> DamageType;
 			UGameplayStatics::ApplyDamage(OtherActor, SkillDamage, OwningCharacter->GetController(), this, DamageType);
+			if (EffectElement) {
+				if (ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor)) {
+					EffectElement->SetOwningCharacter(OwningCharacter);
+					EffectElement->ApplyStatusEffect(Character);
+				}
+			}
 		}
 		this->SpawnExplosion();
 		this->Destroy();
