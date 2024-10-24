@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "../../ProjectIncludes.h"
-#include "../../DataStructs/CustomLinkedList.h"
 #include "../../GameplayElemental/Elemental.h"
 #include "../../StatusEffect/BaseStatusEffect.h"
 #include "../../Effects/StatsPopout/StatsPopout.h"
@@ -66,7 +65,7 @@ public:
 	void BeginPlay() override;
 	void Tick(float DeltaSeconds) override;
 	//Event taking damage
-	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	float GetMaxHealth() {
 		return (float)MaxHealth;
 	}
@@ -89,6 +88,7 @@ public:
 	CharacterState GetCharacterState() { return CurrentState; }
 	FTimerHandle& GetHitStopHandle() { return HitStopHandle; }
 	TSharedPtr<TArray<TSharedPtr<BaseStatusEffect>>> GetStatusList() { return StatusList; }
+
 
 	//Set character's current state
 	void SetCharacterState(const CharacterState&& State) {

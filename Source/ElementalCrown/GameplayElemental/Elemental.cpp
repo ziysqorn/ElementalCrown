@@ -27,8 +27,6 @@ void Fire::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
 			TSharedPtr<BaseStatusEffect> value = (*CurEffectList)[i];
 			if (value.IsValid() && value->GetStatusName().IsEqual("Burn")) return;
 		}
-		/*if (FMath::RandRange(1, ApplyEffectChanceRange) == 1) {
-		}*/
 		TSharedPtr<BaseStatusEffect> newStatus = MakeShared<BurnStatus>();
 		CurEffectList->Add(newStatus);
 		newStatus->SetOwningCharacter(OwningCharacter);
@@ -51,11 +49,33 @@ Earth::Earth()
 	ElementalName = "Earth";
 }
 
+void Earth::ApplyStunEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup)
+{
+	if (AffectedCharacter) {
+		auto CurEffectList = AffectedCharacter->GetStatusList();
+		for (int i = 0; i < CurEffectList->Num(); ++i) {
+			TSharedPtr<BaseStatusEffect> value = (*CurEffectList)[i];
+			if (value.IsValid() && value->GetStatusName().IsEqual("Drowsy")) {
+				if (StunStatus* ToStun = StaticCast<StunStatus*>(value.Get())) {
+					if (ToStun->GetActivateStatus()) return;
+					ToStun->BuildingUp(inBuildup);
+					return;
+				}
+			}
+		}
+		TSharedPtr<BaseStatusEffect> newStatus = MakeShared<StunStatus>();
+		CurEffectList->Add(newStatus);
+		newStatus->SetOwningCharacter(OwningCharacter);
+		newStatus->SetAffectedCharacter(AffectedCharacter);
+		if (StunStatus* ToStun = StaticCast<StunStatus*>(newStatus.Get()))
+			ToStun->BuildingUp(inBuildup);
+	}
+}
+
 
 Metal::Metal()
 {
 	ElementalName = "Metal";
-	ApplyEffectChanceRange = 5;
 }
 
 void Metal::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
@@ -66,17 +86,38 @@ void Metal::ApplyStatusEffect(ABaseCharacter* AffectedCharacter)
 			TSharedPtr<BaseStatusEffect> value = (*CurEffectList)[i];
 			if (value.IsValid() && value->GetStatusName().IsEqual("Bleed")) return;
 		}
-		if (FMath::RandRange(1, ApplyEffectChanceRange) == 1) {
-			TSharedPtr<BaseStatusEffect> newStatus = MakeShared<BleedStatus>();
-			CurEffectList->Add(newStatus);
-			newStatus->SetOwningCharacter(OwningCharacter);
-			newStatus->SetAffectedCharacter(AffectedCharacter);
-			newStatus->ExecuteStatus();
-		}
+		TSharedPtr<BaseStatusEffect> newStatus = MakeShared<BleedStatus>();
+		CurEffectList->Add(newStatus);
+		newStatus->SetOwningCharacter(OwningCharacter);
+		newStatus->SetAffectedCharacter(AffectedCharacter);
+		newStatus->ExecuteStatus();
 	}
 }
 
 Plant::Plant()
 {
 	ElementalName = "Plant";
+}
+
+void Plant::ApplyDrowsyEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup)
+{
+	if (AffectedCharacter) {
+		auto CurEffectList = AffectedCharacter->GetStatusList();
+		for (int i = 0; i < CurEffectList->Num(); ++i) {
+			TSharedPtr<BaseStatusEffect> value = (*CurEffectList)[i];
+			if (value.IsValid() && value->GetStatusName().IsEqual("Drowsy")) {
+				if (DrowsyStatus* ToDrowsy = StaticCast<DrowsyStatus*>(value.Get())) {
+					if (ToDrowsy->GetActivateStatus()) return;
+					ToDrowsy->BuildingUp(inBuildup);
+					return;
+				}
+			}
+		}
+		TSharedPtr<BaseStatusEffect> newStatus = MakeShared<DrowsyStatus>();
+		CurEffectList->Add(newStatus);
+		newStatus->SetOwningCharacter(OwningCharacter);
+		newStatus->SetAffectedCharacter(AffectedCharacter);
+		if (DrowsyStatus* ToDrowsy = StaticCast<DrowsyStatus*>(newStatus.Get()))
+			ToDrowsy->BuildingUp(inBuildup);
+	}
 }

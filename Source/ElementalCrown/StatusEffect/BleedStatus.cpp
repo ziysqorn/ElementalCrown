@@ -7,10 +7,6 @@ BleedStatus::BleedStatus() : BaseStatusEffect(TEXT("/Script/Paper2D.PaperSprite'
 	AffectingTime = 8.0f;
 }
 
-BleedStatus::~BleedStatus()
-{
-}
-
 void BleedStatus::ExecuteStatus()
 {
 	if (OwningCharacter && AffectedCharacter) {

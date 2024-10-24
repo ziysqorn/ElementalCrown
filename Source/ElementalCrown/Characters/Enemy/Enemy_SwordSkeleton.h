@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Enemy_Metal.h"
+#include "BaseEnemyCharacter.h"
 #include "Enemy_SwordSkeleton.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ELEMENTALCROWN_API AEnemy_SwordSkeleton : public AEnemy_Metal
+class ELEMENTALCROWN_API AEnemy_SwordSkeleton : public ABaseEnemyCharacter
 {
 	GENERATED_BODY()
 

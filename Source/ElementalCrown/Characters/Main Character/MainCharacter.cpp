@@ -128,7 +128,7 @@ void AMainCharacter::Move(const FInputActionValue& value)
 
 void AMainCharacter::Run()
 {
-	if (CurrentState != CharacterState::SLIDE && this->GetVelocity().Z == 0) {
+	if (CurrentState != CharacterState::NONE && this->GetVelocity().Z == 0) {
 		GetCharacterMovement()->GroundFriction = 0;
 		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
 	}
@@ -143,7 +143,7 @@ void AMainCharacter::StopMoving()
 
 void AMainCharacter::StopRunning()
 {
-	if (CurrentState!=CharacterState::SLIDE && this->GetVelocity().Z == 0) {
+	if (CurrentState != CharacterState::NONE && this->GetVelocity().Z == 0) {
 		GetCharacterMovement()->GroundFriction = 8;
 		GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
 	}
@@ -151,7 +151,7 @@ void AMainCharacter::StopRunning()
 
 void AMainCharacter::CustomCrouch()
 {
-	if (this->GetVelocity().Z == 0 && CurrentState != CharacterState::ATTACK && CurrentState!=CharacterState::SLIDE && CurrentState!=CharacterState::DODGE) {
+	if (this->GetVelocity().Z == 0 && CurrentState != CharacterState::NONE) {
 		if (abs(this->GetVelocity().X) == RunSpeed) {
 			AMainCharacter::Slide();
 		}
@@ -193,7 +193,7 @@ void AMainCharacter::StopSlide()
 
 void AMainCharacter::CustomJump()
 {
-	if (CurrentState != CharacterState::ATTACK) {
+	if (CurrentState == CharacterState::NONE) {
 		if (WallSliding) {
 			if (this->GetCharacterMovement()->MaxWalkSpeed == RunSpeed) {
 				GetCharacterMovement()->GroundFriction = 8;
@@ -287,7 +287,7 @@ void AMainCharacter::Shoot()
 
 void AMainCharacter::UseSkill()
 {
-	if (CharSkillList->IsValidIndex(CurSkillId) && (*CharSkillList)[CurSkillId].IsValid()) {
+	if (CurrentState == CharacterState :: NONE && CharSkillList->IsValidIndex(CurSkillId) && (*CharSkillList)[CurSkillId].IsValid()) {
 		(*CharSkillList)[CurSkillId]->SetOwningCharacter(this);
 		(*CharSkillList)[CurSkillId]->PerformSkill();
 	}

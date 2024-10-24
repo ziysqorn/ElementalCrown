@@ -41,7 +41,7 @@ public:
 	//Event Tick
 	virtual void Tick(float DeltaSeconds) override;
 	//Event taking damage
-	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	//Event landed
 	void Landed(const FHitResult& Hit) override;
 	//************************************* ACTIONS *********************************************************

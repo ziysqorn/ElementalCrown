@@ -30,7 +30,16 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 	if (CurrentState != CharacterState::HURT && CurrentState != CharacterState::DEATH)
 	{
 		if (CurrentHealth > 0) {
-			CurrentHealth -= (int)DamageAmount;
+			int FinalDamage = 0;
+			if (CurrentState == CharacterState::DROWSY) {
+				FinalDamage = (int)DamageAmount + (int)ceil(MaxHealth * 15.0 / 100.0);
+				for (int i = 0; i < StatusList->Num(); ++i) {
+					TSharedPtr<BaseStatusEffect> value = (*StatusList)[i];
+					if (value->GetStatusName() == "Drowsy") StatusList->RemoveAt(i);
+				}
+			}
+			else FinalDamage = (int)DamageAmount;
+			CurrentHealth -= FinalDamage;
 			if (CurrentHealth <= 0) {
 				CurrentState = CharacterState::DEATH;
 				GetWorldTimerManager().ClearAllTimersForObject(this);
@@ -55,7 +64,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 				SpawnParams.Owner = this;
 				if (AStatsPopout* stats = GetWorld()->SpawnActor<AStatsPopout>(StatsPopoutSubclass, this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
 					if (UStatsPopoutUI* statsUI = stats->GetStatsPopoutUI()) {
-						FText inText = FText::FromString(FString::FromInt((int)DamageAmount));
+						FText inText = FText::FromString(FString::FromInt(FinalDamage));
 						statsUI->SetText(inText);
 					}
 				}

@@ -18,6 +18,6 @@ protected:
 	float TimeElapsed = 0.0f;
 public:
 	BurnStatus();
-	~BurnStatus() override;
+	~BurnStatus() override {};
 	void ExecuteStatus() override;
 };

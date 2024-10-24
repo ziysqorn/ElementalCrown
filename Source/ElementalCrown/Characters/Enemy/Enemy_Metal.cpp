@@ -8,12 +8,21 @@ AEnemy_Metal::AEnemy_Metal()
 float AEnemy_Metal::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (CurrentHealth > 0) {
-		if (IGameplayInterface* CauserInteface = Cast<IGameplayInterface>(DamageCauser)) {
-			if (Elemental* CauserElemental = CauserInteface->GetElemental()) {
-				if (CauserElemental->GetName().IsEqual("Fire")) DamageAmount = ceil(DamageAmount * 1.5f);
+		int FinalDamage = 0;
+		if (CurrentState == CharacterState::DROWSY) {
+			FinalDamage = (int)DamageAmount + (int)ceil(MaxHealth * 15.0 / 100.0);
+			for (int i = 0; i < StatusList->Num(); ++i) {
+				TSharedPtr<BaseStatusEffect> value = (*StatusList)[i];
+				if (value->GetStatusName() == "Drowsy") StatusList->RemoveAt(i);
 			}
 		}
-		CurrentHealth -= (int)DamageAmount;
+		else FinalDamage = (int)DamageAmount;
+		if (IGameplayInterface* CauserInteface = Cast<IGameplayInterface>(DamageCauser)) {
+			if (Elemental* CauserElemental = CauserInteface->GetElemental()) {
+				if (CauserElemental->GetName().IsEqual("Fire")) FinalDamage += (int)ceil(DamageAmount * 1.5f);
+			}
+		}
+		CurrentHealth = CurrentHealth - FinalDamage;
 		if (CurrentHealth <= 0) {
 			CurrentState = CharacterState::DEATH;
 			GetWorldTimerManager().ClearAllTimersForObject(this);
@@ -45,7 +54,7 @@ float AEnemy_Metal::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 			SpawnParams.Owner = this;
 			if (AStatsPopout* stats = GetWorld()->SpawnActor<AStatsPopout>(StatsPopoutSubclass, this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
 				if (UStatsPopoutUI* statsUI = stats->GetStatsPopoutUI()) {
-					FText inText = FText::FromString(FString::FromInt((int)DamageAmount));
+					FText inText = FText::FromString(FString::FromInt(FinalDamage));
 					statsUI->SetText(inText);
 				}
 			}

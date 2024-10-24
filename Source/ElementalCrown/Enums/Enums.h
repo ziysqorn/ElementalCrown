@@ -14,7 +14,8 @@ enum class CharacterState : uint8
 	SLIDE UMETA(DisplayName = "Sliding"),
 	DODGE UMETA(DisplayName = "Dodging"),
 	HURT UMETA(DisplayName = "Hurt"),
-	STUNNED UMETA(DisplayName = "Stunned"),
-	DEATH UMETA(DisplayName = "Dead")
+	DEATH UMETA(DisplayName = "Dead"),
+	DROWSY UMETA(DisplayName = "Drowsy"),
+	STUN UMETA(DisplayName = "Stun"),
 };
 

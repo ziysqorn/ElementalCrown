@@ -15,6 +15,6 @@ protected:
 	float TimeElapsed = 0.0f;
 public:
 	BleedStatus();
-	~BleedStatus() override;
+	~BleedStatus() override {};
 	void ExecuteStatus() override;
 };

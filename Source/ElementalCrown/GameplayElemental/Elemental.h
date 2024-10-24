@@ -6,6 +6,8 @@
 #include "../ProjectIncludes.h"
 #include "../StatusEffect/BurnStatus.h"
 #include "../StatusEffect/BleedStatus.h"
+#include "../StatusEffect/DrowsyStatus.h"
+#include "../StatusEffect/StunStatus.h"
 
 /**
  * 
@@ -44,6 +46,7 @@ public:
 class Earth : public Elemental {
 public:
 	Earth();
+	void ApplyStunEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup);
 };
 class Metal : public Elemental {
 public:
@@ -53,6 +56,7 @@ public:
 class Plant : public Elemental {
 public:
 	Plant();
+	void ApplyDrowsyEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup);
 };
 
 

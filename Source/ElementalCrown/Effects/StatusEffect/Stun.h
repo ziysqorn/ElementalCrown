@@ -3,12 +3,13 @@
 #include "CoreMinimal.h"
 #include "../../ProjectIncludes.h"
 #include "BaseStatus.h"
-#include "Drowsy.generated.h"
+#include "Stun.generated.h"
 
 UCLASS()
-class ELEMENTALCROWN_API ADrowsy : public ABaseStatus {
+class ELEMENTALCROWN_API AStun : public ABaseStatus
+{
 	GENERATED_BODY()
 
 public:
-	ADrowsy();
+	AStun();
 };

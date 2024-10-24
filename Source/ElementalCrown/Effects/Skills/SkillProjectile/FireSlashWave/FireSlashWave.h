@@ -12,4 +12,5 @@ public:
 	//Constructor
 	AFireSlashWave();
 	void SpawnExplosion() override;
+	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor) override;
 };

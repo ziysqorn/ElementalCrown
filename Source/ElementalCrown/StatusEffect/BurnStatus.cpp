@@ -10,10 +10,6 @@ BurnStatus::BurnStatus() : BaseStatusEffect(TEXT("/Script/Paper2D.PaperSprite'/G
 	AffectingTime = 4.0f;
 }
 
-BurnStatus::~BurnStatus()
-{
-}
-
 void BurnStatus::ExecuteStatus()
 {
 	if (OwningCharacter && AffectedCharacter) {

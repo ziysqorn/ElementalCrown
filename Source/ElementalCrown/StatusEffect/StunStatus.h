@@ -4,22 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "BaseStatusEffect.h"
-#include "../Effects/StatusEffect/Drowsy.h"
+#include "../Effects/StatusEffect/Stun.h"
 
 /**
  *
  */
 
-class ELEMENTALCROWN_API DrowsyStatus : public BaseStatusEffect
+class ELEMENTALCROWN_API StunStatus : public BaseStatusEffect
 {
 protected:
-	ADrowsy* DrowsyEffect = nullptr;
+	AStun* StunEffect = nullptr;
+	float TimeElapsed = 0.0f;
 	float BuildupToFill = 10.0f;
 	float CurrentProgress = 0.0f;
 	bool isActivated = false;
 public:
-	DrowsyStatus();
-	~DrowsyStatus() override;
+	StunStatus();
+	~StunStatus() override;
 	bool GetActivateStatus() { return isActivated; }
 	void BuildingUp(const float& inBuildup);
 	void ExecuteStatus() override;
