@@ -10,7 +10,8 @@ AFireTornadoProjectile::AFireTornadoProjectile() : ASkillProjectile(TEXT("/Scrip
 		ProjectileMovement->MaxSpeed = 350.00f;
 	}
 	this->DestroyDelay = 2.00f;
-	EffectElement = new Fire();
+	this->BuildupAmount = 10.0f;
+	EffectElement = CreateDefaultSubobject<UEarth>(FName("EffectElement"));
 	this->OnActorBeginOverlap.AddDynamic(this, &AFireTornadoProjectile::BeginOverlap);
 }
 

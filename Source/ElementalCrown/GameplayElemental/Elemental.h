@@ -8,6 +8,9 @@
 #include "../StatusEffect/BleedStatus.h"
 #include "../StatusEffect/DrowsyStatus.h"
 #include "../StatusEffect/StunStatus.h"
+#include "../StatusEffect/VulnerableStatus.h"
+#include "../UI/StatusEffectProgressUI/StatusEffectProgressUI.h"
+#include "Elemental.generated.h"
 
 /**
  * 
@@ -15,48 +18,65 @@
 
 class BaseCharacter;
 
-class ELEMENTALCROWN_API Elemental
+UCLASS()
+class ELEMENTALCROWN_API UElemental : public UObject
 {
+	GENERATED_BODY()
 protected:
 	//Elemental name
 	FName ElementalName;
-	ABaseCharacter* OwningCharacter;
-	int ApplyEffectChanceRange = 0;
+	TSubclassOf<UStatusEffectProgressUI> StatusProgressUISubClass;
 public:
 	//Constructor
-	Elemental();
-	//Destructor
-	virtual ~Elemental();
-	virtual void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) {}
-	void SetOwningCharacter(ABaseCharacter* Character) {
-		if (Character) OwningCharacter = Character;
-	}
+	UElemental();
+	UElemental(const TCHAR* Ref);
+	virtual void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) {}
 	FName GetName() { return ElementalName; }
 };
-class Fire :public Elemental {
+
+
+UCLASS()
+class UFire :public UElemental {
+	GENERATED_BODY()
 public:
-	Fire();
-	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) override;
+	UFire();
+	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
 };
-class Water :public Elemental {
+
+
+UCLASS()
+class UWater :public UElemental {
+	GENERATED_BODY()
 public:
-	Water();
-	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) override;
+	UWater();
+	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
 };
-class Earth : public Elemental {
+
+
+UCLASS()
+class UEarth : public UElemental {
+	GENERATED_BODY()
 public:
-	Earth();
-	void ApplyStunEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup);
+	UEarth();
+	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
 };
-class Metal : public Elemental {
+
+
+UCLASS()
+class UMetal : public UElemental {
+	GENERATED_BODY()
 public:
-	Metal();
-	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter) override;
+	UMetal();
+	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
 };
-class Plant : public Elemental {
+
+
+UCLASS()
+class UPlant : public UElemental {
+	GENERATED_BODY()
 public:
-	Plant();
-	void ApplyDrowsyEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup);
+	UPlant();
+	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
 };
 
 

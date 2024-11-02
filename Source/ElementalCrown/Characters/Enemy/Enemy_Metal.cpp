@@ -2,29 +2,35 @@
 
 AEnemy_Metal::AEnemy_Metal()
 {
-	CharacterElement = MakeShared<Metal>();
+	CharacterElement = CreateDefaultSubobject<UMetal>(TEXT("CharacterElement"));
 }
 
 float AEnemy_Metal::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (CurrentHealth > 0) {
-		int FinalDamage = 0;
-		if (CurrentState == CharacterState::DROWSY) {
-			FinalDamage = (int)DamageAmount + (int)ceil(MaxHealth * 15.0 / 100.0);
-			for (int i = 0; i < StatusList->Num(); ++i) {
-				TSharedPtr<BaseStatusEffect> value = (*StatusList)[i];
-				if (value->GetStatusName() == "Drowsy") StatusList->RemoveAt(i);
+		int FinalDamage = (int)DamageAmount;
+		for (int i = 0; i < StatusList->Num(); ++i) {
+			if (!IsValid((*StatusList)[i])) continue;
+			if ((*StatusList)[i]->GetActivateStatus()) {
+				if ((*StatusList)[i]->GetStatusName().IsEqual("Drowsy")) {
+					FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+					(*StatusList)[i]->RemoveStatusFromList(i);
+				}
+				else if ((*StatusList)[i]->GetStatusName().IsEqual("Vulnerable")) {
+					FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+				}
 			}
 		}
-		else FinalDamage = (int)DamageAmount;
 		if (IGameplayInterface* CauserInteface = Cast<IGameplayInterface>(DamageCauser)) {
-			if (Elemental* CauserElemental = CauserInteface->GetElemental()) {
+			if (UElemental* CauserElemental = CauserInteface->GetElemental()) {
 				if (CauserElemental->GetName().IsEqual("Fire")) FinalDamage += (int)ceil(DamageAmount * 1.5f);
 			}
 		}
 		CurrentHealth = CurrentHealth - FinalDamage;
 		if (CurrentHealth <= 0) {
+			this->ClearAllStatusEffect();
 			CurrentState = CharacterState::DEATH;
+			GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 			GetWorldTimerManager().ClearAllTimersForObject(this);
 			if (DeathSequence) {
 				GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
@@ -35,7 +41,7 @@ float AEnemy_Metal::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		else {
 			FlashTimeline.PlayFromStart();
 			if (HurtSequence) {
-				if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT) {
+				if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN) {
 					CurrentState = CharacterState::HURT;
 				}
 				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this, EventInstigator]() {

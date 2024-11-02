@@ -6,8 +6,9 @@
 #include "../ProjectIncludes.h"
 #include "../GameplayElemental/Elemental.h"
 #include "../Skill/BaseSkill.h"
-#include "../UI/Elemental/ElementalSlot.h"
+#include "../StatusEffect/BaseStatusEffect.h"
 #include "../UI/Skill/SkillSlot.h"
+#include "../UI/StatusEffectProgressUI/StatusEffectProgressUI.h"
 #include "../Characters/Main Character/MainCharacter.h"
 #include "MainCharacterHUD.generated.h"
 
@@ -22,27 +23,34 @@ class ELEMENTALCROWN_API UMainCharacterHUD : public UUserWidget
 protected:
 	TSharedPtr<TArray<TSharedPtr<BaseSkill>>> HUDSkillList;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
-	UHorizontalBox* ElementalSlotBox = nullptr;
-	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
-	UVerticalBox* VerBox_SkillSlotBox = nullptr;
+	UHorizontalBox* HorBox_SkillSlotBox = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UTextBlock* Txt_Coin = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UProgressBar* ProgBar_HPBar = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UProgressBar* ProgBar_ManaBar = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
+	UTextBlock* Txt_SkillName = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
+	UVerticalBox* VerBox_StatusProgress = nullptr;
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Elemental Slot SubClass")
-	TSubclassOf<UElementalSlot> ElementalSlotSubClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Slot SubClass")
 	TSubclassOf<USkillSlot> SkillSlotSubClass;
-	UHorizontalBox* GetElementalSlotBox() { return ElementalSlotBox; }
-	UVerticalBox* GetSkillSlotBox() { return VerBox_SkillSlotBox; }
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effect Progress SubClass")
+	TSubclassOf<UStatusEffectProgressUI> StatusEffectProgressSubClass;
+	UHorizontalBox* GetSkillSlotBox() { return HorBox_SkillSlotBox; }
+	UStatusEffectProgressUI* GetStatusProgressUI(const int& idx) {
+		return Cast<UStatusEffectProgressUI>(VerBox_StatusProgress->GetChildAt(idx));
+	}
 	void SetupHUD();
-	void SetupSkillSlotBox(TSharedPtr<TArray<TSharedPtr<BaseSkill>>> list);
+	void SetupSkillSlotBox(TArray<TSharedPtr<BaseSkill>>* list);
 	void SetCoinText(FText inText) {
 		Txt_Coin->SetText(inText);
 	};
+	void SetSkillName(FText inText) {
+		Txt_SkillName->SetText(inText);
+	}
 	void SetHPBar(float inPercent) {
 		ProgBar_HPBar->SetPercent(inPercent);
 	}
@@ -50,6 +58,8 @@ public:
 		ProgBar_ManaBar->SetPercent(inPercent);
 	}
 	void UpdateSkillCountdownProgUI(BaseSkill* Skill, const float& inPercentage);
+	void AddStatsEffectToVerBox(UUserWidget* StatsEffect);
+	void RemoveStatsEffectFromVerBox(int removedIdx);
 	void ShowSkillLoaderUI(BaseSkill* Skill);
 	void HideSkillLoaderUI(BaseSkill* Skill);
 	void SwitchedSlotHighlight(int SwitchedNodeId);

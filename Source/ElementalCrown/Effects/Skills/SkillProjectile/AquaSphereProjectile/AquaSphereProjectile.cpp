@@ -9,7 +9,8 @@ AAquaSphereProjectile::AAquaSphereProjectile() : ASkillProjectile(TEXT("/Script/
 		ProjectileMovement->InitialSpeed = 500;
 		ProjectileMovement->MaxSpeed = 500;
 	}
-	EffectElement = new Water();
+	EffectElement = CreateDefaultSubobject<UWater>(FName("EffectElement"));
+	BuildupAmount = 10.0f;
 	FlipbookComponent->SetLooping(false);
 	this->OnActorBeginOverlap.AddDynamic(this, &AAquaSphereProjectile::BeginOverlap);
 	FlipbookComponent->OnFinishedPlaying.AddDynamic(this, &AAquaSphereProjectile::SetLoopAtRightPos);

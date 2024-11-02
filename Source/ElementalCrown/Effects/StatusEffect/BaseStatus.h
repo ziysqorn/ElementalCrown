@@ -12,5 +12,5 @@ protected:
 	UPaperFlipbookComponent* StatusFlipbookComp = nullptr;
 public:
 	ABaseStatus();
-	ABaseStatus(const TCHAR* FlipbookRef);
+	ABaseStatus(const TCHAR* FlipbookRef, bool isCustom);
 };

@@ -24,15 +24,12 @@ ASkillEffect::ASkillEffect(const TCHAR* Ref)
 		FlipbookComponent->SetFlipbook(Flipbook);
 	}
 	FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
 	FlipbookComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 }
 
 ASkillEffect::~ASkillEffect()
 {
-	if (EffectElement) {
-		delete EffectElement;
-		EffectElement = nullptr;
-	}
 }
 
 // Called when the game starts or when spawned

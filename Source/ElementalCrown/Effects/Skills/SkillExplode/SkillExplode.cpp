@@ -27,8 +27,7 @@ void ASkillExplode::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 			UGameplayStatics::ApplyDamage(OtherActor, SkillDamage, OwningCharacter->GetController(), this, DamageType);
 			if (EffectElement) {
 				if (ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor)) {
-					EffectElement->SetOwningCharacter(OwningCharacter);
-					EffectElement->ApplyStatusEffect(Character);
+					EffectElement->ApplyStatusEffect(Character, BuildupAmount);
 				}
 			}
 		}

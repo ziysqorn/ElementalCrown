@@ -6,7 +6,8 @@ AFireEnergyProjectile::AFireEnergyProjectile() : ASkillProjectile(TEXT("/Script/
 		ProjectileMovement->InitialSpeed = 500;
 		ProjectileMovement->MaxSpeed = 500;
 	}
-	EffectElement = new Fire();
+	EffectElement = CreateDefaultSubobject<UFire>(FName("EffectElement"));
+	BuildupAmount = 10.0f;
 	this->OnActorBeginOverlap.AddDynamic(this, &AFireEnergyProjectile::BeginOverlap);
 }
 

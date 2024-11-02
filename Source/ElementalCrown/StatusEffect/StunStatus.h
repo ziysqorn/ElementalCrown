@@ -5,23 +5,18 @@
 #include "CoreMinimal.h"
 #include "BaseStatusEffect.h"
 #include "../Effects/StatusEffect/Stun.h"
+#include "StunStatus.generated.h"
 
 /**
  *
  */
 
-class ELEMENTALCROWN_API StunStatus : public BaseStatusEffect
+UCLASS()
+class ELEMENTALCROWN_API UStunStatus : public UBaseStatusEffect
 {
-protected:
-	AStun* StunEffect = nullptr;
-	float TimeElapsed = 0.0f;
-	float BuildupToFill = 10.0f;
-	float CurrentProgress = 0.0f;
-	bool isActivated = false;
+	GENERATED_BODY()
 public:
-	StunStatus();
-	~StunStatus() override;
-	bool GetActivateStatus() { return isActivated; }
-	void BuildingUp(const float& inBuildup);
+	UStunStatus();
+	void BeginDestroy() override;
 	void ExecuteStatus() override;
 };

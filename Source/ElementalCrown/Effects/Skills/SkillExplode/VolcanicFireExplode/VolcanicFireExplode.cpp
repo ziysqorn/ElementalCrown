@@ -6,7 +6,8 @@
 AVolcanicFireExplode::AVolcanicFireExplode() : ASkillExplode(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Explosion/VolcanicFireExplosion/Effect_Skill_VolcanicFireExplosion.Effect_Skill_VolcanicFireExplosion'"))
 {
 	this->OnActorBeginOverlap.AddDynamic(this, &AVolcanicFireExplode::BeginOverlap);
-	EffectElement = new Fire();
+	EffectElement = CreateDefaultSubobject<UFire>(FName("EffectElement"));
+	BuildupAmount = 5.0f;
 }
 
 void AVolcanicFireExplode::BeginPlay()

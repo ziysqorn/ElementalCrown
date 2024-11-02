@@ -24,8 +24,6 @@ protected:
 	UBorder* LoadBorder = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
 	UImage* RoundProgressBar = nullptr;
-	UPROPERTY(BlueprintReadOnly, Category = "SkillSlot", meta = (BindWidget))
-	UTextBlock* SkillName = nullptr;
 public:
 	UImage* GetIcon() { return SkillIcon; }
 	void ShowOutline() {
@@ -45,8 +43,5 @@ public:
 			if (UMaterialInstanceDynamic* MaterialIns = RoundProgressBar->GetDynamicMaterial())
 				MaterialIns->SetScalarParameterValue("Percentage", inPercentage);
 		}
-	}
-	void SetSkillNameText(FText inText) {
-		SkillName->SetText(inText);
 	}
 };

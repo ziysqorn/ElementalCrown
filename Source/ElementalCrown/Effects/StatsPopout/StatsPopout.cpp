@@ -22,17 +22,16 @@ void AStatsPopout::BeginPlay()
 				AActor* owner = this->GetOwner();
 				UStatsPopoutUI* statsUI = this->GetStatsPopoutUI();
 				FVector ActorLocation = owner->GetActorLocation();
-				FVector newPosition = FVector(ActorLocation.X + 50.0f * Value, 0.0f, ActorLocation.Z + 50.0f * Value);
+				FVector newPosition = FVector(ActorLocation.X + 60.0f * Value, 0.0f, ActorLocation.Z + 60.0f * Value);
 				this->SetActorLocation(newPosition);
-				statsUI->SetRenderOpacity(FMath::Lerp(1.0f, 0.0f, Value));
-
+				//statsUI->SetRenderOpacity(FMath::Lerp(1.0f, 0.0f, Value));
 			}
 			}));
 	}
 	StatsPopoutTimeline.PlayFromStart();
 	GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
 		this->Destroy();
-	}), 1.25f, false);
+	}), 1.0f, false);
 }
 
 void AStatsPopout::Tick(float DeltaSeconds)

@@ -42,6 +42,7 @@ void AMainCharacter::BeginPlay()
 			MainHUD->SwitchedSlotHighlight(CurSkillId);
 		}
 	}
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
 }
 
 void AMainCharacter::Tick(float DeltaSeconds)

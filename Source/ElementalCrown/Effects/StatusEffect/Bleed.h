@@ -9,9 +9,11 @@ UCLASS()
 class ELEMENTALCROWN_API ABleed : public ABaseStatus
 {
 	GENERATED_BODY()
-
+protected:
+	FTimerHandle DestroyHandle;
 public:
 	ABleed();
+	void BeginPlay() override;
 	void BloodSpray() {
 		StatusFlipbookComp->PlayFromStart();
 	}

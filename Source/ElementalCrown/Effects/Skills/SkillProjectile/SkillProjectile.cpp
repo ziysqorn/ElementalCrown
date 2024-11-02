@@ -41,8 +41,7 @@ void ASkillProjectile::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 			UGameplayStatics::ApplyDamage(OtherActor, SkillDamage, OwningCharacter->GetController(), this, DamageType);
 			if (EffectElement) {
 				if (ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor)) {
-					EffectElement->SetOwningCharacter(OwningCharacter);
-					EffectElement->ApplyStatusEffect(Character);
+					EffectElement->ApplyStatusEffect(Character, BuildupAmount);
 				}
 			}
 		}
@@ -53,6 +52,7 @@ void ASkillProjectile::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 
 void ASkillProjectile::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (OtherComp->GetCollisionObjectType() == ECC_GameTraceChannel1) return;
 	this->SpawnExplosion();
 	this->Destroy();
 }

@@ -1,46 +1,42 @@
 #include "StunStatus.h"
 #include "../Characters/BaseCharacter/BaseCharacter.h"
 
-StunStatus::StunStatus()
+UStunStatus::UStunStatus()
 {
 	StatusName = "Stun";
 	AffectingTime = 2.5f;
+	TimeForAReset = 0.3f;
 }
 
-StunStatus::~StunStatus()
+void UStunStatus::BeginDestroy()
 {
-	if (StunEffect) StunEffect->Destroy();
-	if (AffectedCharacter) AffectedCharacter->SetCharacterState(CharacterState::NONE);
-}
+	Super::BeginDestroy();
 
-void StunStatus::BuildingUp(const float& inBuildup)
-{
-	CurrentProgress += inBuildup;
-	if (CurrentProgress >= BuildupToFill) {
-		isActivated = true;
-		this->ExecuteStatus();
+	auto StatusList = AffectedCharacter->GetStatusList();
+	for (int i = 0; i < StatusList->Num(); ++i) {
+		if ((*StatusList)[i]->GetStatusName().IsEqual("Drowsy")) return;
 	}
+	if (AffectedCharacter->GetCharacterState() != CharacterState::DEATH)
+		AffectedCharacter->SetCharacterState(CharacterState::NONE);
+
 }
 
-void StunStatus::ExecuteStatus()
+void UStunStatus::ExecuteStatus()
 {
 	if (OwningCharacter && AffectedCharacter) {
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = OwningCharacter;
-		StunEffect = AffectedCharacter->GetWorld()->SpawnActor<AStun>(AStun::StaticClass(), AffectedCharacter->GetActorLocation(), AffectedCharacter->GetActorRotation(), SpawnParams);
-		if (StunEffect) {
-			StunEffect->AttachToActor(AffectedCharacter, FAttachmentTransformRules::KeepRelativeTransform);
-			StunEffect->SetActorRelativeLocation(FVector(-15.0f, 0.0f, 55.0f));
-			StunEffect->SetActorRelativeScale3D(FVector(2.0f, 0.0f, 2.0f));
-			StunEffect->SetActorRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
-			AffectedCharacter->SetCharacterState(CharacterState::STUN);
-			AffectedCharacter->GetWorldTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this]() {
-				auto CurStatusList = AffectedCharacter->GetStatusList();
-				for (int i = 0; i < CurStatusList->Num(); ++i) {
-					TSharedPtr<BaseStatusEffect> cur = (*CurStatusList)[i];
-					if (cur->GetStatusName() == "Stun") CurStatusList->RemoveAt(i);
-				}
-				}), AffectingTime, false);
+		StatusEffectActor = AffectedCharacter->GetWorld()->SpawnActor<AStun>(AStun::StaticClass(), AffectedCharacter->GetActorLocation(), AffectedCharacter->GetActorRotation(), SpawnParams);
+		if (StatusEffectActor) {
+			StatusEffectActor->AttachToActor(AffectedCharacter, FAttachmentTransformRules::KeepRelativeTransform);
+			StatusEffectActor->SetActorRelativeLocation(FVector(-15.0f, 0.0f, 55.0f));
+			StatusEffectActor->SetActorRelativeScale3D(FVector(2.0f, 0.0f, 2.0f));
+			//StunEffect->SetActorRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+			if (AffectedCharacter->GetCharacterState() != CharacterState::DEATH) AffectedCharacter->SetCharacterState(CharacterState::STUN);
+			GetWorld()->GetTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this]() {
+				TimeElapsed += 0.1f;
+				if (TimeElapsed >= AffectingTime) this->RemoveStatusFromList();
+			}), 0.1f, true);
 		}
 	}
 }

@@ -20,8 +20,9 @@ class ELEMENTALCROWN_API ABaseCharacter : public APaperZDCharacter, public IGame
 {
 	GENERATED_BODY()
 protected:
-	TSharedPtr<Elemental> CharacterElement;
-	TSharedPtr<TArray<TSharedPtr<BaseStatusEffect>>> StatusList;
+	UPROPERTY()
+	UElemental* CharacterElement = nullptr;
+	TSharedPtr<TArray<UBaseStatusEffect*>> StatusList;
 	//Character's base stats
 	int MaxHealth{ Default_Character_MaxHealth };
 	int MaxMana{ Default_Character_MaxMana };
@@ -84,10 +85,10 @@ public:
 		return (float)CurrentMana / MaxMana;
 	}
 
-	Elemental* GetElemental() override { return CharacterElement.Get(); }
+	UElemental* GetElemental() override { return CharacterElement; }
 	CharacterState GetCharacterState() { return CurrentState; }
 	FTimerHandle& GetHitStopHandle() { return HitStopHandle; }
-	TSharedPtr<TArray<TSharedPtr<BaseStatusEffect>>> GetStatusList() { return StatusList; }
+	TSharedPtr<TArray<UBaseStatusEffect*>> GetStatusList() { return StatusList; }
 
 
 	//Set character's current state
@@ -158,5 +159,12 @@ public:
 	void SetManaAfterConsume(const int& Amount) {
 		CurrentMana -= Amount;
 		CurrentMana < 0 ? this->CurrentMana = 0 : this->CurrentMana = this->CurrentMana;
+	}
+	void ClearAllStatusEffect() {
+		for (int i = 0; i < StatusList->Num(); ++i) {
+			UBaseStatusEffect* Cur = (*StatusList)[i];
+			StatusList->RemoveAt(i);
+			Cur->ConditionalBeginDestroy();
+		}
 	}
 };

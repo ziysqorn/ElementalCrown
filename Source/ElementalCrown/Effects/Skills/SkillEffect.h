@@ -15,10 +15,14 @@ class ELEMENTALCROWN_API ASkillEffect : public AActor, public IGameplayInterface
 protected:
 	float SkillDamage{ 2.00f };
 
-	UPaperFlipbookComponent* FlipbookComponent = nullptr;
-	UPaperFlipbook* Flipbook = nullptr;
+	float BuildupAmount;
 
-	Elemental* EffectElement = nullptr;
+	UPROPERTY()
+	UPaperFlipbookComponent* FlipbookComponent = nullptr;
+	UPROPERTY()
+	UPaperFlipbook* Flipbook = nullptr;
+	UPROPERTY()
+	UElemental* EffectElement = nullptr;
 
 	//********************* TIMER HANDLES **************************
 	FTimerHandle DestroyHandle;
@@ -27,7 +31,7 @@ public:
 	ASkillEffect();
 	ASkillEffect(const TCHAR* Ref);
 	~ASkillEffect();
-	Elemental* GetElemental() override { return EffectElement; }
+	UElemental* GetElemental() override { return EffectElement; }
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	//Event On actor begin overlap

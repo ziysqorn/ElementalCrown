@@ -19,7 +19,6 @@ protected:
 	int ManaConsumption{3};
 	//This skill's owner
 	ABaseCharacter* OwningCharacter = nullptr;
-	Elemental* SkillElement = nullptr;
 	//Return true if this skill can be used
 	bool isAvailable{ true };
 
