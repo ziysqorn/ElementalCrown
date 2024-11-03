@@ -4,28 +4,38 @@
 #include "BurnStatus.h"
 #include "../Characters/BaseCharacter/BaseCharacter.h"
 
-UBurnStatus::UBurnStatus()
+BurnStatus::BurnStatus()
 {
 	StatusName = "Burn";
 	AffectingTime = 4.0f;
 	TimeForAReset = 0.3f;
 }
 
-void UBurnStatus::ExecuteStatus()
+void BurnStatus::ExecuteStatus()
 {
-	if (OwningCharacter && AffectedCharacter) {
+	if (OwningChar && AffectedChar) {
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = OwningCharacter;
-		StatusEffectActor = AffectedCharacter->GetWorld()->SpawnActor<ABurn>(ABurn::StaticClass(), FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
+		SpawnParams.Owner = OwningChar;
+		StatusEffectActor = AffectedChar->GetWorld()->SpawnActor<ABurn>(ABurn::StaticClass(), FVector(0.0f, 0.0f, 5.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
 		if (StatusEffectActor) {
-			StatusEffectActor->AttachToActor(AffectedCharacter, FAttachmentTransformRules::KeepRelativeTransform);
-			isActivated = true;
-			GetWorld()->GetTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this]() {
-				if (OwningCharacter && AffectedCharacter) {
+			StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);
+
+			UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp();
+			UStatusEffectProgressUI* ProgressUI = EffectComponent->GetProgressUI(this);
+			EffectComponent->GetWorld()->GetTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this, EffectComponent, ProgressUI]() {
+				if (this && OwningChar && AffectedChar && EffectComponent) {
 					TSubclassOf<UDamageType> DamageType;
-					UGameplayStatics::ApplyDamage(AffectedCharacter, BurnDamage, OwningCharacter->GetController(), OwningCharacter, DamageType);
+					UGameplayStatics::ApplyDamage(AffectedChar, BurnDamage, OwningChar->GetController(), StatusEffectActor, DamageType);
 					TimeElapsed += TimeBetweenEachBurn;
-					if (TimeElapsed >= AffectingTime) this->RemoveStatusFromList();
+					if (TimeElapsed >= AffectingTime) {
+						EffectComponent->RemoveStatusEffect(this);
+						return;
+					}
+					if(ProgressUI) ProgressUI->GetProgressBar()->SetPercent(GetTimePercentage());
+				}
+				else {
+					EffectComponent->RemoveStatusEffect(this);
+					return;
 				}
 				}), TimeBetweenEachBurn, true);
 		}

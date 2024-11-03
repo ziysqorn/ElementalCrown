@@ -5,23 +5,16 @@
 #include "CoreMinimal.h"
 #include "BaseStatusEffect.h"
 #include "../Effects/StatusEffect/Burn.h"
-#include "BurnStatus.generated.h"
 
 /**
  * 
  */
-
-UCLASS()
-class ELEMENTALCROWN_API UBurnStatus : public UBaseStatusEffect
+class ELEMENTALCROWN_API BurnStatus : public BaseStatusEffect
 {
-	GENERATED_BODY()
 protected:
-	UPROPERTY()
 	int BurnDamage = 1;
-
-	UPROPERTY()
 	float TimeBetweenEachBurn = 0.5f;
 public:
-	UBurnStatus();
+	BurnStatus();
 	void ExecuteStatus() override;
 };

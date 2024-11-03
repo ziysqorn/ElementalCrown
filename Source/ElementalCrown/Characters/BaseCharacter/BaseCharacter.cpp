@@ -5,7 +5,7 @@
 
 ABaseCharacter::ABaseCharacter()
 {
-	StatusList = MakeShared<TArray<UBaseStatusEffect*>>();
+	StatusEffectComponent = CreateDefaultSubobject<UStatusEffectComponent>(TEXT("StatusEffectComponent"));
 }
 
 void ABaseCharacter::BeginPlay()
@@ -17,7 +17,7 @@ void ABaseCharacter::BeginPlay()
 			DynamicMaterial->SetScalarParameterValue("FlashMultiplier", Value);
 		}));
 	}
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 }
 
 void ABaseCharacter::Tick(float DeltaSeconds)
@@ -30,21 +30,18 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 {
 	if (CurrentHealth > 0) {
 		int FinalDamage = (int)DamageAmount;
-		for (int i = 0; i < StatusList->Num(); ++i) {
-			if (!IsValid((*StatusList)[i])) continue;
-			if ((*StatusList)[i]->GetActivateStatus()) {
-				if ((*StatusList)[i]->GetStatusName().IsEqual("Drowsy")) {
-					FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
-					(*StatusList)[i]->RemoveStatusFromList(i);
-				}
-				else if ((*StatusList)[i]->GetStatusName().IsEqual("Vulnerable")) {
-					FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
-				}
+		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Drowsy")) {
+			if (Effect->GetActivateStatus()) {
+				FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+				StatusEffectComponent->RemoveStatusEffect(Effect);
 			}
+		}
+		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
+			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
 		}
 		CurrentHealth -= FinalDamage;
 		if (CurrentHealth <= 0) {
-			this->ClearAllStatusEffect();
+			StatusEffectComponent->ClearAllStatusEffect();
 			CurrentState = CharacterState::DEATH;
 			GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 			GetWorldTimerManager().ClearAllTimersForObject(this);
@@ -55,7 +52,8 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 			}
 		}
 		else {
-			CurrentState = CharacterState::HURT;
+			ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
+			if(!StatusEffect) CurrentState = CharacterState::HURT;
 			FlashTimeline.PlayFromStart();
 			if (HurtSequence) {
 				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {

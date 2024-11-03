@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "../../ProjectIncludes.h"
 #include "../../GameplayElemental/Elemental.h"
-#include "../../StatusEffect/BaseStatusEffect.h"
+#include "../../StatusEffect/StatusEffectComponent.h"
 #include "../../Effects/StatsPopout/StatsPopout.h"
 #include "../../Interface/GameplayInterface.h"
 #include "BaseCharacter.generated.h"
@@ -22,7 +22,6 @@ class ELEMENTALCROWN_API ABaseCharacter : public APaperZDCharacter, public IGame
 protected:
 	UPROPERTY()
 	UElemental* CharacterElement = nullptr;
-	TSharedPtr<TArray<UBaseStatusEffect*>> StatusList;
 	//Character's base stats
 	int MaxHealth{ Default_Character_MaxHealth };
 	int MaxMana{ Default_Character_MaxMana };
@@ -51,6 +50,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Stats pop out subclass")
 	TSubclassOf<AStatsPopout> StatsPopoutSubclass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Status effect manager component")
+	UStatusEffectComponent* StatusEffectComponent = nullptr;
 
 	FTimerHandle HurtHandle;
 	FTimerHandle DeathHandle;
@@ -85,10 +87,18 @@ public:
 		return (float)CurrentMana / MaxMana;
 	}
 
-	UElemental* GetElemental() override { return CharacterElement; }
-	CharacterState GetCharacterState() { return CurrentState; }
-	FTimerHandle& GetHitStopHandle() { return HitStopHandle; }
-	TSharedPtr<TArray<UBaseStatusEffect*>> GetStatusList() { return StatusList; }
+	UElemental* GetElemental() override { 
+		return CharacterElement; 
+	}
+	CharacterState GetCharacterState() { 
+		return CurrentState; 
+	}
+	FTimerHandle& GetHitStopHandle() { 
+		return HitStopHandle; 
+	}
+	UStatusEffectComponent* GetStatusEffectComp() {
+		return StatusEffectComponent;
+	}
 
 
 	//Set character's current state
@@ -159,12 +169,5 @@ public:
 	void SetManaAfterConsume(const int& Amount) {
 		CurrentMana -= Amount;
 		CurrentMana < 0 ? this->CurrentMana = 0 : this->CurrentMana = this->CurrentMana;
-	}
-	void ClearAllStatusEffect() {
-		for (int i = 0; i < StatusList->Num(); ++i) {
-			UBaseStatusEffect* Cur = (*StatusList)[i];
-			StatusList->RemoveAt(i);
-			Cur->ConditionalBeginDestroy();
-		}
 	}
 };

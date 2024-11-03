@@ -17,6 +17,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/ActorComponent.h"
 #include "Components/Image.h"
 #include "Components/Border.h"
 #include "Components/ProgressBar.h"

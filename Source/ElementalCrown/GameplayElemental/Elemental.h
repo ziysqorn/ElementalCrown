@@ -9,7 +9,6 @@
 #include "../StatusEffect/DrowsyStatus.h"
 #include "../StatusEffect/StunStatus.h"
 #include "../StatusEffect/VulnerableStatus.h"
-#include "../UI/StatusEffectProgressUI/StatusEffectProgressUI.h"
 #include "Elemental.generated.h"
 
 /**
@@ -25,7 +24,6 @@ class ELEMENTALCROWN_API UElemental : public UObject
 protected:
 	//Elemental name
 	FName ElementalName;
-	TSubclassOf<UStatusEffectProgressUI> StatusProgressUISubClass;
 public:
 	//Constructor
 	UElemental();

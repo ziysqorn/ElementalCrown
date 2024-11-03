@@ -11,7 +11,7 @@ class ELEMENTALCROWN_API ABurn : public ABaseStatus
 	GENERATED_BODY()
 protected:
 	USceneComponent* SymmetryPoint = nullptr;
-	UPaperFlipbookComponent* MirroredFlipbookComp = nullptr;
+	UPaperFlipbookComponent* MirroredFlipbookComp = nullptr; 
 public:
 	ABurn();
 	void BeginPlay() override;

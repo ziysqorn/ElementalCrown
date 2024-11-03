@@ -33,7 +33,7 @@ void ABaseEnemyCharacter::BeginPlay()
 			healthBar->SetDelegateForHealthBar(this, FName("GetHealthPercentage"));
 		}
 	}
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 }
 
 void ABaseEnemyCharacter::Tick(float DeltaSeconds)
@@ -47,21 +47,18 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 {
 	if (CurrentHealth > 0) {
 		int FinalDamage = (int)DamageAmount;
-		for (int i = 0; i < StatusList->Num(); ++i) {
-			if (!IsValid((*StatusList)[i])) continue;
-			if ((*StatusList)[i]->GetActivateStatus()) {
-				if ((*StatusList)[i]->GetStatusName().IsEqual("Drowsy")) {
-					FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
-					(*StatusList)[i]->RemoveStatusFromList(i);
-				}
-				else if ((*StatusList)[i]->GetStatusName().IsEqual("Vulnerable")) {
-					FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
-				}
+		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Drowsy")) {
+			if (Effect->GetActivateStatus()) {
+				FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+				StatusEffectComponent->RemoveStatusEffect(Effect);
 			}
+		}
+		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
+			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
 		}
 		CurrentHealth -= FinalDamage;
 		if (CurrentHealth <= 0) {
-			this->ClearAllStatusEffect();
+			StatusEffectComponent->ClearAllStatusEffect();
 			CurrentState = CharacterState::DEATH;
 			GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 			GetWorldTimerManager().ClearAllTimersForObject(this);
@@ -75,7 +72,8 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 			FlashTimeline.PlayFromStart();
 			if (HurtSequence) {
 				if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN) {
-					CurrentState = CharacterState::HURT;
+					ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
+					if (!StatusEffect) CurrentState = CharacterState::HURT;
 				}
 				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this, EventInstigator]() {
 					if (this->CurrentState == CharacterState::HURT) {

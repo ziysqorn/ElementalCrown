@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "../ProjectIncludes.h"
 #include "../Effects/StatusEffect/BaseStatus.h"
-#include "BaseStatusEffect.generated.h"
 
 /**
  * 
@@ -13,63 +12,54 @@
 
 class ABaseCharacter;
 
-UCLASS()
-class ELEMENTALCROWN_API UBaseStatusEffect : public UObject
+
+class ELEMENTALCROWN_API BaseStatusEffect
 {
-	GENERATED_BODY()
 protected:
-	UPROPERTY()
 	FName StatusName;
 
-	UPROPERTY()
 	float TimeElapsed = 0.0f;
 
-	UPROPERTY()
 	float AffectingTime;
 
-	UPROPERTY()
 	ABaseStatus* StatusEffectActor = nullptr;
 
-	UPROPERTY()
-	ABaseCharacter* OwningCharacter = nullptr;
+	ABaseCharacter* OwningChar = nullptr;
 
-	UPROPERTY()
-	ABaseCharacter* AffectedCharacter = nullptr;
+	ABaseCharacter* AffectedChar = nullptr;
 
-	UPROPERTY()
 	FTimerHandle EffectHandle;
 
-	UPROPERTY()
 	FTimerHandle ResetHandle;
 
-	UPROPERTY()
 	bool isActivated = false;
 
-	UPROPERTY()
 	float CurrentProgress = 0.0f;
 
-	UPROPERTY()
 	float BuildupToFill = 10.0f;
 
-	UPROPERTY()
 	float TimeForAReset;
 public:
-	UBaseStatusEffect();
-	virtual void BeginDestroy() override;
-	FName GetStatusName() { return StatusName; }
-	bool GetActivateStatus() { return isActivated; }
-	UFUNCTION()
-	float GetBuildupPercentage() { return CurrentProgress / BuildupToFill; }
-	UFUNCTION()
-	float GetTimePercentage() { return (AffectingTime - TimeElapsed) / AffectingTime; }
+	BaseStatusEffect();
+	virtual ~BaseStatusEffect();
+	FName GetStatusName() const { 
+		return StatusName; 
+	}
+	const bool GetActivateStatus() { 
+		return isActivated; 
+	}
+	const float GetBuildupPercentage() { 
+		return CurrentProgress / BuildupToFill; 
+	}
+	const float GetTimePercentage() { 
+		return (AffectingTime - TimeElapsed) / AffectingTime; 
+	}
 	void SetOwningCharacter(ABaseCharacter* Character) {
-		OwningCharacter = Character;
+		OwningChar = Character;
 	}
 	void SetAffectedCharacter(ABaseCharacter* Character) {
-		AffectedCharacter = Character;
+		AffectedChar = Character;
 	}
-	void RemoveStatusFromList();
-	void RemoveStatusFromList(const int& idx);
 	virtual void BuildingUp(const float& inBuildup);
 	virtual void ExecuteStatus() {};
 };

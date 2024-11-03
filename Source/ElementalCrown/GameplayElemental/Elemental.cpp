@@ -10,13 +10,7 @@ UElemental::UElemental()
 {
 }
 
-UElemental::UElemental(const TCHAR* Ref)
-{
-	ConstructorHelpers::FClassFinder<UStatusEffectProgressUI> ProgressUIClass(Ref);
-	if (ProgressUIClass.Succeeded()) StatusProgressUISubClass = ProgressUIClass.Class;
-}
-
-UFire::UFire() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/StatusEffectProgressUI/BP_FireProgressUI.BP_FireProgressUI_C'"))
+UFire::UFire()
 {
 	ElementalName = "Fire";
 }
@@ -24,38 +18,27 @@ UFire::UFire() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Bluepr
 void UFire::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup)
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
-		auto CurEffectList = AffectedCharacter->GetStatusList();
-		for (int i = 0; i < CurEffectList->Num(); ++i) {
-			UBaseStatusEffect* value = (*CurEffectList)[i];
-			if (IsValid(value) && value->GetStatusName().IsEqual("Burn")) {
+		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Burn")) {
 				if (value->GetActivateStatus()) return;
 				value->BuildingUp(inBuildup);
 				return;
 			}
-		}
-		UBaseStatusEffect* newStatus = NewObject<UBurnStatus>(this, UBurnStatus::StaticClass(), TEXT("BurnStatus"));
-		CurEffectList->Add(newStatus);
-		if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) 
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-		else if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter()))
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(BaseCharacter));
-		newStatus->SetAffectedCharacter(AffectedCharacter);
-		newStatus->BuildingUp(inBuildup);
-		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(AffectedCharacter)) {
-			if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
-				if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-					UStatusEffectProgressUI* Progress = CreateWidget<UStatusEffectProgressUI>(MainHUD, StatusProgressUISubClass);
-					if (Progress) {
-						Progress->GetProgressBar()->PercentDelegate.BindUFunction(newStatus, FName("GetBuildupPercentage"));
-						MainHUD->AddStatsEffectToVerBox(Progress);
-					}
-				}
+			BaseStatusEffect* newStatus = new BurnStatus();
+			EffectComponent->AddStatusEffect(newStatus);
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(BaseCharacter);
 			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
+			}
+			newStatus->SetAffectedCharacter(AffectedCharacter);
+			newStatus->BuildingUp(inBuildup);
 		}
 	}
 }
 
-UWater::UWater() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/StatusEffectProgressUI/BP_VulnerableProgressUI.BP_VulnerableProgressUI_C'"))
+UWater::UWater()
 {
 	ElementalName = "Water";
 }
@@ -63,38 +46,27 @@ UWater::UWater() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blue
 void UWater::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup)
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
-		auto CurEffectList = AffectedCharacter->GetStatusList();
-		for (int i = 0; i < CurEffectList->Num(); ++i) {
-			UBaseStatusEffect* value = (*CurEffectList)[i];
-			if (IsValid(value) && value->GetStatusName().IsEqual("Vulnerable")) {
+		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Vulnerable")) {
 				if (value->GetActivateStatus()) return;
 				value->BuildingUp(inBuildup);
 				return;
 			}
-		}
-		UBaseStatusEffect* newStatus = NewObject<UVulnerableStatus>(this, UVulnerableStatus::StaticClass(), TEXT("VulnerableStatus"));
-		CurEffectList->Add(newStatus);
-		if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter()))
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-		else if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter()))
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(BaseCharacter));
-		newStatus->SetAffectedCharacter(AffectedCharacter);
-		newStatus->BuildingUp(inBuildup);
-		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(AffectedCharacter)) {
-			if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
-				if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-					UStatusEffectProgressUI* Progress = CreateWidget<UStatusEffectProgressUI>(MainHUD, StatusProgressUISubClass);
-					if (Progress) {
-						Progress->GetProgressBar()->PercentDelegate.BindUFunction(newStatus, FName("GetBuildupPercentage"));
-						MainHUD->AddStatsEffectToVerBox(Progress);
-					}
-				}
+			BaseStatusEffect* newStatus = new VulnerableStatus();
+			EffectComponent->AddStatusEffect(newStatus);
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(BaseCharacter);
 			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
+			}
+			newStatus->SetAffectedCharacter(AffectedCharacter);
+			newStatus->BuildingUp(inBuildup);
 		}
 	}
 }
 
-UEarth::UEarth() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/StatusEffectProgressUI/BP_StunProgressUI.BP_StunProgressUI_C'"))
+UEarth::UEarth()
 {
 	ElementalName = "Earth";
 }
@@ -102,39 +74,28 @@ UEarth::UEarth() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blue
 void UEarth::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup)
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
-		auto CurEffectList = AffectedCharacter->GetStatusList();
-		for (int i = 0; i < CurEffectList->Num(); ++i) {
-			UBaseStatusEffect* value = (*CurEffectList)[i];
-			if (IsValid(value) && value->GetStatusName().IsEqual("Stun")) {
+		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Stun")) {
 				if (value->GetActivateStatus()) return;
 				value->BuildingUp(inBuildup);
 				return;
 			}
-		}
-		UBaseStatusEffect* newStatus = NewObject<UStunStatus>(this, UStunStatus::StaticClass(), TEXT("StunStatus"));
-		CurEffectList->Add(newStatus);
-		if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter()))
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-		else if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter()))
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(BaseCharacter));
-		newStatus->SetAffectedCharacter(AffectedCharacter);
-		newStatus->BuildingUp(inBuildup);
-		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(AffectedCharacter)) {
-			if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
-				if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-					UStatusEffectProgressUI* Progress = CreateWidget<UStatusEffectProgressUI>(MainHUD, StatusProgressUISubClass);
-					if (Progress) {
-						Progress->GetProgressBar()->PercentDelegate.BindUFunction(newStatus, FName("GetBuildupPercentage"));
-						MainHUD->AddStatsEffectToVerBox(Progress);
-					}
-				}
+			BaseStatusEffect* newStatus = new StunStatus();
+			EffectComponent->AddStatusEffect(newStatus);
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(BaseCharacter);
 			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
+			}
+			newStatus->SetAffectedCharacter(AffectedCharacter);
+			newStatus->BuildingUp(inBuildup);
 		}
 	}
 }
 
 
-UMetal::UMetal() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/StatusEffectProgressUI/BP_BleedProgressUI.BP_BleedProgressUI_C'"))
+UMetal::UMetal()
 {
 	ElementalName = "Metal";
 }
@@ -142,38 +103,27 @@ UMetal::UMetal() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blue
 void UMetal::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup)
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
-		auto CurEffectList = AffectedCharacter->GetStatusList();
-		for (int i = 0; i < CurEffectList->Num(); ++i) {
-			UBaseStatusEffect* value = (*CurEffectList)[i];
-			if (IsValid(value) && value->GetStatusName().IsEqual("Bleed")) {
+		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Bleed")) {
 				if (value->GetActivateStatus()) return;
 				value->BuildingUp(inBuildup);
 				return;
 			}
-		}
-		UBaseStatusEffect* newStatus = NewObject<UBleedStatus>(this, UBleedStatus::StaticClass(), TEXT("BleedStatus"));
-		CurEffectList->Add(newStatus);
-		if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter()))
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-		else if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter()))
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(BaseCharacter));
-		newStatus->SetAffectedCharacter(AffectedCharacter);
-		newStatus->BuildingUp(inBuildup);
-		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(AffectedCharacter)) {
-			if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
-				if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-					UStatusEffectProgressUI* Progress = CreateWidget<UStatusEffectProgressUI>(MainHUD, StatusProgressUISubClass);
-					if (Progress) {
-						Progress->GetProgressBar()->PercentDelegate.BindUFunction(newStatus, FName("GetBuildupPercentage"));
-						MainHUD->AddStatsEffectToVerBox(Progress);
-					}
-				}
+			BaseStatusEffect* newStatus = new BleedStatus();
+			EffectComponent->AddStatusEffect(newStatus);
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(BaseCharacter);
 			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
+			}
+			newStatus->SetAffectedCharacter(AffectedCharacter);
+			newStatus->BuildingUp(inBuildup);
 		}
 	}
 }
 
-UPlant::UPlant() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blueprints/UI/StatusEffectProgressUI/BP_DrowsyProgressUI.BP_DrowsyProgressUI_C'"))
+UPlant::UPlant()
 {
 	ElementalName = "Plant";
 }
@@ -181,33 +131,22 @@ UPlant::UPlant() : UElemental(TEXT("/Script/UMGEditor.WidgetBlueprint'/Game/Blue
 void UPlant::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup)
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
-		auto CurEffectList = AffectedCharacter->GetStatusList();
-		for (int i = 0; i < CurEffectList->Num(); ++i) {
-			UBaseStatusEffect* value = (*CurEffectList)[i];
-			if (IsValid(value) && value->GetStatusName().IsEqual("Drowsy")) {
+		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Drowsy")) {
 				if (value->GetActivateStatus()) return;
 				value->BuildingUp(inBuildup);
 				return;
 			}
-		}
-		UBaseStatusEffect* newStatus = NewObject<UDrowsyStatus>(this, UDrowsyStatus::StaticClass(), TEXT("DrowsyStatus"));
-		CurEffectList->Add(newStatus);
-		if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter()))
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-		else if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter()))
-			newStatus->SetOwningCharacter(Cast<ABaseCharacter>(BaseCharacter));
-		newStatus->SetAffectedCharacter(AffectedCharacter);
-		newStatus->BuildingUp(inBuildup);
-		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(AffectedCharacter)) {
-			if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
-				if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-					UStatusEffectProgressUI* Progress = CreateWidget<UStatusEffectProgressUI>(MainHUD, StatusProgressUISubClass);
-					if (Progress) {
-						Progress->GetProgressBar()->PercentDelegate.BindUFunction(newStatus, FName("GetBuildupPercentage"));
-						MainHUD->AddStatsEffectToVerBox(Progress);
-					}
-				}
+			BaseStatusEffect* newStatus = new DrowsyStatus();
+			EffectComponent->AddStatusEffect(newStatus);
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(BaseCharacter);
 			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
+			}
+			newStatus->SetAffectedCharacter(AffectedCharacter);
+			newStatus->BuildingUp(inBuildup);
 		}
 	}
 }

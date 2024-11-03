@@ -40,6 +40,7 @@ void AMagicArrow::BeginPlay()
 	GetWorldTimerManager().SetTimer(ExpiredHandle, FTimerDelegate::CreateLambda([this]() {
 		this->Destroy();
 	}), 4, false);
+	ArrowComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
 }
 
 void AMagicArrow::SetBuff()

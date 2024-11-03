@@ -5,88 +5,63 @@
 #include "../Characters/Main Character/MainCharacter.h"
 #include "../Controller/MainController.h"
 
-UBaseStatusEffect::UBaseStatusEffect()
+BaseStatusEffect::BaseStatusEffect()
 {
 
 }
 
-void UBaseStatusEffect::BeginDestroy()
+BaseStatusEffect::~BaseStatusEffect()
 {
-	Super::BeginDestroy();
-
 	if (StatusEffectActor) StatusEffectActor->Destroy();
-	if (GetWorld()->GetTimerManager().IsTimerActive(EffectHandle)) GetWorld()->GetTimerManager().ClearTimer(EffectHandle);
-	if (GetWorld()->GetTimerManager().IsTimerActive(ResetHandle) || GetWorld()->GetTimerManager().IsTimerPending(ResetHandle))
-		GetWorld()->GetTimerManager().ClearTimer(ResetHandle);
+
+	UStatusEffectComponent* EffectComp = nullptr;
+	if(AffectedChar) EffectComp = AffectedChar->GetStatusEffectComp();
+
+	if (EffectComp) {
+		if (EffectComp->GetWorld()->GetTimerManager().IsTimerActive(EffectHandle)) EffectComp->GetWorld()->GetTimerManager().ClearTimer(EffectHandle);
+		if (EffectComp->GetWorld()->GetTimerManager().IsTimerActive(ResetHandle) || EffectComp->GetWorld()->GetTimerManager().IsTimerPending(ResetHandle))
+			EffectComp->GetWorld()->GetTimerManager().ClearTimer(ResetHandle);
+	}
 }
 
-void UBaseStatusEffect::RemoveStatusFromList()
+void BaseStatusEffect::BuildingUp(const float& inBuildup)
 {
-	auto CurStatusList = AffectedCharacter->GetStatusList();
-	for (int i = 0; i < CurStatusList->Num(); ++i) {
-		UBaseStatusEffect* cur = (*CurStatusList)[i];
-		if (cur->GetStatusName().IsEqual(StatusName)) {
-			if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(AffectedCharacter)) {
-				if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
-					UMainCharacterHUD* MainHUD = MainController->GetMainHUD();
-					if (MainHUD) MainHUD->RemoveStatsEffectFromVerBox(i);
+	UStatusEffectComponent* EffectComp = nullptr;
+	if (AffectedChar) EffectComp = AffectedChar->GetStatusEffectComp();
+
+	if (EffectComp) {
+		CurrentProgress += inBuildup;
+		if (EffectComp->GetWorld()->GetTimerManager().IsTimerActive(ResetHandle) || EffectComp->GetWorld()->GetTimerManager().IsTimerPending(ResetHandle)) {
+			EffectComp->GetWorld()->GetTimerManager().ClearTimer(ResetHandle);
+		}
+
+		UStatusEffectProgressUI* ProgressUI = nullptr;
+		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(AffectedChar)) {
+			if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
+				UMainCharacterHUD* MainHUD = MainController->GetMainHUD();
+				if (MainHUD) {
+					ProgressUI = MainHUD->GetStatusProgressUI(EffectComp->FindStatusEffect(this));
 				}
 			}
-			UBaseStatusEffect* value = (*CurStatusList)[i];
-			(*CurStatusList)[i] = nullptr;
-			CurStatusList->RemoveAt(i);
-			value->ConditionalBeginDestroy();
+		}
+
+		if (CurrentProgress >= BuildupToFill) {
+			CurrentProgress = BuildupToFill;
+			if (ProgressUI) ProgressUI->GetProgressBar()->SetPercent(this->GetBuildupPercentage());
+			isActivated = true;
+			this->ExecuteStatus();
 			return;
 		}
-	}
-}
 
-void UBaseStatusEffect::RemoveStatusFromList(const int& idx)
-{
-	auto CurStatusList = AffectedCharacter->GetStatusList();
-	if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(AffectedCharacter)) {
-		if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
-			UMainCharacterHUD* MainHUD = MainController->GetMainHUD();
-			if (MainHUD) MainHUD->RemoveStatsEffectFromVerBox(idx);
-		}
-	}
-	UBaseStatusEffect* value = (*CurStatusList)[idx];
-	(*CurStatusList)[idx] = nullptr;
-	CurStatusList->RemoveAt(idx);
-	value->ConditionalBeginDestroy();
-}
+		if (ProgressUI) ProgressUI->GetProgressBar()->SetPercent(this->GetBuildupPercentage());
 
-void UBaseStatusEffect::BuildingUp(const float& inBuildup)
-{
-	CurrentProgress += inBuildup;
-	if (GetWorld()->GetTimerManager().IsTimerActive(ResetHandle) || GetWorld()->GetTimerManager().IsTimerPending(ResetHandle)) {
-		GetWorld()->GetTimerManager().ClearTimer(ResetHandle);
-	}
-	if (CurrentProgress >= BuildupToFill) {
-		isActivated = true;
-		auto CurStatusList = AffectedCharacter->GetStatusList();
-		for (int i = 0; i < CurStatusList->Num(); ++i) {
-			UBaseStatusEffect* cur = (*CurStatusList)[i];
-			if (cur == this) {
-				if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(AffectedCharacter)) {
-					if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
-						UMainCharacterHUD* MainHUD = MainController->GetMainHUD();
-						if (MainHUD) {
-							UStatusEffectProgressUI* ProgressUI = MainHUD->GetStatusProgressUI(i);
-							if (ProgressUI)
-								ProgressUI->GetProgressBar()->PercentDelegate.Clear();
-								ProgressUI->GetProgressBar()->PercentDelegate.BindUFunction(this, FName("GetTimePercentage"));
-						}
-					}
-				}
-				break;
+		EffectComp->GetWorld()->GetTimerManager().SetTimer(ResetHandle, FTimerDelegate::CreateLambda([this, EffectComp, ProgressUI]() {
+			CurrentProgress -= 0.1f;
+			if (CurrentProgress <= 0.0f) {
+				EffectComp->RemoveStatusEffect(this);
+				return;
 			}
-		}
-		this->ExecuteStatus();
-		return;
+			if (ProgressUI) ProgressUI->GetProgressBar()->SetPercent(this->GetBuildupPercentage());
+			}), TimeForAReset, true, 2.0f);
 	}
-	GetWorld()->GetTimerManager().SetTimer(ResetHandle, FTimerDelegate::CreateLambda([this]() {
-		CurrentProgress -= 0.1f;
-		if (CurrentProgress <= 0.0f) this->RemoveStatusFromList();
-		}), TimeForAReset, true, 2.0f);
 }

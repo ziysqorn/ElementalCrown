@@ -5,18 +5,15 @@
 #include "CoreMinimal.h"
 #include "BaseStatusEffect.h"
 #include "../Effects/StatusEffect/Stun.h"
-#include "StunStatus.generated.h"
 
 /**
  *
  */
 
-UCLASS()
-class ELEMENTALCROWN_API UStunStatus : public UBaseStatusEffect
+class ELEMENTALCROWN_API StunStatus : public BaseStatusEffect
 {
-	GENERATED_BODY()
 public:
-	UStunStatus();
-	void BeginDestroy() override;
+	StunStatus();
+	~StunStatus() override;
 	void ExecuteStatus() override;
 };

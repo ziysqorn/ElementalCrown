@@ -5,19 +5,16 @@
 #include "CoreMinimal.h"
 #include "BaseStatusEffect.h"
 #include "../Effects/StatusEffect/Drowsy.h"
-#include "DrowsyStatus.generated.h"
 
 
 /**
  *
  */
 
-UCLASS()
-class ELEMENTALCROWN_API UDrowsyStatus : public UBaseStatusEffect
+class ELEMENTALCROWN_API DrowsyStatus : public BaseStatusEffect
 {
-	GENERATED_BODY()
 public:
-	UDrowsyStatus();
-	void BeginDestroy() override;
+	DrowsyStatus();
+	~DrowsyStatus() override;
 	void ExecuteStatus() override;
 };

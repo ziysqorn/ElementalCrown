@@ -1,42 +1,50 @@
 #include "StunStatus.h"
 #include "../Characters/BaseCharacter/BaseCharacter.h"
 
-UStunStatus::UStunStatus()
+StunStatus::StunStatus()
 {
 	StatusName = "Stun";
 	AffectingTime = 2.5f;
 	TimeForAReset = 0.3f;
 }
 
-void UStunStatus::BeginDestroy()
+StunStatus::~StunStatus()
 {
-	Super::BeginDestroy();
-
-	auto StatusList = AffectedCharacter->GetStatusList();
-	for (int i = 0; i < StatusList->Num(); ++i) {
-		if ((*StatusList)[i]->GetStatusName().IsEqual("Drowsy")) return;
+	if (AffectedChar) {
+		if (UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp()) {
+			if (EffectComponent->FindStatusEffect("Drowsy")) return;
+			if (AffectedChar->GetCharacterState() != CharacterState::DEATH)
+				AffectedChar->SetCharacterState(CharacterState::NONE);
+		}
 	}
-	if (AffectedCharacter->GetCharacterState() != CharacterState::DEATH)
-		AffectedCharacter->SetCharacterState(CharacterState::NONE);
 
 }
 
-void UStunStatus::ExecuteStatus()
+void StunStatus::ExecuteStatus()
 {
-	if (OwningCharacter && AffectedCharacter) {
-		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = OwningCharacter;
-		StatusEffectActor = AffectedCharacter->GetWorld()->SpawnActor<AStun>(AStun::StaticClass(), AffectedCharacter->GetActorLocation(), AffectedCharacter->GetActorRotation(), SpawnParams);
-		if (StatusEffectActor) {
-			StatusEffectActor->AttachToActor(AffectedCharacter, FAttachmentTransformRules::KeepRelativeTransform);
-			StatusEffectActor->SetActorRelativeLocation(FVector(-15.0f, 0.0f, 55.0f));
-			StatusEffectActor->SetActorRelativeScale3D(FVector(2.0f, 0.0f, 2.0f));
-			//StunEffect->SetActorRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
-			if (AffectedCharacter->GetCharacterState() != CharacterState::DEATH) AffectedCharacter->SetCharacterState(CharacterState::STUN);
-			GetWorld()->GetTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this]() {
-				TimeElapsed += 0.1f;
-				if (TimeElapsed >= AffectingTime) this->RemoveStatusFromList();
-			}), 0.1f, true);
+	if (OwningChar && AffectedChar) {
+		if (UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp()) {
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = OwningChar;
+			StatusEffectActor = AffectedChar->GetWorld()->SpawnActor<AStun>(AStun::StaticClass(), AffectedChar->GetActorLocation(), AffectedChar->GetActorRotation(), SpawnParams);
+			if (StatusEffectActor) {
+				StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);
+				StatusEffectActor->SetActorRelativeLocation(FVector(-15.0f, 0.0f, 55.0f));
+				StatusEffectActor->SetActorRelativeScale3D(FVector(2.0f, 0.0f, 2.0f));
+				//StunEffect->SetActorRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
+				if (AffectedChar->GetCharacterState() != CharacterState::DEATH) AffectedChar->SetCharacterState(CharacterState::STUN);
+				UStatusEffectProgressUI* ProgressUI = EffectComponent->GetProgressUI(this);
+				EffectComponent->GetWorld()->GetTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this, EffectComponent, ProgressUI]() {
+					if (this && EffectComponent) {
+						TimeElapsed += 0.1f;
+						if (TimeElapsed >= AffectingTime) {
+							EffectComponent->RemoveStatusEffect(this);
+							return;
+						}
+						if (ProgressUI) ProgressUI->GetProgressBar()->SetPercent(GetTimePercentage());
+					}
+				}), 0.1f, true);
+			}
 		}
 	}
 }
