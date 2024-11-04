@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "../ProjectIncludes.h"
-#include "../Characters/BaseCharacter/BaseCharacter.h"
 
+class ABaseCharacter;
 
 class ELEMENTALCROWN_API BaseSkill
 {

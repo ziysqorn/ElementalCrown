@@ -19,21 +19,22 @@ void UFire::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& in
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
 		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			ABaseCharacter* OwningChar = nullptr;
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				OwningChar = BaseCharacter;
+			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				OwningChar = Cast<ABaseCharacter>(SkillEffect->GetOwner());
+			}
 			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Burn")) {
 				if (value->GetActivateStatus()) return;
-				value->BuildingUp(inBuildup);
+				value->BuildingUp(OwningChar, inBuildup);
 				return;
 			}
 			BaseStatusEffect* newStatus = new BurnStatus();
 			EffectComponent->AddStatusEffect(newStatus);
-			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(BaseCharacter);
-			}
-			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-			}
 			newStatus->SetAffectedCharacter(AffectedCharacter);
-			newStatus->BuildingUp(inBuildup);
+			newStatus->BuildingUp(OwningChar, inBuildup);
 		}
 	}
 }
@@ -47,21 +48,22 @@ void UWater::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& i
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
 		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			ABaseCharacter* OwningChar = nullptr;
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				OwningChar = BaseCharacter;
+			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				OwningChar = Cast<ABaseCharacter>(SkillEffect->GetOwner());
+			}
 			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Vulnerable")) {
 				if (value->GetActivateStatus()) return;
-				value->BuildingUp(inBuildup);
+				value->BuildingUp(OwningChar, inBuildup);
 				return;
 			}
 			BaseStatusEffect* newStatus = new VulnerableStatus();
 			EffectComponent->AddStatusEffect(newStatus);
-			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(BaseCharacter);
-			}
-			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-			}
 			newStatus->SetAffectedCharacter(AffectedCharacter);
-			newStatus->BuildingUp(inBuildup);
+			newStatus->BuildingUp(OwningChar, inBuildup);
 		}
 	}
 }
@@ -75,21 +77,22 @@ void UEarth::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& i
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
 		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			ABaseCharacter* OwningChar = nullptr;
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				OwningChar = BaseCharacter;
+			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				OwningChar = Cast<ABaseCharacter>(SkillEffect->GetOwner());
+			}
 			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Stun")) {
 				if (value->GetActivateStatus()) return;
-				value->BuildingUp(inBuildup);
+				value->BuildingUp(OwningChar, inBuildup);
 				return;
 			}
 			BaseStatusEffect* newStatus = new StunStatus();
 			EffectComponent->AddStatusEffect(newStatus);
-			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(BaseCharacter);
-			}
-			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-			}
 			newStatus->SetAffectedCharacter(AffectedCharacter);
-			newStatus->BuildingUp(inBuildup);
+			newStatus->BuildingUp(OwningChar, inBuildup);
 		}
 	}
 }
@@ -104,21 +107,22 @@ void UMetal::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& i
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
 		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			ABaseCharacter* OwningChar = nullptr;
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				OwningChar = BaseCharacter;
+			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				OwningChar = Cast<ABaseCharacter>(SkillEffect->GetOwner());
+			}
 			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Bleed")) {
 				if (value->GetActivateStatus()) return;
-				value->BuildingUp(inBuildup);
+				value->BuildingUp(OwningChar, inBuildup);
 				return;
 			}
 			BaseStatusEffect* newStatus = new BleedStatus();
 			EffectComponent->AddStatusEffect(newStatus);
-			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(BaseCharacter);
-			}
-			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-			}
 			newStatus->SetAffectedCharacter(AffectedCharacter);
-			newStatus->BuildingUp(inBuildup);
+			newStatus->BuildingUp(OwningChar, inBuildup);
 		}
 	}
 }
@@ -132,21 +136,22 @@ void UPlant::ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& i
 {
 	if (AffectedCharacter && AffectedCharacter->GetCharacterState() != CharacterState::DEATH) {
 		if (UStatusEffectComponent* EffectComponent = AffectedCharacter->GetStatusEffectComp()) {
+			ABaseCharacter* OwningChar = nullptr;
+			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
+				OwningChar = BaseCharacter;
+			}
+			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
+				OwningChar = Cast<ABaseCharacter>(SkillEffect->GetOwner());
+			}
 			if (BaseStatusEffect* value = EffectComponent->FindStatusEffect("Drowsy")) {
 				if (value->GetActivateStatus()) return;
-				value->BuildingUp(inBuildup);
+				value->BuildingUp(OwningChar, inBuildup);
 				return;
 			}
 			BaseStatusEffect* newStatus = new DrowsyStatus();
 			EffectComponent->AddStatusEffect(newStatus);
-			if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(BaseCharacter);
-			}
-			else if (ASkillEffect* SkillEffect = Cast<ASkillEffect>(this->GetOuter())) {
-				newStatus->SetOwningCharacter(Cast<ABaseCharacter>(SkillEffect->GetOwner()));
-			}
 			newStatus->SetAffectedCharacter(AffectedCharacter);
-			newStatus->BuildingUp(inBuildup);
+			newStatus->BuildingUp(OwningChar, inBuildup);
 		}
 	}
 }

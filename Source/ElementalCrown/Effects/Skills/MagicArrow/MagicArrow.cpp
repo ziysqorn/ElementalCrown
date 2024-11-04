@@ -41,6 +41,7 @@ void AMagicArrow::BeginPlay()
 		this->Destroy();
 	}), 4, false);
 	ArrowComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
+	ArrowComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
 }
 
 void AMagicArrow::SetBuff()

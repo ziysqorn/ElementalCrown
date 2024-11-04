@@ -13,14 +13,14 @@ class ELEMENTALCROWN_API ASmoke : public AActor
 protected:
 	//Destroy timer handle
 	FTimerHandle DestroyHandle;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "DefaultRootComponent")
+	USceneComponent* DefaultRootComponent = nullptr;
 	// Flipbook component
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "FlipbookComponent")
 	UPaperFlipbookComponent* FlipbookComponent = nullptr;
-	// Flipbook to set
-	UPaperFlipbook* SmokeFB = nullptr;
 public:	
 	// Sets default values for this actor's properties
 	ASmoke();
-	ASmoke(const TCHAR* Ref);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 };

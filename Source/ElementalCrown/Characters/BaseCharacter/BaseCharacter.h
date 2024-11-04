@@ -6,6 +6,7 @@
 #include "../../ProjectIncludes.h"
 #include "../../GameplayElemental/Elemental.h"
 #include "../../StatusEffect/StatusEffectComponent.h"
+#include "../../Skill/SkillComponent.h"
 #include "../../Effects/StatsPopout/StatsPopout.h"
 #include "../../Interface/GameplayInterface.h"
 #include "BaseCharacter.generated.h"
@@ -31,6 +32,8 @@ protected:
 	//Character's gameplay temporary stats
 	int CurrentHealth{ MaxHealth };
 	int CurrentMana{ MaxMana };
+	//Can character dodge ?
+	bool canDodge = true;
 	//Animation sequences
 	//Attack sequence
 	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
@@ -54,11 +57,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Status effect manager component")
 	UStatusEffectComponent* StatusEffectComponent = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Skill manager component")
+	USkillComponent* SkillComponent = nullptr;
+
 	FTimerHandle HurtHandle;
 	FTimerHandle DeathHandle;
 	FTimerHandle AttackHandle;
 	FTimerHandle StunHandle;
 	FTimerHandle HitStopHandle;
+	FTimerHandle DodgeHandle;
+	FTimerHandle DodgeEnableHandle;
 
 	//Flash when damaged timeline
 	FTimeline FlashTimeline;
@@ -98,6 +106,9 @@ public:
 	}
 	UStatusEffectComponent* GetStatusEffectComp() {
 		return StatusEffectComponent;
+	}
+	USkillComponent* GetSkillComp() {
+		return SkillComponent;
 	}
 
 

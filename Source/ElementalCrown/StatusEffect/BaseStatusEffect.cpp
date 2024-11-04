@@ -24,7 +24,7 @@ BaseStatusEffect::~BaseStatusEffect()
 	}
 }
 
-void BaseStatusEffect::BuildingUp(const float& inBuildup)
+void BaseStatusEffect::BuildingUp(ABaseCharacter* OwningCharacter, const float& inBuildup)
 {
 	UStatusEffectComponent* EffectComp = nullptr;
 	if (AffectedChar) EffectComp = AffectedChar->GetStatusEffectComp();
@@ -49,6 +49,7 @@ void BaseStatusEffect::BuildingUp(const float& inBuildup)
 			CurrentProgress = BuildupToFill;
 			if (ProgressUI) ProgressUI->GetProgressBar()->SetPercent(this->GetBuildupPercentage());
 			isActivated = true;
+			OwningChar = OwningCharacter;
 			this->ExecuteStatus();
 			return;
 		}

@@ -60,6 +60,6 @@ public:
 	void SetAffectedCharacter(ABaseCharacter* Character) {
 		AffectedChar = Character;
 	}
-	virtual void BuildingUp(const float& inBuildup);
+	virtual void BuildingUp(ABaseCharacter* OwningCharacter, const float& inBuildup);
 	virtual void ExecuteStatus() {};
 };

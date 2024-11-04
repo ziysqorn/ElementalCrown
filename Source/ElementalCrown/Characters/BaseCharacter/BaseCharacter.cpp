@@ -6,6 +6,7 @@
 ABaseCharacter::ABaseCharacter()
 {
 	StatusEffectComponent = CreateDefaultSubobject<UStatusEffectComponent>(TEXT("StatusEffectComponent"));
+	SkillComponent = CreateDefaultSubobject<USkillComponent>(TEXT("SkillComponent"));
 }
 
 void ABaseCharacter::BeginPlay()

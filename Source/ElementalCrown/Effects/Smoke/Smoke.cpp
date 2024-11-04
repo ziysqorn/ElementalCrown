@@ -7,36 +7,19 @@
 ASmoke::ASmoke()
 {
 	//Setup components
-	if (!FlipbookComponent) {
-		FlipbookComponent = CreateDefaultSubobject<UPaperFlipbookComponent>("Flipbook Component");
-		FlipbookComponent->SetupAttachment(RootComponent);
-	}
-}
-
-ASmoke::ASmoke(const TCHAR* Ref)
-{
-	//Set flipbook asset
-	ConstructorHelpers::FObjectFinder<UPaperFlipbook> FlipbookRef(Ref);
-	SmokeFB = FlipbookRef.Object;
-	//Setup components
-	if (!FlipbookComponent) {
-		FlipbookComponent = CreateDefaultSubobject<UPaperFlipbookComponent>("Flipbook Component");
-		FlipbookComponent->SetupAttachment(RootComponent);
-	}
-	if (SmokeFB) {
-		FlipbookComponent->SetLooping(false);
-		FlipbookComponent->SetFlipbook(SmokeFB);
-	}
+	DefaultRootComponent = CreateDefaultSubobject<USceneComponent>("Default Root Component");
+	DefaultRootComponent->SetupAttachment(RootComponent);
+	FlipbookComponent = CreateDefaultSubobject<UPaperFlipbookComponent>("Flipbook Component");
+	FlipbookComponent->AttachToComponent(DefaultRootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+	FlipbookComponent->SetLooping(false);
 }
 
 // Called when the game starts or when spawned
 void ASmoke::BeginPlay()
 {
 	Super::BeginPlay();
-
-	this->SetActorScale3D(FVector(2, 1, 2));
 	
 	GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
 		this->Destroy();
-	}), SmokeFB->GetTotalDuration(), false);
+	}), FlipbookComponent->GetFlipbook()->GetTotalDuration(), false);
 }

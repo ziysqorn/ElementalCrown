@@ -25,6 +25,7 @@ ASkillEffect::ASkillEffect(const TCHAR* Ref)
 	}
 	FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
+	FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
 	FlipbookComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 }
 

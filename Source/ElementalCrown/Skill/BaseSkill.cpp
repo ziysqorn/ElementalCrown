@@ -3,6 +3,7 @@
 
 #include "BaseSkill.h"
 #include "../Controller/MainController.h"
+#include "../Characters/BaseCharacter/BaseCharacter.h"
 
 // Sets default values
 BaseSkill::BaseSkill()

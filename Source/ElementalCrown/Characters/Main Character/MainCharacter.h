@@ -4,8 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../BaseCharacter/BaseCharacter.h"
-#include "../../Skill/BaseSkill.h"
-#include "../../Effects/Smoke/RunSmoke/RunSmoke.h"
+#include "../../Effects/Smoke/Smoke.h"
 #include "../../SkillsIncludes.h"
 #include "MainCharacter.generated.h"
 
@@ -19,9 +18,6 @@ class ELEMENTALCROWN_API AMainCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 protected:
-	int CurSkillId = 0;
-	TSharedPtr<TArray<TSharedPtr<BaseSkill>>> CharSkillList;
-protected:
 	//Spring Arm and Camera Components
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spring Arm")
 	USpringArmComponent* SpringArmComp = nullptr;
@@ -34,13 +30,10 @@ protected:
 	UInputAction* IA_Move = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_Run = nullptr;
+	UInputAction* IA_Dodge = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_Jump = nullptr;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_Crouch = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_UseSkill = nullptr;
@@ -80,14 +73,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Bow-combat")
 	UPaperZDAnimSequence* JumpShoot = nullptr;
 
-	//Character movement
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation Sequences|Slide")
-	UPaperZDAnimSequence* Sliding = nullptr;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run smoke")
+	TSubclassOf<ASmoke> RunSmokeSubclass = nullptr;
 
 	//Timer Handle
 	FTimerHandle ComboHandle;
 	FTimerHandle SheatheSwordHandle;
-	FTimerHandle SlideHandle;
 
 	//Sheathe the sword
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Is the Sword Sheathed ?")
@@ -124,18 +115,12 @@ public:
 	int GetATKDamage() {
 		return ATK_Damage;
 	}
-	
-	TSharedPtr<TArray<TSharedPtr<BaseSkill>>> GetSkillList() { return CharSkillList; }
+
 
 	//Actions
 	virtual void Move(const FInputActionValue& value);
 	virtual void StopMoving();
-	void Run();
-	void StopRunning();
-	void CustomCrouch();
-	void StopCustomCrouch();
-	void Slide();
-	void StopSlide();
+	void Dodge();
 	void CustomJump();
 	virtual void Attack();
 	virtual void Shoot();

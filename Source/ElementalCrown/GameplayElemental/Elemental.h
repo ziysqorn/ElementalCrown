@@ -27,7 +27,6 @@ protected:
 public:
 	//Constructor
 	UElemental();
-	UElemental(const TCHAR* Ref);
 	virtual void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) {}
 	FName GetName() { return ElementalName; }
 };

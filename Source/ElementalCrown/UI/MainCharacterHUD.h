@@ -4,12 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "../ProjectIncludes.h"
-#include "../GameplayElemental/Elemental.h"
 #include "../Skill/BaseSkill.h"
-#include "../StatusEffect/BaseStatusEffect.h"
 #include "../UI/Skill/SkillSlot.h"
 #include "../UI/StatusEffectProgressUI/StatusEffectProgressUI.h"
-#include "../Characters/Main Character/MainCharacter.h"
 #include "MainCharacterHUD.generated.h"
 
 /**
@@ -21,7 +18,6 @@ class ELEMENTALCROWN_API UMainCharacterHUD : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
-	TSharedPtr<TArray<TSharedPtr<BaseSkill>>> HUDSkillList;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UHorizontalBox* HorBox_SkillSlotBox = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
@@ -37,14 +33,12 @@ protected:
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Slot SubClass")
 	TSubclassOf<USkillSlot> SkillSlotSubClass;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Status Effect Progress SubClass")
-	TSubclassOf<UStatusEffectProgressUI> StatusEffectProgressSubClass;
 	UHorizontalBox* GetSkillSlotBox() { return HorBox_SkillSlotBox; }
 	UStatusEffectProgressUI* GetStatusProgressUI(const int& idx) {
 		return Cast<UStatusEffectProgressUI>(VerBox_StatusProgress->GetChildAt(idx));
 	}
 	void SetupHUD();
-	void SetupSkillSlotBox(TArray<TSharedPtr<BaseSkill>>* list);
+	void SetupSkillSlotBox(TArray<BaseSkill*>& list);
 	void SetCoinText(FText inText) {
 		Txt_Coin->SetText(inText);
 	};
@@ -57,11 +51,11 @@ public:
 	void SetManaBar(float inPercent) {
 		ProgBar_ManaBar->SetPercent(inPercent);
 	}
-	void UpdateSkillCountdownProgUI(BaseSkill* Skill, const float& inPercentage);
 	void AddStatsEffectToVerBox(UUserWidget* StatsEffect);
 	void RemoveStatsEffectFromVerBox(int removedIdx);
+	void UpdateSkillCountdownProgUI(BaseSkill* Skill, const float& inPercentage);
 	void ShowSkillLoaderUI(BaseSkill* Skill);
 	void HideSkillLoaderUI(BaseSkill* Skill);
 	void SwitchedSlotHighlight(int SwitchedNodeId);
-	void RefreshSkillSlots(TSharedPtr<TArray<TSharedPtr<BaseSkill>>> skillList);
+	void RefreshSkillSlots(TArray<BaseSkill*>& list);
 };

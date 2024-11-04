@@ -18,11 +18,10 @@ AMainCharacter::AMainCharacter()
 	GetCharacterMovement()->AirControl = 0.75;
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
-	CharSkillList = MakeShared<TArray<TSharedPtr<BaseSkill>>>();
-	CharSkillList->Add(MakeShared<FireSlashWaveSkill>());
-	CharSkillList->Add(MakeShared<FireTornadoSkill>());
-	CharSkillList->Add(MakeShared<FireEnergy>());
-	CharSkillList->Add(MakeShared<AquaSphere>());
+	SkillComponent->AddSkill(new FireSlashWaveSkill());
+	SkillComponent->AddSkill(new FireTornadoSkill());
+	SkillComponent->AddSkill(new FireEnergy());
+	SkillComponent->AddSkill(new AquaSphere());
 }
 
 AMainCharacter::~AMainCharacter()
@@ -37,11 +36,6 @@ void AMainCharacter::BeginPlay()
 	//Setup mapping context
 	SetupMappingContext();
 
-	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-			MainHUD->SwitchedSlotHighlight(CurSkillId);
-		}
-	}
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
 }
 
@@ -56,10 +50,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	if (UEnhancedInputComponent* EIComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EIComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
 		EIComponent->BindAction(IA_Move, ETriggerEvent::Completed, this, &AMainCharacter::StopMoving);
-		EIComponent->BindAction(IA_Run, ETriggerEvent::Triggered, this, &AMainCharacter::Run);
-		EIComponent->BindAction(IA_Run, ETriggerEvent::Completed, this, &AMainCharacter::StopRunning);
-		EIComponent->BindAction(IA_Crouch, ETriggerEvent::Triggered, this, &AMainCharacter::CustomCrouch);
-		EIComponent->BindAction(IA_Crouch, ETriggerEvent::Completed, this, &AMainCharacter::StopCustomCrouch);
+		EIComponent->BindAction(IA_Dodge, ETriggerEvent::Triggered, this, &AMainCharacter::Dodge);
 		EIComponent->BindAction(IA_UseSkill, ETriggerEvent::Triggered, this, &AMainCharacter::UseSkill);
 		EIComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AMainCharacter::CustomJump);
 		EIComponent->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
@@ -97,18 +88,6 @@ void AMainCharacter::Move(const FInputActionValue& value)
 					this->GetCharacterMovement()->GravityScale = 1;
 				}
 			}
-			//Spawn run smoke
-			if ((abs(abs(GetVelocity().X)-(MoveSpeed + 125.00f)) <= 15) && GetVelocity().Z==0) {
-				FVector SpawnLocation = this->GetActorLocation();
-				FRotator SpawnRotation = (DirectionValue > 0) ? FRotator(0, 180, 0) : FRotator(0, 0, 0);
-				FActorSpawnParameters SpawnParams;
-				SpawnLocation.Y += 1.1;
-				float CapsualeHalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
-				SpawnLocation.Z = SpawnLocation.Z - (CapsualeHalfHeight / 2);
-				SpawnLocation.X+= (DirectionValue > 0) ? -10 : 10;
-				SpawnParams.Owner = this;
-				GetWorld()->SpawnActor<ARunSmoke>(ARunSmoke::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
-			}
 			//Move the character
 			AddMovementInput(FVector(1, 0, 0), DirectionValue);
 			//Rotate the character
@@ -127,14 +106,6 @@ void AMainCharacter::Move(const FInputActionValue& value)
 	}
 }
 
-void AMainCharacter::Run()
-{
-	if (CurrentState != CharacterState::NONE && this->GetVelocity().Z == 0) {
-		GetCharacterMovement()->GroundFriction = 0;
-		GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
-	}
-}
-
 void AMainCharacter::StopMoving()
 {
 	if (this->GetCharacterMovement()->GravityScale < 1) {
@@ -142,55 +113,30 @@ void AMainCharacter::StopMoving()
 	}
 }
 
-void AMainCharacter::StopRunning()
+
+void AMainCharacter::Dodge()
 {
-	if (CurrentState != CharacterState::NONE && this->GetVelocity().Z == 0) {
-		GetCharacterMovement()->GroundFriction = 8;
-		GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
+	if (GetVelocity().Z == 0.0f && CurrentState == CharacterState::NONE && canDodge) {
+		CurrentState = CharacterState::DODGE;
+		int ForwardDir = this->GetActorRotation().Yaw == 0.0f ? 1 : -1;
+		this->LaunchCharacter(FVector(1000.0f * ForwardDir, 0.0f, 0.0f), true, false);
+		canDodge = false;
+		GetCharacterMovement()->GravityScale = 0.0f;
+		GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel2);
+		GetWorld()->SpawnActor<ASmoke>(RunSmokeSubclass, GetSprite()->GetSocketLocation(FName("RunSmoke")), GetSprite()->GetSocketRotation(FName("RunSmoke")));
+		this->GetWorldTimerManager().SetTimer(DodgeHandle, FTimerDelegate::CreateLambda([this]() {
+			if (CurrentState == CharacterState::DODGE) {
+				CurrentState = CharacterState::NONE;
+				GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+				GetCharacterMovement()->GravityScale = 1.0f;
+			}
+			}), 0.35f, false);
+		this->GetWorldTimerManager().SetTimer(DodgeEnableHandle, FTimerDelegate::CreateLambda([this]() {
+			if (!canDodge) canDodge = true;
+			}), 1.0f, false);
 	}
 }
 
-void AMainCharacter::CustomCrouch()
-{
-	if (this->GetVelocity().Z == 0 && CurrentState != CharacterState::NONE) {
-		if (abs(this->GetVelocity().X) == RunSpeed) {
-			AMainCharacter::Slide();
-		}
-		else {
-			AMainCharacter::Crouch();
-		}
-	}
-}
-
-void AMainCharacter::StopCustomCrouch()
-{
-	if (GetCharacterMovement()->IsCrouching()) {
-		if (CurrentState != CharacterState::SLIDE) {
-			AMainCharacter::UnCrouch();
-		}
-	}
-}
-
-void AMainCharacter::Slide()
-{
-	GetCharacterMovement()->BrakingDecelerationWalking = 400;
-	GetCharacterMovement()->MaxWalkSpeedCrouched = RunSpeed;
-	CurrentState = CharacterState::SLIDE;
-	AMainCharacter::Crouch();
-	if (Sliding) {
-		GetWorldTimerManager().SetTimer(SlideHandle, this, &AMainCharacter::StopSlide, Sliding->GetTotalDuration(), false);
-	}
-}
-
-void AMainCharacter::StopSlide()
-{
-	GetCharacterMovement()->BrakingDecelerationWalking = 2048;
-	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
-	AMainCharacter::UnCrouch();
-	if(CurrentState == CharacterState::SLIDE)
-		CurrentState = CharacterState::NONE;
-	AMainCharacter::StopRunning();
-}
 
 void AMainCharacter::CustomJump()
 {
@@ -288,22 +234,13 @@ void AMainCharacter::Shoot()
 
 void AMainCharacter::UseSkill()
 {
-	if (CurrentState == CharacterState :: NONE && CharSkillList->IsValidIndex(CurSkillId) && (*CharSkillList)[CurSkillId].IsValid()) {
-		(*CharSkillList)[CurSkillId]->SetOwningCharacter(this);
-		(*CharSkillList)[CurSkillId]->PerformSkill();
-	}
+	if (CurrentState == CharacterState :: NONE) SkillComponent->UseSkill();
 }
 
 
 void AMainCharacter::ChangeSkill()
 {
-	if (CurSkillId == CharSkillList->Num() - 1) CurSkillId = 0;
-	else {
-		if (CharSkillList->IsValidIndex(CurSkillId + 1)) ++CurSkillId;
-	}
-	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) MainHUD->SwitchedSlotHighlight(CurSkillId);
-	}
+	SkillComponent->ChangeSkill();
 }
 
 void AMainCharacter::EndAirAttack()
