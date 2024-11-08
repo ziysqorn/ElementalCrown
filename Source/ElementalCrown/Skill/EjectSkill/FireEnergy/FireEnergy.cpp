@@ -4,7 +4,3 @@ FireEnergy::FireEnergy() : EjectSkill(TEXT("/Script/Paper2D.PaperSprite'/Game/As
 {
 	this->SKillName = "Fire Energy";
 }
-
-FireEnergy::~FireEnergy()
-{
-}

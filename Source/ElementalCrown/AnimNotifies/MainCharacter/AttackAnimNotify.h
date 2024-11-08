@@ -19,6 +19,7 @@ class ELEMENTALCROWN_API UAttackAnimNotify : public UPaperZDAnimNotify
 
 protected:
 	//Attribute
+	UPROPERTY(EditDefaultsOnly, Category = "Damage buff")
 	int Buff{0};
 	UPROPERTY(EditDefaultsOnly, Category = "Box Position")
 	FVector BoxPosition= FVector(40, 0, 5);

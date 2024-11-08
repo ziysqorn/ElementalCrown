@@ -18,10 +18,10 @@ AMainCharacter::AMainCharacter()
 	GetCharacterMovement()->AirControl = 0.75;
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
-	SkillComponent->AddSkill(new FireSlashWaveSkill());
-	SkillComponent->AddSkill(new FireTornadoSkill());
-	SkillComponent->AddSkill(new FireEnergy());
-	SkillComponent->AddSkill(new AquaSphere());
+	SkillComponent->AddSkill(new GaleBurst());
+	SkillComponent->AddSkill(new StoneBarrageSkill());
+	SkillComponent->AddSkill(new BoulderBash());
+	SkillComponent->AddSkill(new VortexPull());
 }
 
 AMainCharacter::~AMainCharacter()
@@ -258,6 +258,7 @@ void AMainCharacter::EndAirAttack()
 
 void AMainCharacter::Landed(const FHitResult& Hit)
 {
+	GetCharacterMovement()->GravityScale = 1;
 	if (this->GetCharacterMovement()->MaxWalkSpeed == RunSpeed) {
 		GetCharacterMovement()->GroundFriction = 8;
 		GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;

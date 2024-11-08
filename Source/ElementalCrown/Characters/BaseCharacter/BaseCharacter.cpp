@@ -27,6 +27,18 @@ void ABaseCharacter::Tick(float DeltaSeconds)
 	FlashTimeline.TickTimeline(DeltaSeconds);
 }
 
+void ABaseCharacter::Landed(const FHitResult& Hit)
+{
+	if (CurrentState == CharacterState::AIRBORNE) {
+		BaseStatusEffect* FoundStatus = nullptr;
+		FoundStatus = StatusEffectComponent->FindStatusEffect(TEXT("Drowsy"));
+		if (!FoundStatus) FoundStatus = StatusEffectComponent->FindStatusEffect(TEXT("Stun"));
+		if (!FoundStatus || !FoundStatus->GetActivateStatus()) {
+			this->SetCharacterState(CharacterState::NONE);
+		}
+	}
+}
+
 float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (CurrentHealth > 0) {
@@ -53,8 +65,10 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 			}
 		}
 		else {
-			ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
-			if(!StatusEffect) CurrentState = CharacterState::HURT;
+			if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN && CurrentState != CharacterState::AIRBORNE) {
+				ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
+				if (!StatusEffect) CurrentState = CharacterState::HURT;
+			}
 			FlashTimeline.PlayFromStart();
 			if (HurtSequence) {
 				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {

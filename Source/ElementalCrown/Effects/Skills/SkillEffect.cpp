@@ -18,15 +18,18 @@ ASkillEffect::ASkillEffect(const TCHAR* Ref)
 		FlipbookComponent = this->CreateDefaultSubobject<UPaperFlipbookComponent>("Projectile");
 		FlipbookComponent->SetupAttachment(RootComponent);
 	}
+	if (FlipbookComponent) {
+		FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+		FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Ignore);
+		FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
+		FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
+		FlipbookComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
+	}
 	//Set flipbook component's flipbook
 	if (Flipbook) {
 		FlipbookComponent->SetLooping(true);
 		FlipbookComponent->SetFlipbook(Flipbook);
 	}
-	FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-	FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
-	FlipbookComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
-	FlipbookComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
 }
 
 ASkillEffect::~ASkillEffect()
@@ -37,5 +40,4 @@ ASkillEffect::~ASkillEffect()
 void ASkillEffect::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }

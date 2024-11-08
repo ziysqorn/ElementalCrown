@@ -77,6 +77,8 @@ public:
 	void Tick(float DeltaSeconds) override;
 	//Event taking damage
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	//Event landed
+	void Landed(const FHitResult& Hit) override;
 	float GetMaxHealth() {
 		return (float)MaxHealth;
 	}

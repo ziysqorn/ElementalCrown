@@ -13,7 +13,7 @@ DrowsyStatus::~DrowsyStatus()
 	if (AffectedChar) {
 		if (UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp()) {
 			if (EffectComponent->FindStatusEffect("Stun")) return;
-			if (AffectedChar->GetCharacterState() != CharacterState::DEATH)
+			if (AffectedChar->GetCharacterState() == CharacterState::STUN)
 				AffectedChar->SetCharacterState(CharacterState::NONE);
 		}
 	}

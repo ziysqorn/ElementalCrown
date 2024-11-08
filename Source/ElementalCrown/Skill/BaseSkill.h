@@ -22,8 +22,6 @@ protected:
 	//Return true if this skill can be used
 	bool isAvailable{ true };
 
-	float StunTime{ 0.00f };
-
 	//*********************TIMER HANDLE**************************
 	FTimerHandle CountdownProgHandle;
 
@@ -42,9 +40,6 @@ public:
 	//Get this skill's availability
 	bool GetAvailability() {
 		return this->isAvailable;
-	}
-	float GetStunTime() {
-		return this->StunTime;
 	}
 	UPaperSprite* GetSkillSprite() {
 		return SkillSprite;

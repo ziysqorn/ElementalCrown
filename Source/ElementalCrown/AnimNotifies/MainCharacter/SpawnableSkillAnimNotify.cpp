@@ -11,24 +11,47 @@ void USpawnableSkillAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInsta
 			float CurrentAnimSequenceDuration = OwningInstance->GetPlayer()->GetCurrentAnimSequence()->GetTotalDuration();
 			BaseCharacter->GetWorldTimerManager().SetTimer(FinishSkill, FTimerDelegate::CreateLambda([BaseCharacter]() {
 				BaseCharacter->SetCharacterState(CharacterState::NONE);
+				BaseCharacter->GetCharacterMovement()->GravityScale = 1.0f;
 				}), CurrentAnimSequenceDuration - CurrentPlaybackTime, false);
-			SpawnLocation = BaseCharacter->GetSprite()->GetSocketLocation(FName("Eject Point"));
-			SpawnRotation.Yaw = (BaseCharacter->GetSprite()->GetForwardVector().X > 0) ? 0 : 180;
+			if (BaseCharacter->GetCharacterState() != CharacterState::SHOOT && BaseCharacter->GetCharacterMovement()->JumpZVelocity != 0.0f) {
+				BaseCharacter->GetCharacterMovement()->GravityScale = 0.5f;
+				BaseCharacter->GetCharacterMovement()->StopMovementImmediately();
+			}
+			if(!isCustom) SpawnSkillActor(BaseCharacter);
 		}
 	}
 }
 
-void USpawnableSkillAnimNotify::SetSpawnProperty(UPaperZDAnimInstance* OwningInstance)
+template<typename ActorClass>
+void USpawnableSkillAnimNotify::SpawnSkillActor(ABaseCharacter* BaseCharacter) const
 {
-	if (OwningInstance->GetOwningActor()) {
-		if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
-			float CurrentPlaybackTime = OwningInstance->GetPlayer()->GetCurrentPlaybackTime();
-			float CurrentAnimSequenceDuration = OwningInstance->GetPlayer()->GetCurrentAnimSequence()->GetTotalDuration();
-			BaseCharacter->GetWorldTimerManager().SetTimer(FinishSkill, FTimerDelegate::CreateLambda([BaseCharacter]() {
-				BaseCharacter->SetCharacterState(CharacterState::NONE);
-				}), CurrentAnimSequenceDuration - CurrentPlaybackTime, false);
-			SpawnLocation = BaseCharacter->GetSprite()->GetSocketLocation(FName("Eject Point"));
-			SpawnRotation.Yaw = (BaseCharacter->GetSprite()->GetForwardVector().X > 0) ? 0 : 180;
-		}
+	if (BaseCharacter) {
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = BaseCharacter;
+		FVector SpawnLoc = BaseCharacter->GetSprite()->GetSocketLocation(FName("Eject Point"));
+		FRotator SpawnRot = FRotator(0.0f, 0.0f, 0.0f);
+		FVector TempAdditionLoc = AdditionalSpawnLoc;
+		TempAdditionLoc.X *= (BaseCharacter->GetSprite()->GetForwardVector().X > 0) ? 1 : -1;
+		SpawnRot.Yaw = (BaseCharacter->GetSprite()->GetForwardVector().X > 0) ? 0 : 180;
+		SpawnRot += AdditionalSpawnRot;
+		SpawnLoc += TempAdditionLoc;
+		BaseCharacter->GetWorld()->SpawnActor<ActorClass>(ActorClass::StaticClass(), SpawnLoc, SpawnRot, SpawnParams);
+	}
+}
+
+void USpawnableSkillAnimNotify::SpawnSkillActor(ABaseCharacter* BaseCharacter) const
+{
+	if (BaseCharacter) {
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = BaseCharacter;
+		FVector SpawnLoc = BaseCharacter->GetSprite()->GetSocketLocation(FName("Eject Point"));
+		FRotator SpawnRot = FRotator(0.0f, 0.0f, 0.0f);
+		FVector TempAdditionLoc = AdditionalSpawnLoc;
+		TempAdditionLoc.X *= (BaseCharacter->GetSprite()->GetForwardVector().X > 0) ? 1 : -1;
+		SpawnRot.Yaw = (BaseCharacter->GetSprite()->GetForwardVector().X > 0) ? 0 : 180;
+		SpawnRot += AdditionalSpawnRot;
+		SpawnLoc += TempAdditionLoc;
+		TSubclassOf<AActor>  TempSubclass = SkillActorSubclass;
+		BaseCharacter->GetWorld()->SpawnActor<AActor>(TempSubclass, SpawnLoc, SpawnRot, SpawnParams);
 	}
 }

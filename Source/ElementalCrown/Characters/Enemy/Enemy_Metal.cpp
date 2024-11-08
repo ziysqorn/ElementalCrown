@@ -38,7 +38,7 @@ float AEnemy_Metal::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 		else {
 			FlashTimeline.PlayFromStart();
 			if (HurtSequence) {
-				if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN) {
+				if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN && CurrentState != CharacterState::AIRBORNE) {
 					ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
 					if (!StatusEffect) CurrentState = CharacterState::HURT;
 				}

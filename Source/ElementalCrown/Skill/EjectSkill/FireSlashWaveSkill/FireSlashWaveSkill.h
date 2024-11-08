@@ -6,6 +6,5 @@ class ELEMENTALCROWN_API FireSlashWaveSkill : public EjectSkill {
 public:
 	//Constructor
 	FireSlashWaveSkill();
-	//Destructor
-	~FireSlashWaveSkill();
+	void PerformSkill() override;
 };
