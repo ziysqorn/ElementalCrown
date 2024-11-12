@@ -13,5 +13,7 @@ UCLASS()
 class ELEMENTALCROWN_API AEnemy_EarthBlacksmith : public AEnemy_Earth
 {
 	GENERATED_BODY()
-	
+
+public:
+	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 };

@@ -100,9 +100,13 @@ float AEnemy_FireWisp::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 				if (!StatusEffect) CurrentState = CharacterState::HURT;
 			}
 			FlashTimeline.PlayFromStart();
-			GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {
+			GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this, EventInstigator]() {
 				if (this->CurrentState == CharacterState::HURT)
 					this->CurrentState = CharacterState::NONE;
+				if (EventInstigator) {
+					FRotator CharacterRotation = (EventInstigator->GetPawn()->GetActorLocation().X > this->GetActorLocation().X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
+					this->SetActorRotation(CharacterRotation);
+				}
 				}), 0.2f, false);
 		}
 		if (StatsPopoutSubclass) {

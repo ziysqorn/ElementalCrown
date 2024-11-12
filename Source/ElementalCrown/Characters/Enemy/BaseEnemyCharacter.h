@@ -23,6 +23,7 @@ protected:
 	FTimerHandle TurnBackHandle;
 	FTimerHandle AttackRecoverHandle;
 	//Distance X to trigger attack
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Attack Trigger DistanceX")
 	float AttackTriggerDistanceX = 70.0f;
 	//Size of the box that detects player
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Player Detect Box")
