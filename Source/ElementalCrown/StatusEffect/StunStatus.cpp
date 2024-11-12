@@ -12,7 +12,8 @@ StunStatus::~StunStatus()
 {
 	if (AffectedChar) {
 		if (UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp()) {
-			if (EffectComponent->FindStatusEffect("Drowsy")) return;
+			BaseStatusEffect* FoundStatus = EffectComponent->FindStatusEffect("Drowsy");
+			if (FoundStatus && FoundStatus->GetActivateStatus()) return;
 			if (AffectedChar->GetCharacterState() == CharacterState::STUN)
 				AffectedChar->SetCharacterState(CharacterState::NONE);
 		}

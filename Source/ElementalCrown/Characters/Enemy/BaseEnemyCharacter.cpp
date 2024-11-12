@@ -38,7 +38,7 @@ void ABaseEnemyCharacter::BeginPlay()
 
 void ABaseEnemyCharacter::Tick(float DeltaSeconds)
 {
-	ABaseCharacter::Tick(DeltaSeconds);
+	Super::Tick(DeltaSeconds);
 	if (!DetectingPlayer() && !DetectingWall()) this->Move();
 	else if (DetectingPlayer()) this->Attack();
 }
@@ -55,6 +55,11 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 		}
 		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
 			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+		}
+		if (IGameplayInterface* CauserInteface = Cast<IGameplayInterface>(DamageCauser)) {
+			if (UElemental* CauserElemental = CauserInteface->GetElemental()) {
+				if(CharacterElement) FinalDamage += (int)ceil(DamageAmount * CharacterElement->CalcDmgByStrongerElemental(CauserElemental));
+			}
 		}
 		CurrentHealth -= FinalDamage;
 		if (CurrentHealth <= 0) {
@@ -116,10 +121,10 @@ void ABaseEnemyCharacter::Attack()
 				if(CurrentState == CharacterState::ATTACK)
 				this->CurrentState = CharacterState::NONE;
 				}), AttackSequence->GetTotalDuration(), false);
+			GetWorldTimerManager().SetTimer(AttackRecoverHandle, FTimerDelegate::CreateLambda([this]() {
+				this->AttackRecovered = true;
+				}), AttackSequence->GetTotalDuration() + AttackSpeed, false);
 		}
-		GetWorldTimerManager().SetTimer(AttackRecoverHandle, FTimerDelegate::CreateLambda([this]() {
-			this->AttackRecovered = true;
-		}), AttackSpeed, false);
 	}
 }
 
@@ -129,13 +134,16 @@ bool ABaseEnemyCharacter::DetectingPlayer()
 	FCollisionObjectQueryParams DetectObjectsParams(ECollisionChannel::ECC_Pawn);
 	FCollisionQueryParams DetectParams;
 	DetectParams.AddIgnoredActor(this);
-	DrawDebugBox(GetWorld(), this->GetActorLocation(), PlayerDetectBox, FColor::Blue);
-	bool PlayerDetected{ GetWorld()->SweepSingleByObjectType(PlayerDetectResult, this->GetActorLocation(), this->GetActorLocation(), FQuat(0, 0, 0, 0), DetectObjectsParams, FCollisionShape::MakeBox(PlayerDetectBox), DetectParams) };
+	DrawDebugBox(GetWorld(), this->GetActorLocation() + PlayerDetectBoxPos, PlayerDetectBox, FColor::Blue);
+	bool PlayerDetected = GetWorld()->SweepSingleByObjectType(PlayerDetectResult, this->GetActorLocation() + PlayerDetectBoxPos, this->GetActorLocation() + PlayerDetectBoxPos, FQuat(0, 0, 0, 0), DetectObjectsParams, FCollisionShape::MakeBox(PlayerDetectBox), DetectParams);
 	if (PlayerDetected) {
 		FRotator CharacterRotation = (PlayerDetectResult.GetActor()->GetActorLocation().X > this->GetActorLocation().X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
-		if (abs(PlayerDetectResult.GetActor()->GetActorLocation().X - this->GetActorLocation().X)>=30 && CurrentState != CharacterState::HURT && CurrentState != CharacterState::DEATH && CurrentState != CharacterState::ATTACK)
-			this->SetActorRotation(CharacterRotation);
-		return abs(PlayerDetectResult.GetActor()->GetActorLocation().X - this->GetActorLocation().X) <= 50;
+		ABaseEnemyCharacter* Enemy = Cast<ABaseEnemyCharacter>(PlayerDetectResult.GetActor());
+		if (!Enemy) {
+			if (abs(PlayerDetectResult.GetActor()->GetActorLocation().X - this->GetActorLocation().X) >= 30 && CurrentState != CharacterState::HURT && CurrentState != CharacterState::DEATH && CurrentState != CharacterState::ATTACK)
+				this->SetActorRotation(CharacterRotation);
+			return abs(PlayerDetectResult.GetActor()->GetActorLocation().X - this->GetActorLocation().X) <= AttackTriggerDistanceX;
+		}
 	}
 	return false;
 }
@@ -151,7 +159,7 @@ bool ABaseEnemyCharacter::DetectingWall()
 		if (!GetWorldTimerManager().IsTimerActive(TurnBackHandle)) {
 			GetWorldTimerManager().SetTimer(TurnBackHandle, FTimerDelegate::CreateLambda([this, CharacterRotation]() {
 				this->SetActorRotation(CharacterRotation);
-				}), 3, false);
+				}), 3.0f, false);
 		}
 	}
 	return WallDetected;

@@ -10,7 +10,7 @@ namespace Constants {
 	const int Default_Character_MaxMana{ 20 };
 	const int Default_Character_ATKDamage{ 5 };
 	const int Default_Character_Resist{ 2 };
-	const float Default_Character_AttackSpeed{ 1.50f };
+	const float Default_Character_AttackSpeed{ 1.0f };
 	const uint8 Default_Character_DeStun{ 5 };
 	const uint8 Default_Enemy_DeStun{ 2 };
 }

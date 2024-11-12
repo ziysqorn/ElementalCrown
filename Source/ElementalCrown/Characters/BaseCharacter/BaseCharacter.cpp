@@ -19,6 +19,7 @@ void ABaseCharacter::BeginPlay()
 		}));
 	}
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_WorldDynamic, ECR_Overlap);
 }
 
 void ABaseCharacter::Tick(float DeltaSeconds)

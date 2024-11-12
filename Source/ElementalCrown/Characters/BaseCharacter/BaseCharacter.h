@@ -21,7 +21,7 @@ class ELEMENTALCROWN_API ABaseCharacter : public APaperZDCharacter, public IGame
 {
 	GENERATED_BODY()
 protected:
-	UPROPERTY()
+	UPROPERTY(Transient)
 	UElemental* CharacterElement = nullptr;
 	//Character's base stats
 	int MaxHealth{ Default_Character_MaxHealth };
@@ -36,28 +36,28 @@ protected:
 	bool canDodge = true;
 	//Animation sequences
 	//Attack sequence
-	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Animation Sequence")
 	UPaperZDAnimSequence* AttackSequence = nullptr;
 	//Hurt sequence
-	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Animation Sequence")
 	UPaperZDAnimSequence* HurtSequence = nullptr;
-	UPROPERTY(EditDefaultsOnly, Category = "Animation Sequence")
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Animation Sequence")
 	UPaperZDAnimSequence* DeathSequence = nullptr;
 	//Character's Current State
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Character Current State")
 	CharacterState CurrentState = CharacterState::NONE;
 
 	//Flash when damaged curve float
-	UPROPERTY(EditDefaultsOnly, Category = "CurveFloats | FlashCurveFloat")
+	UPROPERTY(EditDefaultsOnly, Category = "Important | CurveFloats | FlashCurveFloat")
 	UCurveFloat* FlashCurveFloat = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Stats pop out subclass")
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Stats pop out subclass")
 	TSubclassOf<AStatsPopout> StatsPopoutSubclass;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Status effect manager component")
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Status effect manager component")
 	UStatusEffectComponent* StatusEffectComponent = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Skill manager component")
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Skill manager component")
 	USkillComponent* SkillComponent = nullptr;
 
 	FTimerHandle HurtHandle;
@@ -73,7 +73,7 @@ protected:
 
 public:
 	ABaseCharacter();
-	void BeginPlay() override;
+	virtual void BeginPlay() override;
 	void Tick(float DeltaSeconds) override;
 	//Event taking damage
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;

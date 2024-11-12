@@ -22,7 +22,7 @@ void AStatsPopout::BeginPlay()
 				AActor* owner = this->GetOwner();
 				UStatsPopoutUI* statsUI = this->GetStatsPopoutUI();
 				FVector ActorLocation = owner->GetActorLocation();
-				FVector newPosition = FVector(ActorLocation.X + 60.0f * Value, 0.0f, ActorLocation.Z + 60.0f * Value);
+				FVector newPosition = FVector(ActorLocation.X + DistanceX * Value, 0.0f, ActorLocation.Z + DistanceZ * Value);
 				this->SetActorLocation(newPosition);
 				//statsUI->SetRenderOpacity(FMath::Lerp(1.0f, 0.0f, Value));
 			}

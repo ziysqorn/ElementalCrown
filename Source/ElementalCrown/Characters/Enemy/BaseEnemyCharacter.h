@@ -22,14 +22,20 @@ protected:
 	//Timer Handles
 	FTimerHandle TurnBackHandle;
 	FTimerHandle AttackRecoverHandle;
+	//Distance X to trigger attack
+	float AttackTriggerDistanceX = 70.0f;
 	//Size of the box that detects player
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Player Detect Box")
 	FVector PlayerDetectBox = FVector(150, 0, 40);
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Player Detect Box Position")
+	FVector PlayerDetectBoxPos = FVector(0.0f, 0.0f, 0.0f);
 	//Size of the box that detects wall
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Wall Detect Box")
 	FVector WallDetectBox = FVector(20, 0, 40);
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character current state")
 	//Decide if character can attack
 	bool AttackRecovered{ true };
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Enemy Health Bar")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Important | Enemy Health Bar")
 	UWidgetComponent* EnemyHealthBar = nullptr;
 public:
 	//************************************* CONSTRUCTOR *****************************************

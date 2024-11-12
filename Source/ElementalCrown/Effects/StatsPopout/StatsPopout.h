@@ -13,6 +13,8 @@ class ELEMENTALCROWN_API AStatsPopout : public AActor
 	GENERATED_BODY()
 
 protected:
+	float DistanceX = 60.0f;
+	float DistanceZ = 60.0f;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Stats Text")
 	UWidgetComponent* StatsText = nullptr;
 	UPROPERTY(EditDefaultsOnly, Category = "CurveFloats | StatsOpacity")
@@ -32,5 +34,13 @@ public:
 	UStatsPopoutUI* GetStatsPopoutUI() {
 		if (UStatsPopoutUI* statsUI = Cast<UStatsPopoutUI>(StatsText->GetWidget())) return statsUI;
 		return nullptr;
+	}
+
+	void setDistanceX(const float& newDistance) {
+		DistanceX = newDistance;
+	}
+	
+	void setDistanceZ(const float& newDistance) {
+		DistanceZ = newDistance;
 	}
 };
