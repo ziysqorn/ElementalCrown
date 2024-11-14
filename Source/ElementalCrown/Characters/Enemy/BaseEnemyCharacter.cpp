@@ -40,7 +40,7 @@ void ABaseEnemyCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	if (!DetectingPlayer() && !DetectingWall()) this->Move();
-	else if (DetectingPlayer()) this->Attack();
+	else if (DetectingPlayer() && AttackRecovered) this->Attack();
 }
 
 float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -113,7 +113,7 @@ void ABaseEnemyCharacter::Move()
 
 void ABaseEnemyCharacter::Attack()
 {
-	if (CurrentState == CharacterState::NONE && AttackRecovered) {
+	if (CurrentState == CharacterState::NONE) {
 		CurrentState = CharacterState::ATTACK;
 		AttackRecovered = false; 
 		if (AttackSequence) {

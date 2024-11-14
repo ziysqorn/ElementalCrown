@@ -13,5 +13,7 @@ UCLASS()
 class ELEMENTALCROWN_API AEnemy_SeaDemon : public AEnemy_Water
 {
 	GENERATED_BODY()
-	
+
+public:
+	AEnemy_SeaDemon();
 };

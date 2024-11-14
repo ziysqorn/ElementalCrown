@@ -13,5 +13,7 @@ UCLASS()
 class ELEMENTALCROWN_API AEnemy_BowHuntress : public AEnemy_Plant
 {
 	GENERATED_BODY()
-	
+
+public:
+	AEnemy_BowHuntress();
 };
