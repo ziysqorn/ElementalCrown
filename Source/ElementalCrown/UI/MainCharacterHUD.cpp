@@ -122,3 +122,15 @@ void UMainCharacterHUD::RefreshSkillSlots(TArray<BaseSkill*>& list)
 		SwitchedSlotHighlight(0);
 	}
 }
+
+UBossHealthBar* UMainCharacterHUD::AddBossHealthbarToBox()
+{
+	UBossHealthBar* BossHealthbar = CreateWidget<UBossHealthBar>(this->GetOwningPlayer(), BossHealthbarSubclass);
+	if(BossHealthbar) SizeBox_BossHealthbarBox->AddChild(BossHealthbar);
+	return BossHealthbar;
+}
+
+void UMainCharacterHUD::RemoveBossHealthbarFromBox()
+{
+	SizeBox_BossHealthbarBox->RemoveChildAt(0);
+}

@@ -6,6 +6,7 @@
 #include "../ProjectIncludes.h"
 #include "../Skill/BaseSkill.h"
 #include "../UI/Skill/SkillSlot.h"
+#include "../UI/BossHealthBar/BossHealthBar.h"
 #include "../UI/StatusEffectProgressUI/StatusEffectProgressUI.h"
 #include "MainCharacterHUD.generated.h"
 
@@ -30,9 +31,14 @@ protected:
 	UTextBlock* Txt_SkillName = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UVerticalBox* VerBox_StatusProgress = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
+	USizeBox* SizeBox_BossHealthbarBox = nullptr;
+
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Slot SubClass")
 	TSubclassOf<USkillSlot> SkillSlotSubClass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Boss Healthbar SubClass")
+	TSubclassOf<UBossHealthBar> BossHealthbarSubclass;
 	UHorizontalBox* GetSkillSlotBox() { return HorBox_SkillSlotBox; }
 	UStatusEffectProgressUI* GetStatusProgressUI(const int& idx) {
 		return Cast<UStatusEffectProgressUI>(VerBox_StatusProgress->GetChildAt(idx));
@@ -58,4 +64,6 @@ public:
 	void HideSkillLoaderUI(BaseSkill* Skill);
 	void SwitchedSlotHighlight(int SwitchedNodeId);
 	void RefreshSkillSlots(TArray<BaseSkill*>& list);
+	UBossHealthBar* AddBossHealthbarToBox();
+	void RemoveBossHealthbarFromBox();
 };

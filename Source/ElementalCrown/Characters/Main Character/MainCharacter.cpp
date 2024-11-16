@@ -20,7 +20,7 @@ AMainCharacter::AMainCharacter()
 
 	SkillComponent->AddSkill(new GaleBurst());
 	SkillComponent->AddSkill(new StoneBarrageSkill());
-	SkillComponent->AddSkill(new BoulderBash());
+	SkillComponent->AddSkill(new PoseidonAura());
 	SkillComponent->AddSkill(new RazorWaveSkill());
 }
 

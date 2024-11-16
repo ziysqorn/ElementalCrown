@@ -25,6 +25,7 @@
 #include "Components/HorizontalBox.h"
 #include "Components/GridPanel.h"
 #include "Components/VerticalBox.h"
+#include "Components/SizeBox.h"
 #include "Camera/CameraComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "PaperSpriteComponent.h"

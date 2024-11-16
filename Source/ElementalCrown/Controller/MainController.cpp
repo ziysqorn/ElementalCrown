@@ -11,7 +11,7 @@ void AMainController::BeginPlay()
 		if (MainHUD) {
 			MainHUD->SetOwningPlayer(this);
 			MainHUD->SetupHUD();
-			MainHUD->AddToViewport(0);
+			MainHUD->AddToViewport(10);
 		}
 	}
 }

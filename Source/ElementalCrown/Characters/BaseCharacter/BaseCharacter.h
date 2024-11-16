@@ -21,6 +21,7 @@ class ELEMENTALCROWN_API ABaseCharacter : public APaperZDCharacter, public IGame
 {
 	GENERATED_BODY()
 protected:
+	FName CharacterName;
 	UPROPERTY(Transient)
 	UElemental* CharacterElement = nullptr;
 	//Character's base stats

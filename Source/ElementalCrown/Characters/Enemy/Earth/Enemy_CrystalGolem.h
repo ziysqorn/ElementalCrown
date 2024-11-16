@@ -13,5 +13,5 @@ UCLASS()
 class ELEMENTALCROWN_API AEnemy_CrystalGolem : public AEnemy_Earth
 {
 	GENERATED_BODY()
-	
+
 };

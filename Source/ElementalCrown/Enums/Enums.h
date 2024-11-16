@@ -16,6 +16,7 @@ enum class CharacterState : uint8
 	HURT UMETA(DisplayName = "Hurt"),
 	DEATH UMETA(DisplayName = "Dead"),
 	STUN UMETA(DisplayName = "Stun"),
-	AIRBORNE UMETA(DisplayName = "Airborne")
+	AIRBORNE UMETA(DisplayName = "Airborne"),
+	SURF UMETA(DisplayName = "Surfing"),
 };
 

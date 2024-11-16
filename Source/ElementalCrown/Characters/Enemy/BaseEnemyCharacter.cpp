@@ -15,7 +15,7 @@ ABaseEnemyCharacter::ABaseEnemyCharacter()
 	EnemyHealthBar = CreateDefaultSubobject<UWidgetComponent>("Health Bar");
 	EnemyHealthBar->SetupAttachment(RootComponent);
 	EnemyHealthBar->SetWidgetSpace(EWidgetSpace::Screen);
-	EnemyHealthBar->SetDrawAtDesiredSize(true);
+	EnemyHealthBar->SetDrawAtDesiredSize(false);
 	//
 	
 }
