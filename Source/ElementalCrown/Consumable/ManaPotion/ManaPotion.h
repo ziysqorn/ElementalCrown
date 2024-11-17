@@ -10,7 +10,13 @@
  */
 class ELEMENTALCROWN_API ManaPotion : public Consumable
 {
+
+protected:
+	int ManaAmount = 20;
+
 public:
 	ManaPotion();
 	~ManaPotion();
+
+	void Consume() override;
 };

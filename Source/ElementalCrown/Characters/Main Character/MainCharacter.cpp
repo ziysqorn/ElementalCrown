@@ -11,6 +11,7 @@ AMainCharacter::AMainCharacter()
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	SpringArmComp->SetupAttachment(RootComponent);
 	CameraComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
+	ConsumableComponent = CreateDefaultSubobject<UConsumableComponent>(TEXT("ConsumableComponent"));
 	//Character movement
 	GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;
 	GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
@@ -22,6 +23,8 @@ AMainCharacter::AMainCharacter()
 	SkillComponent->AddSkill(new StoneBarrageSkill());
 	SkillComponent->AddSkill(new PoseidonAura());
 	SkillComponent->AddSkill(new RazorWaveSkill());
+
+
 }
 
 AMainCharacter::~AMainCharacter()
@@ -56,6 +59,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EIComponent->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
 		EIComponent->BindAction(IA_Shoot, ETriggerEvent::Triggered, this, &AMainCharacter::Shoot);
 		EIComponent->BindAction(IA_ChangeSkill, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeSkill);
+		EIComponent->BindAction(IA_UseHealPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UseHealPot);
+		EIComponent->BindAction(IA_UseManaPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UseManaPot);
 	}
 }
 

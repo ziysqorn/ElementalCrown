@@ -10,7 +10,12 @@
  */
 class ELEMENTALCROWN_API HPPotion : public Consumable
 {
+protected:
+	int HealAmount = 20;
+
 public:
 	HPPotion();
 	~HPPotion();
+
+	void Consume() override;
 };

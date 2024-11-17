@@ -6,6 +6,7 @@
 #include "../BaseCharacter/BaseCharacter.h"
 #include "../../Effects/Smoke/Smoke.h"
 #include "../../SkillsIncludes.h"
+#include "../../Consumable/ConsumableComponent.h"
 #include "MainCharacter.generated.h"
 
 /**
@@ -47,6 +48,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_ChangeSkill = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_UseHealPot = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_UseManaPot = nullptr;
+
 	//Input mapping context
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputMapping")
 	UInputMappingContext* MainMappingContext = nullptr;
@@ -75,6 +82,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run smoke")
 	TSubclassOf<ASmoke> RunSmokeSubclass = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Consumable  component")
+	UConsumableComponent* ConsumableComponent = nullptr;
 
 	//Timer Handle
 	FTimerHandle ComboHandle;

@@ -89,6 +89,9 @@ public:
 	int GetCurrentMana() {
 		return CurrentMana;
 	}
+	int GetMaxMana() {
+		return MaxMana;
+	}
 	UFUNCTION()
 	float GetHealthPercentage() const {
 		return (float)CurrentHealth / MaxHealth;
@@ -146,6 +149,12 @@ public:
 			MaxHealth = 1;
 		}
 	}
+	void SetCurrentHealthByBuff(const int& Buff) {
+		int finalHealth = CurrentHealth + Buff;
+		if (finalHealth > MaxHealth) CurrentHealth = MaxHealth;
+		else if (finalHealth < 0) CurrentHealth = 0;
+		else CurrentHealth = finalHealth;
+	}
 	//Set max health (min=0) directly by a new value
 	void SetMaxHealthByNewValue(const int& NewMaxHealth) {
 		if (NewMaxHealth >= 0) {
@@ -180,8 +189,16 @@ public:
 		}
 		return 0;
 	}
+
 	void SetManaAfterConsume(const int& Amount) {
 		CurrentMana -= Amount;
 		CurrentMana < 0 ? this->CurrentMana = 0 : this->CurrentMana = this->CurrentMana;
+	}
+
+	void SetCurrentManaByBuff(const int& Buff) {
+		int finalMana = CurrentMana + Buff;
+		if (finalMana > MaxMana) CurrentMana = MaxMana;
+		else if (finalMana < 0) CurrentMana = 0;
+		else CurrentMana = finalMana;
 	}
 };
