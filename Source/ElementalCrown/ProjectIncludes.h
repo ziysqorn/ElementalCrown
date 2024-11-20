@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "PaperZDCharacter.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/SaveGame.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"

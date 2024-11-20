@@ -15,3 +15,13 @@ void AMainController::BeginPlay()
 		}
 	}
 }
+
+void AMainController::OpenShop()
+{
+	if (MainHUDSubClass) {
+		ShopUI = CreateWidget<UShopUI>(this, ShopUISubClass);
+		if (ShopUI) {
+			ShopUI->AddToViewport(12);
+		}
+	}
+}

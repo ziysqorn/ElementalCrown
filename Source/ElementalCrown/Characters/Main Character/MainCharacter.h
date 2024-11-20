@@ -52,6 +52,9 @@ protected:
 	UInputAction* IA_UseHealPot = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_OpenShop = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_UseManaPot = nullptr;
 
 	//Input mapping context

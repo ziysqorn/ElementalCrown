@@ -51,16 +51,19 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	if (UEnhancedInputComponent* EIComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		EIComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
-		EIComponent->BindAction(IA_Move, ETriggerEvent::Completed, this, &AMainCharacter::StopMoving);
-		EIComponent->BindAction(IA_Dodge, ETriggerEvent::Triggered, this, &AMainCharacter::Dodge);
-		EIComponent->BindAction(IA_UseSkill, ETriggerEvent::Triggered, this, &AMainCharacter::UseSkill);
-		EIComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AMainCharacter::CustomJump);
-		EIComponent->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
-		EIComponent->BindAction(IA_Shoot, ETriggerEvent::Triggered, this, &AMainCharacter::Shoot);
-		EIComponent->BindAction(IA_ChangeSkill, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeSkill);
-		EIComponent->BindAction(IA_UseHealPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UseHealPot);
-		EIComponent->BindAction(IA_UseManaPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UseManaPot);
+		if (AMainController* MainController = Cast<AMainController>(GetController())) {
+			EIComponent->BindAction(IA_Move, ETriggerEvent::Triggered, this, &AMainCharacter::Move);
+			EIComponent->BindAction(IA_Move, ETriggerEvent::Completed, this, &AMainCharacter::StopMoving);
+			EIComponent->BindAction(IA_Dodge, ETriggerEvent::Triggered, this, &AMainCharacter::Dodge);
+			EIComponent->BindAction(IA_UseSkill, ETriggerEvent::Triggered, this, &AMainCharacter::UseSkill);
+			EIComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &AMainCharacter::CustomJump);
+			EIComponent->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
+			EIComponent->BindAction(IA_Shoot, ETriggerEvent::Triggered, this, &AMainCharacter::Shoot);
+			EIComponent->BindAction(IA_ChangeSkill, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeSkill);
+			EIComponent->BindAction(IA_UseHealPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UseHealPot);
+			EIComponent->BindAction(IA_UseManaPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UseManaPot);
+			EIComponent->BindAction(IA_OpenShop, ETriggerEvent::Triggered, MainController, &AMainController::OpenShop);
+		}
 	}
 }
 
