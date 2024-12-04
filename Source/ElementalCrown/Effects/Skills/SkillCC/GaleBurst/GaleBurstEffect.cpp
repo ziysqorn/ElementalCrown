@@ -3,7 +3,7 @@
 
 #include "GaleBurstEffect.h"
 
-AGaleBurstEffect::AGaleBurstEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/GaleBurst/Effect_Skill_GaleBurst.Effect_Skill_GaleBurst'"))
+AGaleBurstEffect::AGaleBurstEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/GaleBurst/Effect_Skill_GaleBurst.Effect_Skill_GaleBurst'"))
 {
 	EffectElement = CreateDefaultSubobject<UPlant>(FName("EffectElement"));
 	BuildupAmount = 4.0f;
@@ -14,6 +14,6 @@ AGaleBurstEffect::AGaleBurstEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipb
 
 void AGaleBurstEffect::BeginPlay()
 {
-	ASkillCC::BeginPlay();
+	Super::BeginPlay();
 	this->SetActorScale3D(FVector(3.0f, 1.0f, 2.0f));
 }

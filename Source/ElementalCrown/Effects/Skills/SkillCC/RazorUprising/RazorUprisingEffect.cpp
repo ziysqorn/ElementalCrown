@@ -3,7 +3,7 @@
 
 #include "RazorUprisingEffect.h"
 
-ARazorUprisingEffect::ARazorUprisingEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/RazorUprising/Effect_Skill_RazorUprising.Effect_Skill_RazorUprising'"))
+ARazorUprisingEffect::ARazorUprisingEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/RazorUprising/Effect_Skill_RazorUprising.Effect_Skill_RazorUprising'"))
 {
 	EffectElement = CreateDefaultSubobject<UMetal>(FName("EffectElement"));
 	BuildupAmount = 4.0f;
@@ -14,6 +14,6 @@ ARazorUprisingEffect::ARazorUprisingEffect() : ASkillCC(TEXT("/Script/Paper2D.Pa
 
 void ARazorUprisingEffect::BeginPlay()
 {
-	ASkillCC::BeginPlay();
+	Super::BeginPlay();
 	this->SetActorScale3D(FVector(2.0f, 1.0f, 1.5f));
 }

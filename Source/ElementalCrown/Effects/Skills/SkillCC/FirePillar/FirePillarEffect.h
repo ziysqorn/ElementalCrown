@@ -10,7 +10,7 @@
  *
  */
 UCLASS()
-class ELEMENTALCROWN_API AFirePillarEffect : public ASkillCC
+class ELEMENTALCROWN_API AFirePillarEffect : public ASkillCCEffect
 {
 	GENERATED_BODY()
 public:

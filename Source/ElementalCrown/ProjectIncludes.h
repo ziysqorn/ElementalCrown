@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Engine/DataTable.h"
 #include "PaperSprite.h"
 #include "PaperFlipbook.h"
 #include "TimerManager.h"
@@ -19,6 +20,7 @@
 #include "Components/TimelineComponent.h"
 #include "Components/WidgetComponent.h"
 #include "Components/ActorComponent.h"
+#include "Components/BoxComponent.h"
 #include "Components/Image.h"
 #include "Components/Border.h"
 #include "Components/ProgressBar.h"
@@ -27,6 +29,9 @@
 #include "Components/GridPanel.h"
 #include "Components/VerticalBox.h"
 #include "Components/SizeBox.h"
+#include "Components/ScrollBox.h"
+#include "Components/WidgetSwitcher.h"
+#include "Components/Button.h"
 #include "Camera/CameraComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "PaperSpriteComponent.h"

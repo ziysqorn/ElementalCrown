@@ -4,18 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "../Consumable.h"
+#include "HPPotion.generated.h"
 
 /**
  * 
  */
-class ELEMENTALCROWN_API HPPotion : public Consumable
+UCLASS()
+class ELEMENTALCROWN_API UHPPotion : public UConsumable
 {
+
+	GENERATED_BODY()
+
 protected:
 	int HealAmount = 20;
 
 public:
-	HPPotion();
-	~HPPotion();
+	UHPPotion();
 
-	void Consume() override;
+	bool Consume() override;
 };

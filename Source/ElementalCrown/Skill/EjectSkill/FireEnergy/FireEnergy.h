@@ -1,8 +1,13 @@
 #pragma once
 
 #include "../EjectSkill.h"
+#include "FireEnergy.generated.h"
 
-class ELEMENTALCROWN_API FireEnergy : public EjectSkill {
+UCLASS()
+class ELEMENTALCROWN_API UFireEnergy : public UEjectSkill {
+
+	GENERATED_BODY()
+
 public:
-	FireEnergy();
+	UFireEnergy();
 };

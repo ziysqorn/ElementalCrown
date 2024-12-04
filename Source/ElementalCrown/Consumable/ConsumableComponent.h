@@ -3,10 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/ActorComponent.h"
+#include "../ProjectIncludes.h"
 #include "HPPotion/HPPotion.h"
 #include "ManaPotion/ManaPotion.h"
+#include "BurnCurePotion/BurnCurePotion.h"
+#include "BleedCurePotion/BleedCurePotion.h"
+#include "StunCurePotion/StunCurePotion.h"
+#include "DrowsyCurePotion/DrowsyCurePotion.h"
+#include "VulnerableCurePotion/VulnerableCurePotion.h"
 #include "ConsumableComponent.generated.h"
+
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -15,10 +21,15 @@ class ELEMENTALCROWN_API UConsumableComponent : public UActorComponent
 	GENERATED_BODY()
 
 protected:
-	HPPotion* HealPotion = nullptr;
+	UPROPERTY()
+	TArray<UConsumable*> ConsumableList;
 
-	ManaPotion* MPPotion = nullptr;
+	bool canConsume = true;
 
+	FTimerHandle ConsumeCooldownHandle;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important")
+	UDataTable* DT_Consumable = nullptr;
 
 public:	
 	// Sets default values for this component's properties
@@ -27,15 +38,33 @@ public:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void UseHealPot();
+	TArray<UConsumable*>& GetConsumableList(){
+		return ConsumableList;
+	}
 
-	void AddHealPotQuant(const int& Quantity);
+	UConsumable* FindConsumable(FName inName) {
+		UConsumable** FoundConsumable = ConsumableList.FindByPredicate([inName](UConsumable* a) {
+			return a->GetConsumableName().IsEqual(inName);
+		});
+		if (FoundConsumable) return *FoundConsumable;
+		return nullptr;
+	}
 
-	void ReduceHealPotQuant(const int& Quantity);
+	bool IsValidQuantityAfterAdding(UConsumable* Consumable, int Quantity);
 
-	void UseManaPot();
+	bool IsValidQuantityAfterAdding(FName inName, int Quantity);
 
-	void AddManaPotQuant(const int& Quantity);
+	void UsePotion(UConsumable* DesiredConsumable);
 
-	void ReduceManaPotQuant(const int& Quantity);
+	void UsePotion(const FInputActionValue& inputValue, int idx);
+
+	bool AddPotionQuantity(UConsumable* DesiredConsumable, int Quantity);
+
+	int AddPotionQuantity(FName ConsumableName, int Quantity);
+
+	void AddPotion(UConsumable* Consumable);
+
+	bool ReducePotion(UConsumable* DesiredConsumable, int Quantity);
+
+	void LoadConsumable();
 };

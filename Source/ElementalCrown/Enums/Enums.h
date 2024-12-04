@@ -20,3 +20,13 @@ enum class CharacterState : uint8
 	SURF UMETA(DisplayName = "Surfing"),
 };
 
+UENUM(BlueprintType)
+enum class ConsumableType : uint8 {
+	HEALPOTION UMETA(DisplayName = "Heal Potion"),
+	MANAPOTION UMETA(DisplayName = "Mana Potion"),
+	BLEEDCUREPOTION UMETA(DisplayName = "Bleed Cure Potion"),
+	BURNCUREPOTION UMETA(DisplayName = "Burn Cure Potion"),
+	DROWSYCUREPOTION UMETA(DisplayName = "Drowsy Cure Potion"),
+	STUNCUREPOTION UMETA(DisplayName = "Stun Cure Potion"),
+	VULNERABLECUREPOTION UMETA(DisplayName = "Vulnerable Cure Potion")
+};

@@ -10,7 +10,7 @@
  *
  */
 UCLASS()
-class ELEMENTALCROWN_API AAbyssalSurgeEffect : public ASkillCC
+class ELEMENTALCROWN_API AAbyssalSurgeEffect : public ASkillCCEffect
 {
 	GENERATED_BODY()
 public:

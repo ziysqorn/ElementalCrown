@@ -18,6 +18,7 @@ class ELEMENTALCROWN_API ABaseEnemyCharacter : public ABaseCharacter
 
 protected:
 	float AttackSpeed{ Default_Character_AttackSpeed };
+	bool isMovingAllowed = true;
 protected:
 	//Timer Handles
 	FTimerHandle TurnBackHandle;
@@ -27,12 +28,14 @@ protected:
 	float AttackTriggerDistanceX = 70.0f;
 	//Size of the box that detects player
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Player Detect Box")
-	FVector PlayerDetectBox = FVector(150, 0, 40);
+	FVector PlayerDetectBox = FVector(150.0f, 0.0f, 40.0f);
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Player Detect Box Position")
 	FVector PlayerDetectBoxPos = FVector(0.0f, 0.0f, 0.0f);
 	//Size of the box that detects wall
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Wall Detect Box")
-	FVector WallDetectBox = FVector(20, 0, 40);
+	FVector WallDetectBox = FVector(20.0f, 0.0f, 40.0f);
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Edge Detect Start Point")
+	FVector EdgeDetectStartPoint = FVector(50.0f, 0.0f, 0.0f);
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character current state")
 	//Decide if character can attack
 	bool AttackRecovered{ true };
@@ -52,10 +55,21 @@ public:
 	//************************************* ACTIONS *********************************************************
 	//Moving
 	virtual void Move();
+
 	//Attack
 	virtual void Attack();
+	
+	void TurnBack();
+
 	//Detecting player . Return true if detected player location away 50 units from this character
 	virtual bool DetectingPlayer();
+
 	//Detecting wall
-	bool DetectingWall();
+	bool DetectingPatrolLimit();
+
+	bool DetectingEdge();
+
+	void SetIsMovingAllowed(bool isAllowed) {
+		isMovingAllowed = isAllowed;
+	}
 };

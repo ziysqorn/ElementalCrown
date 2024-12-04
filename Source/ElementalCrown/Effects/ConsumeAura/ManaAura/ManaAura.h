@@ -18,5 +18,4 @@ class ELEMENTALCROWN_API AManaAura : public AConsumeAura
 public:
 	AManaAura();
 
-	void BeginPlay() override;
 };

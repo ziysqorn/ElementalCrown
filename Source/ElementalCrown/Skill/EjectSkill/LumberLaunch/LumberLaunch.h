@@ -1,9 +1,14 @@
 #pragma once
 
 #include "../EjectSkill.h"
+#include "LumberLaunch.generated.h"
 
-class ELEMENTALCROWN_API LumberLaunchSkill : public EjectSkill {
+UCLASS()
+class ELEMENTALCROWN_API ULumberLaunchSkill : public UEjectSkill {
+
+	GENERATED_BODY()
+
 public:
 	////Constructor
-	LumberLaunchSkill();
+	ULumberLaunchSkill();
 };

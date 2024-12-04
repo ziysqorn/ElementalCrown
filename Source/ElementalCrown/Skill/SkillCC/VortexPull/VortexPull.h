@@ -1,8 +1,12 @@
 #pragma once
 
 #include "../SkillCC.h"
+#include "VortexPull.generated.h"
 
-class ELEMENTALCROWN_API VortexPull : public SkillCC {
+UCLASS()
+class ELEMENTALCROWN_API UVortexPull : public USkillCC {
+	GENERATED_BODY()
+
 public:
-	VortexPull();
+	UVortexPull();
 };

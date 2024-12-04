@@ -27,7 +27,6 @@ ABaseEnemyCharacter::~ABaseEnemyCharacter()
 void ABaseEnemyCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	ABaseCharacter::BeginPlay();
 	if (UUserWidget* widget = EnemyHealthBar->GetUserWidgetObject()) {
 		if (UEnemyHealthBar* healthBar = Cast<UEnemyHealthBar>(widget)) {
 			healthBar->SetDelegateForHealthBar(this, FName("GetHealthPercentage"));
@@ -39,7 +38,7 @@ void ABaseEnemyCharacter::BeginPlay()
 void ABaseEnemyCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	if (!DetectingPlayer() && !DetectingWall()) this->Move();
+	if (isMovingAllowed && !DetectingEdge() && !DetectingPatrolLimit() && !DetectingPlayer()) this->Move();
 	else if (DetectingPlayer() && AttackRecovered) this->Attack();
 }
 
@@ -128,6 +127,16 @@ void ABaseEnemyCharacter::Attack()
 	}
 }
 
+void ABaseEnemyCharacter::TurnBack()
+{
+	if (!GetWorldTimerManager().IsTimerActive(TurnBackHandle)) {
+		GetWorldTimerManager().SetTimer(TurnBackHandle, FTimerDelegate::CreateLambda([this]() {
+			this->SetActorRotation(this->GetActorRotation() + FRotator(0.0f, 180.0f, 0.0f));
+			this->SetIsMovingAllowed(true);
+			}), 3.0f, false);
+	}
+}
+
 bool ABaseEnemyCharacter::DetectingPlayer()
 {
 	FHitResult PlayerDetectResult;
@@ -140,6 +149,7 @@ bool ABaseEnemyCharacter::DetectingPlayer()
 		FRotator CharacterRotation = (PlayerDetectResult.GetActor()->GetActorLocation().X > this->GetActorLocation().X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
 		ABaseEnemyCharacter* Enemy = Cast<ABaseEnemyCharacter>(PlayerDetectResult.GetActor());
 		if (!Enemy) {
+			if (GetWorldTimerManager().IsTimerActive(TurnBackHandle)) GetWorldTimerManager().ClearTimer(TurnBackHandle);
 			if (abs(PlayerDetectResult.GetActor()->GetActorLocation().X - this->GetActorLocation().X) >= 30 && CurrentState != CharacterState::HURT && CurrentState != CharacterState::DEATH && CurrentState != CharacterState::ATTACK)
 				this->SetActorRotation(CharacterRotation);
 			return abs(PlayerDetectResult.GetActor()->GetActorLocation().X - this->GetActorLocation().X) <= AttackTriggerDistanceX;
@@ -148,19 +158,30 @@ bool ABaseEnemyCharacter::DetectingPlayer()
 	return false;
 }
 
-bool ABaseEnemyCharacter::DetectingWall()
+bool ABaseEnemyCharacter::DetectingPatrolLimit()
 {
-	FHitResult WallDetectResult;
+	FHitResult PatrolLimitDetectedResult;
 	FVector BoxPosition(20 * GetSprite()->GetForwardVector().X, 0, 0);
-	bool WallDetected{ GetWorld()->SweepSingleByObjectType(WallDetectResult, this->GetActorLocation() + BoxPosition, this->GetActorLocation() + BoxPosition, FQuat(0, 0, 0, 0), FCollisionObjectQueryParams::AllStaticObjects, FCollisionShape::MakeBox(WallDetectBox)) };
+	FCollisionObjectQueryParams ObjectLookingFor;
+	ObjectLookingFor.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
+	ObjectLookingFor.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel3);
+	bool PatrolLimitDetected = GetWorld()->SweepSingleByObjectType(PatrolLimitDetectedResult, this->GetActorLocation() + BoxPosition, this->GetActorLocation() + BoxPosition, FQuat(0, 0, 0, 0), ObjectLookingFor, FCollisionShape::MakeBox(WallDetectBox));
 	DrawDebugBox(GetWorld(), this->GetActorLocation() + BoxPosition, WallDetectBox, FColor::Red);
-	if (WallDetected) {
-		FRotator CharacterRotation = (WallDetectResult.Location.X > this->GetActorLocation().X) ? FRotator(0, 180, 0) : FRotator(0, 0, 0);
-		if (!GetWorldTimerManager().IsTimerActive(TurnBackHandle)) {
-			GetWorldTimerManager().SetTimer(TurnBackHandle, FTimerDelegate::CreateLambda([this, CharacterRotation]() {
-				this->SetActorRotation(CharacterRotation);
-				}), 3.0f, false);
-		}
-	}
-	return WallDetected;
+	if (PatrolLimitDetected) TurnBack();
+	return PatrolLimitDetected;
+}
+
+bool ABaseEnemyCharacter::DetectingEdge()
+{
+	FHitResult EdgeDetectResult;
+	FVector TempStartPoint = EdgeDetectStartPoint;
+	TempStartPoint.X *= GetSprite()->GetForwardVector().X;
+	FVector StartPoint = this->GetActorLocation() + TempStartPoint;
+	float DistanceToGround = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+	FVector EndPoint = StartPoint - FVector(0.0f, 0.0f, DistanceToGround + 20.0f);
+	FCollisionObjectQueryParams ObjectLookingFor;
+	ObjectLookingFor.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
+	bool GroundDetected = GetWorld()->LineTraceSingleByObjectType(EdgeDetectResult, StartPoint, EndPoint, ObjectLookingFor);
+	if (!GroundDetected) TurnBack();
+	return !GroundDetected;
 }

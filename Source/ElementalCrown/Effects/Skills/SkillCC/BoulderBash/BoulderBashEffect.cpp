@@ -3,7 +3,7 @@
 
 #include "BoulderBashEffect.h"
 
-ABoulderBashEffect::ABoulderBashEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/BoulderBash/Effect_Skill_BoulderBash.Effect_Skill_BoulderBash'"))
+ABoulderBashEffect::ABoulderBashEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/BoulderBash/Effect_Skill_BoulderBash.Effect_Skill_BoulderBash'"))
 {
 	EffectElement = CreateDefaultSubobject<UEarth>(FName("EffectElement"));
 	BuildupAmount = 4.0f;
@@ -14,7 +14,7 @@ ABoulderBashEffect::ABoulderBashEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperF
 
 void ABoulderBashEffect::BeginPlay()
 {
-	ASkillCC::BeginPlay();
+	Super::BeginPlay();
 
 	this->SetActorScale3D(FVector(3.0f, 1.0f, 2.5f));
 }

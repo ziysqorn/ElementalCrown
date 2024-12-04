@@ -1,8 +1,13 @@
 #pragma once
 
 #include "../SkillCC.h"
+#include "GaleBurst.generated.h"
 
-class ELEMENTALCROWN_API GaleBurst : public SkillCC {
+UCLASS()
+class ELEMENTALCROWN_API UGaleBurst : public USkillCC {
+	
+	GENERATED_BODY()
+
 public:
-	GaleBurst();
+	UGaleBurst();
 };

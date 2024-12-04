@@ -24,7 +24,10 @@ protected:
 	UHorizontalBox* HorBox_SkillSlotBox = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
-	UTextBlock* Txt_Coin = nullptr;
+	UHorizontalBox* HorBox_ConsumableList = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
+	UTextBlock* Txt_Gold = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UProgressBar* ProgBar_HPBar = nullptr;
@@ -41,36 +44,23 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	USizeBox* SizeBox_BossHealthbarBox = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
-	UConsumableSlot* HealPotionSlot = nullptr;
-
-	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
-	UConsumableSlot* MPPotionSlot = nullptr;
-
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Slot SubClass")
 	TSubclassOf<USkillSlot> SkillSlotSubClass;
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Boss Healthbar SubClass")
 	TSubclassOf<UBossHealthBar> BossHealthbarSubclass;
 	UHorizontalBox* GetSkillSlotBox() { return HorBox_SkillSlotBox; }
-	UConsumableSlot* GetConsumableSlot(const int& Type) {
-		switch (Type) {
-		case 1:
-			return HealPotionSlot;
-			break;
-		case 2:
-			return MPPotionSlot;
-			break;
-		}
-		return nullptr;
+	UConsumableSlot* GetConsumableSlot(int idx) {
+		if (idx < 0 || idx > HorBox_ConsumableList->GetChildrenCount()) return nullptr;
+		return Cast<UConsumableSlot>(HorBox_ConsumableList->GetChildAt(idx));
 	}
 	UStatusEffectProgressUI* GetStatusProgressUI(const int& idx) {
 		return Cast<UStatusEffectProgressUI>(VerBox_StatusProgress->GetChildAt(idx));
 	}
 	void SetupHUD();
-	void SetupSkillSlotBox(TArray<BaseSkill*>& list);
-	void SetCoinText(FText inText) {
-		Txt_Coin->SetText(inText);
+	void SetupSkillSlotBox(TArray<UBaseSkill*>& list);
+	void SetGoldText(FText inText) {
+		Txt_Gold->SetText(inText);
 	};
 	void SetSkillName(FText inText) {
 		Txt_SkillName->SetText(inText);
@@ -83,11 +73,11 @@ public:
 	}
 	void AddStatsEffectToVerBox(UUserWidget* StatsEffect);
 	void RemoveStatsEffectFromVerBox(int removedIdx);
-	void UpdateSkillCountdownProgUI(BaseSkill* Skill, const float& inPercentage);
-	void ShowSkillLoaderUI(BaseSkill* Skill);
-	void HideSkillLoaderUI(BaseSkill* Skill);
+	void UpdateSkillCountdownProgUI(UBaseSkill* Skill, const float& inPercentage);
+	void ShowSkillLoaderUI(UBaseSkill* Skill);
+	void HideSkillLoaderUI(UBaseSkill* Skill);
 	void SwitchedSlotHighlight(int SwitchedNodeId);
-	void RefreshSkillSlots(TArray<BaseSkill*>& list);
+	void RefreshSkillSlots(TArray<UBaseSkill*>& list);
 	UBossHealthBar* AddBossHealthbarToBox();
 	void RemoveBossHealthbarFromBox();
 };

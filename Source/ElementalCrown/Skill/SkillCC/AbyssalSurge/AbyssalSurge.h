@@ -1,8 +1,13 @@
 #pragma once
 
 #include "../SkillCC.h"
+#include "AbyssalSurge.generated.h"
 
-class ELEMENTALCROWN_API AbyssalSurge : public SkillCC {
+UCLASS()
+class ELEMENTALCROWN_API UAbyssalSurge : public USkillCC {
+
+	GENERATED_BODY()
+
 public:
-	AbyssalSurge();
+	UAbyssalSurge();
 };

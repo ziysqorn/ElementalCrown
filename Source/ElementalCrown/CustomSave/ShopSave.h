@@ -17,16 +17,18 @@ class ELEMENTALCROWN_API UShopSave : public USaveGame
 	GENERATED_BODY()
 
 protected:
-	TArray<Consumable*> SavedConsumables;
+	UPROPERTY()
+	TArray<FName> SavedConsumables;
 
-	TArray<BaseSkill*> SavedAvailableSkills;
+	UPROPERTY()
+	TArray<FName> SavedAvailableSkills;
 
 public:
-	TArray<Consumable*>& GetSavedConsumables() {
+	TArray<FName>& GetSavedConsumables() {
 		return SavedConsumables;
 	}
 
-	TArray<BaseSkill*>& GetSavedAvailableSkills() {
+	TArray<FName>& GetSavedAvailableSkills() {
 		return SavedAvailableSkills;
 	}
 };

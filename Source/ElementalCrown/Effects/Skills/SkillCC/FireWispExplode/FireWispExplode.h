@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class ELEMENTALCROWN_API AFireWispExplode : public ASkillCC
+class ELEMENTALCROWN_API AFireWispExplode : public ASkillCCEffect
 {
 	GENERATED_BODY()
 

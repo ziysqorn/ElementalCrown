@@ -1,9 +1,14 @@
 #pragma once
 
 #include "../EjectSkill.h"
+#include "StoneBarrage.generated.h"
 
-class ELEMENTALCROWN_API StoneBarrageSkill : public EjectSkill {
+UCLASS()
+class ELEMENTALCROWN_API UStoneBarrageSkill : public UEjectSkill {
+
+	GENERATED_BODY()
+
 public:
 	////Constructor
-	StoneBarrageSkill();
+	UStoneBarrageSkill();
 };

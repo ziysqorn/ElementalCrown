@@ -3,12 +3,18 @@
 
 #include "MainCharacter.h"
 #include "../../Controller/MainController.h"
+#include "../../Interface/InteractableInterface.h"
+#include "../../CustomStructures/SkillData.h"
+#include "../../CustomStructures/ConsumableData.h"
+#include "../../CustomSave/GameplaySave.h"
+#include "../../CustomSave/PlayerInfoSave.h"
 
 AMainCharacter::AMainCharacter()
 {
 	//Components setup
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
+	GoldComponent = CreateDefaultSubobject<UGoldComponent>(TEXT("GoldComponent"));
 	SpringArmComp->SetupAttachment(RootComponent);
 	CameraComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
 	ConsumableComponent = CreateDefaultSubobject<UConsumableComponent>(TEXT("ConsumableComponent"));
@@ -19,12 +25,7 @@ AMainCharacter::AMainCharacter()
 	GetCharacterMovement()->AirControl = 0.75;
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
 
-	SkillComponent->AddSkill(new GaleBurst());
-	SkillComponent->AddSkill(new StoneBarrageSkill());
-	SkillComponent->AddSkill(new PoseidonAura());
-	SkillComponent->AddSkill(new RazorWaveSkill());
-
-
+	
 }
 
 AMainCharacter::~AMainCharacter()
@@ -34,12 +35,23 @@ AMainCharacter::~AMainCharacter()
 void AMainCharacter::BeginPlay()
 {
 
-	ABaseCharacter::BeginPlay();
+	Super::BeginPlay();
 
 	//Setup mapping context
 	SetupMappingContext();
 
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+
+	LoadInfoFromSave();
+
+	LoadGameplayFromSave();
+
+	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
+		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
+			MainHUD->SetupHUD();
+			MainHUD->AddToViewport(10);
+		}
+	}
 }
 
 void AMainCharacter::Tick(float DeltaSeconds)
@@ -60,9 +72,14 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 			EIComponent->BindAction(IA_Attack, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
 			EIComponent->BindAction(IA_Shoot, ETriggerEvent::Triggered, this, &AMainCharacter::Shoot);
 			EIComponent->BindAction(IA_ChangeSkill, ETriggerEvent::Triggered, this, &AMainCharacter::ChangeSkill);
-			EIComponent->BindAction(IA_UseHealPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UseHealPot);
-			EIComponent->BindAction(IA_UseManaPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UseManaPot);
-			EIComponent->BindAction(IA_OpenShop, ETriggerEvent::Triggered, MainController, &AMainController::OpenShop);
+			EIComponent->BindAction(IA_UseHealPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UsePotion, 0);
+			EIComponent->BindAction(IA_UseManaPot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UsePotion, 1);
+			EIComponent->BindAction(IA_UseBleedCurePot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UsePotion, 2);
+			EIComponent->BindAction(IA_UseBurnCurePot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UsePotion, 3);
+			EIComponent->BindAction(IA_UseDrowsyCurePot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UsePotion, 4);
+			EIComponent->BindAction(IA_UseStunCurePot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UsePotion, 5);
+			EIComponent->BindAction(IA_UseVulnerableCurePot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UsePotion, 6);
+			EIComponent->BindAction(IA_Interact, ETriggerEvent::Triggered, this, &AMainCharacter::Interact);
 		}
 	}
 }
@@ -249,6 +266,48 @@ void AMainCharacter::UseSkill()
 void AMainCharacter::ChangeSkill()
 {
 	SkillComponent->ChangeSkill();
+}
+
+void AMainCharacter::Interact()
+{
+	TArray<AActor*> actors; 
+	this->GetOverlappingActors(actors, AActor::StaticClass());
+	for (int i = 0; i < actors.Num(); ++i) {
+		if (IInteractableInterface* InteractableInterface = Cast<IInteractableInterface>(actors[i])) {
+			InteractableInterface->Interact(this);
+			break;
+		}
+	}
+}
+
+void AMainCharacter::LoadGameplayFromSave()
+{
+	if (SkillComponent) SkillComponent->LoadSkill();
+	if (ConsumableComponent) ConsumableComponent->LoadConsumable();
+}
+
+void AMainCharacter::LoadInfoFromSave()
+{
+	if (UGameplayStatics::DoesSaveGameExist("PlayerInfoSave", 0)) {
+		if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::LoadGameFromSlot("PlayerInfoSave", 0))) {
+			CurrentHealth = *PlayerInfoSave->GetPlayerHealth();
+			CurrentMana = *PlayerInfoSave->GetPlayerMana();
+			if (GoldComponent) {
+				GoldComponent->SetCurrentGold((*PlayerInfoSave->GetCurrentGold()));
+			}
+		}
+	}
+	else if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::CreateSaveGameObject(UPlayerInfoSave::StaticClass()))) {
+		if (GoldComponent) {
+			int* SavedGold = PlayerInfoSave->GetCurrentGold();
+			int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
+			int* SavedMana = PlayerInfoSave->GetPlayerMana();
+			*SavedGold = GoldComponent->GetCurrentGold();
+			*SavedHealth = MaxHealth;
+			*SavedMana = MaxMana;
+			UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
+		}
+	}
 }
 
 void AMainCharacter::EndAirAttack()

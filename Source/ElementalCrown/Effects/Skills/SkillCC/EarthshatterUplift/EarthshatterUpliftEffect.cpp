@@ -3,7 +3,7 @@
 
 #include "EarthshatterUpliftEffect.h"
 
-AEarthshatterUpliftEffect::AEarthshatterUpliftEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/EarthshatterUplift/Effect_Skill_EarthshatterUplift.Effect_Skill_EarthshatterUplift'"))
+AEarthshatterUpliftEffect::AEarthshatterUpliftEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/EarthshatterUplift/Effect_Skill_EarthshatterUplift.Effect_Skill_EarthshatterUplift'"))
 {
 	EffectElement = CreateDefaultSubobject<UEarth>(FName("EffectElement"));
 	BuildupAmount = 4.0f;
@@ -14,6 +14,6 @@ AEarthshatterUpliftEffect::AEarthshatterUpliftEffect() : ASkillCC(TEXT("/Script/
 
 void AEarthshatterUpliftEffect::BeginPlay()
 {
-	ASkillCC::BeginPlay();
+	Super::BeginPlay();
 	this->SetActorScale3D(FVector(3.0f, 1.0f, 2.5f));
 }

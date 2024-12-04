@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class ELEMENTALCROWN_API AVortexPullEffect : public ASkillCC
+class ELEMENTALCROWN_API AVortexPullEffect : public ASkillCCEffect
 {
 	GENERATED_BODY()
 public:

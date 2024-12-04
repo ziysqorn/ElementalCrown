@@ -1,6 +1,6 @@
 #include "AbyssalSurgeEffect.h"
 
-AAbyssalSurgeEffect::AAbyssalSurgeEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/AbyssalSurge/Effect_Skill_AbyssalSurge.Effect_Skill_AbyssalSurge'"))
+AAbyssalSurgeEffect::AAbyssalSurgeEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/AbyssalSurge/Effect_Skill_AbyssalSurge.Effect_Skill_AbyssalSurge'"))
 {
 	EffectElement = CreateDefaultSubobject<UWater>(FName("EffectElement"));
 	BuildupAmount = 4.0f;
@@ -11,6 +11,6 @@ AAbyssalSurgeEffect::AAbyssalSurgeEffect() : ASkillCC(TEXT("/Script/Paper2D.Pape
 
 void AAbyssalSurgeEffect::BeginPlay()
 {
-	ASkillCC::BeginPlay();
+	Super::BeginPlay();
 	this->SetActorScale3D(FVector(1.5, 1, 1.5));
 }

@@ -4,7 +4,7 @@
 #include "FirePillarEffect.h"
 #include "../../../Explode/FireEnergyExplode/FireEnergyExplode.h"
 
-AFirePillarEffect::AFirePillarEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/FirePillar/Effect_Skill_FirePillar.Effect_Skill_FirePillar'"))
+AFirePillarEffect::AFirePillarEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/FirePillar/Effect_Skill_FirePillar.Effect_Skill_FirePillar'"))
 {
 	EffectElement = CreateDefaultSubobject<UFire>(FName("EffectElement"));
 	BuildupAmount = 10.0f;
@@ -15,6 +15,6 @@ AFirePillarEffect::AFirePillarEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFli
 
 void AFirePillarEffect::BeginPlay()
 {
-	ASkillCC::BeginPlay();
+	Super::BeginPlay();
 	this->SetActorScale3D(FVector(3, 1, 4));
 }

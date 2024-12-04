@@ -4,14 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "../BaseSkill.h"
+#include "SkillCC.generated.h"
 
 /**
  * 
  */
-class ELEMENTALCROWN_API SkillCC : public BaseSkill
+
+UCLASS()
+class ELEMENTALCROWN_API USkillCC : public UBaseSkill
 {
+	GENERATED_BODY()
+
 public:
-	SkillCC();
-	SkillCC(const TCHAR* Ref);
-	virtual ~SkillCC();
+	USkillCC();
+	USkillCC(const TCHAR* Ref);
 };

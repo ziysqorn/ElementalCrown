@@ -3,7 +3,7 @@
 
 #include "VortexPullEffect.h"
 
-AVortexPullEffect::AVortexPullEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/VortexPull/Effect_Skill_VortexPull.Effect_Skill_VortexPull'"))
+AVortexPullEffect::AVortexPullEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Skill/VortexPull/Effect_Skill_VortexPull.Effect_Skill_VortexPull'"))
 {
 	EffectElement = CreateDefaultSubobject<UPlant>(FName("EffectElement"));
 	BuildupAmount = 4.0f;
@@ -14,7 +14,7 @@ AVortexPullEffect::AVortexPullEffect() : ASkillCC(TEXT("/Script/Paper2D.PaperFli
 
 void AVortexPullEffect::BeginPlay()
 {
-	ASkillCC::BeginPlay();
+	Super::BeginPlay();
 	this->SetActorScale3D(FVector(3.0f, 1.0f, 2.0f));
 }
 

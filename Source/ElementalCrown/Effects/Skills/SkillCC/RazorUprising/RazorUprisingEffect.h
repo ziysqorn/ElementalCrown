@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class ELEMENTALCROWN_API ARazorUprisingEffect : public ASkillCC
+class ELEMENTALCROWN_API ARazorUprisingEffect : public ASkillCCEffect
 {
 	GENERATED_BODY()
 public:

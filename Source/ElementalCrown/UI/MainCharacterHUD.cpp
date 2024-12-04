@@ -8,24 +8,34 @@ void UMainCharacterHUD::SetupHUD()
 {
 	if (this->GetOwningPlayer()) {
 		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwningPlayer()->GetPawn())) {
-			if (USkillComponent* SkillComponent = Cast<USkillComponent>(MainCharacter->GetSkillComp())) {
+			if (USkillComponent* SkillComponent = MainCharacter->GetSkillComp()) {
 				SetupSkillSlotBox(*(SkillComponent->GetSkillList()));
-				SetCoinText(FText::FromString(FString::FromInt(0)));
-				ProgBar_HPBar->PercentDelegate.BindUFunction(MainCharacter, FName("GetHealthPercentage"));
-				ProgBar_ManaBar->PercentDelegate.BindUFunction(MainCharacter, FName("GetManaPercentage"));
+				SwitchedSlotHighlight(0);
 			}
+			if (UConsumableComponent* ConsumableComponent = MainCharacter->GetConsumableComp()) {
+				TArray<UConsumable*>& ConsumableList = ConsumableComponent->GetConsumableList();
+				for (int i = 0; i < ConsumableList.Num(); ++i) {
+					if (UConsumableSlot* ConsumableSlot = Cast<UConsumableSlot>(HorBox_ConsumableList->GetChildAt(i))) {
+						ConsumableSlot->SetQuantityText(FText::FromString(FString::FromInt(*(ConsumableList[i]->GetCurrentQuant()))));
+					}
+				}
+			}
+			if(UGoldComponent* GoldComponent = MainCharacter->GetGoldComp())
+				SetGoldText(FText::FromString(FString::FromInt(GoldComponent->GetCurrentGold())));
+			ProgBar_HPBar->PercentDelegate.BindUFunction(MainCharacter, FName("GetHealthPercentage"));
+			ProgBar_ManaBar->PercentDelegate.BindUFunction(MainCharacter, FName("GetManaPercentage"));
 		}
 	}
 }
 
 
-void UMainCharacterHUD::SetupSkillSlotBox(TArray<BaseSkill*>& list)
+void UMainCharacterHUD::SetupSkillSlotBox(TArray<UBaseSkill*>& list)
 {
 	if (this->SkillSlotSubClass) {
 		for (int i = 0; i < list.Num(); ++i) {
 			USkillSlot* skillSlot = CreateWidget<USkillSlot>(this, this->SkillSlotSubClass);
 			if (skillSlot) {
-				BaseSkill* CurSkill = list[i];
+				UBaseSkill* CurSkill = list[i];
 				skillSlot->GetIcon()->SetBrushResourceObject(Cast<UObject>(CurSkill->GetSkillSprite()));
 				if (i != 0) {
 					FMargin SlotMargin(10.0f, 0.0f, 0.0f, 0.0f);
@@ -39,7 +49,7 @@ void UMainCharacterHUD::SetupSkillSlotBox(TArray<BaseSkill*>& list)
 	}
 }
 
-void UMainCharacterHUD::UpdateSkillCountdownProgUI(BaseSkill* Skill, const float& inPercentage)
+void UMainCharacterHUD::UpdateSkillCountdownProgUI(UBaseSkill* Skill, const float& inPercentage)
 {
 	if (Skill && this->GetOwningPlayer()) {
 		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwningPlayer()->GetPawn())) {
@@ -64,7 +74,7 @@ void UMainCharacterHUD::RemoveStatsEffectFromVerBox(int removedIdx)
 }
 
 
-void UMainCharacterHUD::ShowSkillLoaderUI(BaseSkill* Skill)
+void UMainCharacterHUD::ShowSkillLoaderUI(UBaseSkill* Skill)
 {
 	if (Skill && this->GetOwningPlayer()) {
 		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwningPlayer()->GetPawn())) {
@@ -77,7 +87,7 @@ void UMainCharacterHUD::ShowSkillLoaderUI(BaseSkill* Skill)
 	}
 }
 
-void UMainCharacterHUD::HideSkillLoaderUI(BaseSkill* Skill)
+void UMainCharacterHUD::HideSkillLoaderUI(UBaseSkill* Skill)
 {
 	if (Skill && this->GetOwningPlayer()) {
 		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwningPlayer()->GetPawn())) {
@@ -104,7 +114,7 @@ void UMainCharacterHUD::SwitchedSlotHighlight(int SwitchedNodeId)
 						skillSlot->HideOutline();
 						if (i == SwitchedNodeId) {
 							skillSlot->ShowOutline();
-							FString SkillName = SkillComponent->FindSkill(SwitchedNodeId)->GetName().ToString();
+							FString SkillName = SkillComponent->FindSkill(SwitchedNodeId)->GetSkillName().ToString();
 							Txt_SkillName->SetText(FText::FromString(SkillName));
 						}
 					}
@@ -114,13 +124,12 @@ void UMainCharacterHUD::SwitchedSlotHighlight(int SwitchedNodeId)
 	}
 }
 
-void UMainCharacterHUD::RefreshSkillSlots(TArray<BaseSkill*>& list)
+void UMainCharacterHUD::RefreshSkillSlots(TArray<UBaseSkill*>& list)
 {
-	if (HorBox_SkillSlotBox->HasAnyChildren()) {
-		HorBox_SkillSlotBox->ClearChildren();
-		SetupSkillSlotBox(list);
-		SwitchedSlotHighlight(0);
-	}
+	HorBox_SkillSlotBox->ClearChildren();
+	Txt_SkillName->SetText(FText::FromString(""));
+	SetupSkillSlotBox(list);
+	SwitchedSlotHighlight(0);
 }
 
 UBossHealthBar* UMainCharacterHUD::AddBossHealthbarToBox()

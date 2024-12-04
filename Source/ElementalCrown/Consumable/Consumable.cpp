@@ -3,16 +3,12 @@
 
 #include "Consumable.h"
 
-Consumable::Consumable()
+UConsumable::UConsumable()
 {
 }
 
-Consumable::Consumable(const TCHAR* Ref)
+UConsumable::UConsumable(const TCHAR* Ref)
 {
 	ConstructorHelpers::FObjectFinder<UPaperSprite> Sprite(Ref);
 	if (Sprite.Succeeded()) Avatar = Sprite.Object;
-}
-
-Consumable::~Consumable()
-{
 }

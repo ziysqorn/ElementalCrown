@@ -3,7 +3,7 @@
 
 #include "FireWispExplode.h"
 
-AFireWispExplode::AFireWispExplode() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Explosion/FireEnergyExplode/Effect_Skill_FireEnergyExplode.Effect_Skill_FireEnergyExplode'"))
+AFireWispExplode::AFireWispExplode() : ASkillCCEffect(TEXT("/Script/Paper2D.PaperFlipbook'/Game/Assets/Effect/Explosion/FireEnergyExplode/Effect_Skill_FireEnergyExplode.Effect_Skill_FireEnergyExplode'"))
 {
 	EffectElement = CreateDefaultSubobject<UFire>(FName("EffectElement"));
 	BuildupAmount = 10.0f;
@@ -14,7 +14,7 @@ AFireWispExplode::AFireWispExplode() : ASkillCC(TEXT("/Script/Paper2D.PaperFlipb
 
 void AFireWispExplode::BeginPlay()
 {
-	ASkillCC::BeginPlay();
+	Super::BeginPlay();
 	this->SetActorScale3D(FVector(3.0f, 1.0f, 3.0f));
 }
 

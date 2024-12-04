@@ -3,17 +3,17 @@
 
 #include "SkillCCEffect.h"
 
-ASkillCC::ASkillCC()
+ASkillCCEffect::ASkillCCEffect()
 {
 
 }
 
-ASkillCC::ASkillCC(const TCHAR* Ref) : ASkillEffect(Ref)
+ASkillCCEffect::ASkillCCEffect(const TCHAR* Ref) : ASkillEffect(Ref)
 {
 
 }
 
-void ASkillCC::BeginPlay()
+void ASkillCCEffect::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -22,7 +22,7 @@ void ASkillCC::BeginPlay()
 		}), Flipbook->GetTotalDuration(), false);
 }
 
-void ASkillCC::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
+void ASkillCCEffect::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (OtherActor && this->GetOwner() && OtherActor != this->GetOwner()) {
 		if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
@@ -43,7 +43,7 @@ void ASkillCC::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 	}
 }
 
-void ASkillCC::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+void ASkillCCEffect::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
 	this->Destroy();
 }

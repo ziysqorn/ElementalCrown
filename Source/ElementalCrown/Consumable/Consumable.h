@@ -5,27 +5,39 @@
 #include "CoreMinimal.h"
 #include "../ProjectIncludes.h"
 #include "../Characters/BaseCharacter/BaseCharacter.h"
+#include "Consumable.generated.h"
 
 /**
  * 
  */
-class ELEMENTALCROWN_API Consumable
+UCLASS()
+class ELEMENTALCROWN_API UConsumable : public UObject
 {
+
+	GENERATED_BODY()
+
 protected:
+	FName ConsumableName;
+
 	UPaperSprite* Avatar = nullptr;
 
 	int Quantity = 3;
 
 	int maxQuantity = 5;
 
-	ABaseCharacter* OwningCharacter = nullptr;
+	int ConsumablePrice;
 
 public:
-	Consumable();
-	Consumable(const TCHAR* Ref);
-	virtual ~Consumable();
+	UConsumable();
+	UConsumable(const TCHAR* Ref);
 
+	UPaperSprite* GetAvatar() {
+		return Avatar;
+	}
 
+	FName& GetConsumableName() {
+		return ConsumableName;
+	}
 
 	int* GetMaxQuant() {
 		return &maxQuantity;
@@ -35,9 +47,25 @@ public:
 		return &Quantity;
 	}
 
-	void SetOwningChar(ABaseCharacter* BaseCharacter) {
-		if (BaseCharacter) OwningCharacter = BaseCharacter;
+	int GetPrice() {
+		return ConsumablePrice;
 	}
 
-	virtual void Consume() {};
+	void SetConsumableName(FName Name) {
+		ConsumableName = Name;
+	}
+
+	void SetQuantity(int quantity) {
+		Quantity = quantity;
+	}
+
+	void SetMaxQuantity(int quantity) {
+		maxQuantity = quantity;
+	}
+
+	void SetPrice(int price) {
+		ConsumablePrice = price;
+	}
+
+	virtual bool Consume() { return false; };
 };

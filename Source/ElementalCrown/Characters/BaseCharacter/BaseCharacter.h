@@ -80,11 +80,11 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	//Event landed
 	void Landed(const FHitResult& Hit) override;
-	float GetMaxHealth() {
-		return (float)MaxHealth;
+	int GetMaxHealth() {
+		return MaxHealth;
 	}
-	float GetCurrentHealth() {
-		return (float)CurrentHealth;
+	int GetCurrentHealth() {
+		return CurrentHealth;
 	}
 	int GetCurrentMana() {
 		return CurrentMana;

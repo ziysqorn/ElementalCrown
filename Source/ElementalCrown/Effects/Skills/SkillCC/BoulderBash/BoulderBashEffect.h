@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class ELEMENTALCROWN_API ABoulderBashEffect : public ASkillCC
+class ELEMENTALCROWN_API ABoulderBashEffect : public ASkillCCEffect
 {
 	GENERATED_BODY()
 public:

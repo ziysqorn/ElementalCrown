@@ -1,10 +1,15 @@
 #pragma once
 
 #include "../EjectSkill.h"
+#include "FireSlashWaveSkill.generated.h"
 
-class ELEMENTALCROWN_API FireSlashWaveSkill : public EjectSkill {
+UCLASS()
+class ELEMENTALCROWN_API UFireSlashWaveSkill : public UEjectSkill {
+
+	GENERATED_BODY()
+
 public:
 	//Constructor
-	FireSlashWaveSkill();
+	UFireSlashWaveSkill();
 	void PerformSkill() override;
 };

@@ -14,7 +14,7 @@ void AEnemy_FireWisp::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (!DetectingPlayer() && !DetectingWall()) GetCharacterMovement()->MaxWalkSpeed = BaseEnemySpeed;
+	if (!DetectingPlayer() && !DetectingPatrolLimit()) GetCharacterMovement()->MaxWalkSpeed = BaseEnemySpeed;
 	else if (DetectingPlayer()) {
 		GetCharacterMovement()->MaxWalkSpeed = BaseEnemySpeed * 2.0f;
 		PlayerDetectBox.X = 500.0f;

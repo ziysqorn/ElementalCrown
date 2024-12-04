@@ -1,9 +1,14 @@
 #pragma once
 
 #include "../SkillCC.h"
+#include "FirePillar.generated.h"
 
-class ELEMENTALCROWN_API FirePillar : public SkillCC {
+UCLASS()
+class ELEMENTALCROWN_API UFirePillar : public USkillCC {
+
+	GENERATED_BODY()
+
 public:
-	FirePillar();
+	UFirePillar();
 	void PerformSkill() override;
 };

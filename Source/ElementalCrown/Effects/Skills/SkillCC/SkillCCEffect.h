@@ -11,15 +11,15 @@
  * 
  */
 UCLASS()
-class ELEMENTALCROWN_API ASkillCC : public ASkillEffect
+class ELEMENTALCROWN_API ASkillCCEffect : public ASkillEffect
 {
 	GENERATED_BODY()
 protected:
 	FVector LaunchVector = FVector(0.0f, 0.0f, 0.0f);
 public:
 	// Sets default values for this actor's properties
-	ASkillCC();
-	ASkillCC(const TCHAR* Ref);
+	ASkillCCEffect();
+	ASkillCCEffect(const TCHAR* Ref);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor) override;

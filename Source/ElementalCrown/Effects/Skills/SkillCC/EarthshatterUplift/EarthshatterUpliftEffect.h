@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class ELEMENTALCROWN_API AEarthshatterUpliftEffect : public ASkillCC
+class ELEMENTALCROWN_API AEarthshatterUpliftEffect : public ASkillCCEffect
 {
 	GENERATED_BODY()
 public:

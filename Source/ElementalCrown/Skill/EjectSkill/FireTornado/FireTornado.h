@@ -1,9 +1,14 @@
 #pragma once
 
 #include "../EjectSkill.h"
+#include "FireTornado.generated.h"
 
-class ELEMENTALCROWN_API FireTornadoSkill : public EjectSkill {
+UCLASS()
+class ELEMENTALCROWN_API UFireTornadoSkill : public UEjectSkill {
+
+	GENERATED_BODY()
+
 public:
 	////Constructor
-	FireTornadoSkill();
+	UFireTornadoSkill();
 };

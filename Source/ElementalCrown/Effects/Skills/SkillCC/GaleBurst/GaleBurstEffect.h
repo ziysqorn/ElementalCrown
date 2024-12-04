@@ -10,7 +10,7 @@
  * 
  */
 UCLASS()
-class ELEMENTALCROWN_API AGaleBurstEffect : public ASkillCC
+class ELEMENTALCROWN_API AGaleBurstEffect : public ASkillCCEffect
 {
 	GENERATED_BODY()
 public:

@@ -3,16 +3,13 @@
 
 #include "EjectSkill.h"
 
-EjectSkill::EjectSkill()
+UEjectSkill::UEjectSkill()
 {
 	this->CooldownTime = 4.00f;
 }
 
-EjectSkill::EjectSkill(const TCHAR* Ref) : BaseSkill(Ref)
+UEjectSkill::UEjectSkill(const TCHAR* Ref) : UBaseSkill(Ref)
 {
 	this->CooldownTime = 4.00f;
 }
 
-EjectSkill::~EjectSkill()
-{
-}

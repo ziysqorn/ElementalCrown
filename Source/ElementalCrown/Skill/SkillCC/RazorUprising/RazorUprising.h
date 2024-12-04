@@ -1,8 +1,13 @@
 #pragma once
 
 #include "../SkillCC.h"
+#include "RazorUprising.generated.h"
 
-class ELEMENTALCROWN_API RazorUprising : public SkillCC {
+UCLASS()
+class ELEMENTALCROWN_API URazorUprising : public USkillCC {
+
+	GENERATED_BODY()
+
 public:
-	RazorUprising();
+	URazorUprising();
 };

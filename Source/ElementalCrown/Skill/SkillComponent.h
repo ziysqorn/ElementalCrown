@@ -13,10 +13,18 @@ class ELEMENTALCROWN_API USkillComponent : public UActorComponent
 {
 	GENERATED_BODY()
 protected:
-	TArray<BaseSkill*> SkillList;
+	UPROPERTY()
+	TArray<UBaseSkill*> SkillList;
+
+	UPROPERTY()
+	TArray<UBaseSkill*> OwnedSkillList;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important")
+	UDataTable* DT_Skill = nullptr;
+
 	int CurSkillId = 0;
 public:
-	void AddSkill(BaseSkill* Skill) {
+	void AddSkill(UBaseSkill* Skill) {
 		if (Skill) {
 			int findIdx = SkillList.Find(Skill);
 			if (findIdx != INDEX_NONE) return;
@@ -24,12 +32,27 @@ public:
 		}
 	}
 
-	void RemoveSkill(BaseSkill* Skill) {
+	void AddOwnedSkill(UBaseSkill* Skill) {
+		if (Skill) {
+			int findIdx = OwnedSkillList.Find(Skill);
+			if (findIdx != INDEX_NONE) return;
+			OwnedSkillList.Add(Skill);
+		}
+	}
+
+	void RemoveSkill(UBaseSkill* Skill) {
 		if (Skill) {
 			int findIdx = SkillList.Find(Skill);
 			if (findIdx != INDEX_NONE) return;
 			SkillList.RemoveAt(findIdx);
-			delete Skill;
+		}
+	}
+
+	void RemoveOwnedSkill(UBaseSkill* Skill) {
+		if (Skill) {
+			int findIdx = OwnedSkillList.Find(Skill);
+			if (findIdx != INDEX_NONE) return;
+			OwnedSkillList.RemoveAt(findIdx);
 		}
 	}
 
@@ -39,26 +62,56 @@ public:
 		return CurSkillId;
 	}
 
-	int FindSkill(BaseSkill* Skill) {
+	int FindSkill(UBaseSkill* Skill) {
 		int res = INDEX_NONE;
 		res = SkillList.Find(Skill);
 		return res;
 	}
 
-	BaseSkill* FindSkill(int findIdx) {
+	int FindOwnedSkill(UBaseSkill* Skill) {
+		int res = INDEX_NONE;
+		res = OwnedSkillList.Find(Skill);
+		return res;
+	}
+
+
+	UBaseSkill* FindSkill(FName inName) {
+		UBaseSkill** FoundSkillPtr = SkillList.FindByPredicate([inName](UBaseSkill* Skill) {
+			return Skill->GetSkillName().IsEqual(inName);
+			});
+		return FoundSkillPtr ? *FoundSkillPtr : nullptr;
+	}
+
+	UBaseSkill* FindOwnedSkill(FName inName) {
+		UBaseSkill** FoundSkillPtr = OwnedSkillList.FindByPredicate([inName](UBaseSkill* Skill) {
+			return Skill->GetSkillName().IsEqual(inName);
+			});
+		return FoundSkillPtr ? *FoundSkillPtr : nullptr;
+	}
+
+	UBaseSkill* FindSkill(int findIdx) {
+		if (!SkillList.IsValidIndex(findIdx)) return nullptr;
 		return SkillList[findIdx];
 	}
 
-	TArray<BaseSkill*>* GetSkillList() {
+	UBaseSkill* FindOwnedSkill(int findIdx) {
+		if (!OwnedSkillList.IsValidIndex(findIdx)) return nullptr;
+		return OwnedSkillList[findIdx];
+	}
+
+	TArray<UBaseSkill*>* GetSkillList() {
 		return &SkillList;
 	}
 
-	void UseSkill() {
-		if (SkillList.IsValidIndex(CurSkillId) && SkillList[CurSkillId]) {
-			SkillList[CurSkillId]->SetOwningCharacter(Cast<ABaseCharacter>(this->GetOwner()));
-			SkillList[CurSkillId]->PerformSkill();
-		}
+	TArray<UBaseSkill*>* GetOwnedSkillList() {
+		return &OwnedSkillList;
 	}
+
+	void UseSkill() {
+		if (SkillList.IsValidIndex(CurSkillId) && SkillList[CurSkillId]) SkillList[CurSkillId]->PerformSkill();
+	}
+
+	void LoadSkill();
 
 public:
 	virtual void BeginPlay() override;

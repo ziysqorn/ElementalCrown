@@ -15,6 +15,7 @@ class ELEMENTALCROWN_API UStatusEffectComponent : public UActorComponent
 	GENERATED_BODY()
 
 protected:
+
 	TArray<BaseStatusEffect*> StatusList;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "StatusProgressSubClass")

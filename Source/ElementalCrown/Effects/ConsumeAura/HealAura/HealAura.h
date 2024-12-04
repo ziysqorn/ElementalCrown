@@ -16,6 +16,4 @@ class ELEMENTALCROWN_API AHealAura : public AConsumeAura
 	
 public:
 	AHealAura();
-
-	void BeginPlay() override;
 };

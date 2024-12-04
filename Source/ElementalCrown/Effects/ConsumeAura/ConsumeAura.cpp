@@ -43,5 +43,10 @@ void AConsumeAura::BeginPlay()
 			this->Destroy();
 			}), StatusFlipbookComp->GetFlipbookLength(), false);
 	}
+
+	StatusFlipbookComp->SetRelativeLocation(FVector(0.0f, 2.0f, 20.0f));
+	StatusFlipbookComp->SetRelativeScale3D(FVector(3.0f, 0.0f, 1.5f));
+	MirroredFlipbookComp->SetRelativeLocation(FVector(0.0f, -2.0f, 20.0f));
+	MirroredFlipbookComp->SetRelativeScale3D(FVector(3.0f, 0.0f, 1.5f));
 }
 

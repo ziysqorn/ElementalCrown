@@ -1,10 +1,15 @@
 #pragma once
 
 #include "../EjectSkill.h"
+#include "RazorWave.generated.h"
 
-class ELEMENTALCROWN_API RazorWaveSkill : public EjectSkill {
+UCLASS()
+class ELEMENTALCROWN_API URazorWaveSkill : public UEjectSkill {
+
+	GENERATED_BODY()
+
 public:
 	////Constructor
-	RazorWaveSkill();
+	URazorWaveSkill();
 	void PerformSkill() override;
 };

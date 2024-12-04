@@ -4,11 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "../ProjectIncludes.h"
+#include "BaseSkill.generated.h"
 
 class ABaseCharacter;
 
-class ELEMENTALCROWN_API BaseSkill
+UCLASS()
+class ELEMENTALCROWN_API UBaseSkill : public UObject
 {
+	GENERATED_BODY()
+
 protected:
 	//Skill name
 	FName SKillName;
@@ -17,8 +21,8 @@ protected:
 	float CooldownTime;
 	//Mana consumption
 	int ManaConsumption{3};
-	//This skill's owner
-	ABaseCharacter* OwningCharacter = nullptr;
+	//Skill price
+	int SkillPrice;
 	//Return true if this skill can be used
 	bool isAvailable{ true };
 
@@ -30,11 +34,11 @@ protected:
 	
 public:	
 	// Sets default values for this actor's properties
-	BaseSkill();
-	BaseSkill(const TCHAR* Ref);
-	//Set this skill's owner;
-	void SetOwningCharacter(ABaseCharacter* Character) {
-		if (Character) OwningCharacter = Character;
+	UBaseSkill();
+	UBaseSkill(const TCHAR* Ref);
+
+	void SetPrice(int price) {
+		SkillPrice = price;
 	}
 	//******************** GETTER *******************************
 	//Get this skill's availability
@@ -44,11 +48,14 @@ public:
 	UPaperSprite* GetSkillSprite() {
 		return SkillSprite;
 	}
-	FName GetName() {
+	FName& GetSkillName() {
 		return SKillName;
 	}
 	int GetManaConsumption() {
 		return ManaConsumption;
+	}
+	int GetPrice() {
+		return SkillPrice;
 	}
 	//******************** ACTION *******************************
 	//Perform this skill

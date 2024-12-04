@@ -1,8 +1,13 @@
 #pragma once
 
 #include "../SkillCC.h"
+#include "EarthshatterUplift.generated.h"
 
-class ELEMENTALCROWN_API EarthshatterUplift : public SkillCC {
+UCLASS()
+class ELEMENTALCROWN_API UEarthshatterUplift : public USkillCC {
+
+	GENERATED_BODY()
+
 public:
-	EarthshatterUplift();
+	UEarthshatterUplift();
 };

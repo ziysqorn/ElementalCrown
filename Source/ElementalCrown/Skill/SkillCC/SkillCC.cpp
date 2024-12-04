@@ -3,19 +3,15 @@
 
 #include "SkillCC.h"
 
-SkillCC::SkillCC()
+USkillCC::USkillCC()
 {
 	CooldownTime = 7.00f;
 	ManaConsumption = 5;
 }
 
-SkillCC::SkillCC(const TCHAR* Ref) : BaseSkill(Ref)
+USkillCC::USkillCC(const TCHAR* Ref) : UBaseSkill(Ref)
 {
 	CooldownTime = 7.00f;
 	ManaConsumption = 5;
-}
-
-SkillCC::~SkillCC()
-{
 }
 

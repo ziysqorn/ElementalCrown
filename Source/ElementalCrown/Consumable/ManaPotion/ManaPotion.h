@@ -4,19 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "../Consumable.h"
+#include "ManaPotion.generated.h"
 
 /**
  * 
  */
-class ELEMENTALCROWN_API ManaPotion : public Consumable
+UCLASS()
+class ELEMENTALCROWN_API UManaPotion : public UConsumable
 {
+
+	GENERATED_BODY()
 
 protected:
 	int ManaAmount = 20;
 
 public:
-	ManaPotion();
-	~ManaPotion();
+	UManaPotion();
 
-	void Consume() override;
+	bool Consume() override;
 };

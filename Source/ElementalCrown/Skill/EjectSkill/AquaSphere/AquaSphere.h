@@ -1,8 +1,13 @@
 #pragma once
 
 #include "../EjectSkill.h"
+#include "AquaSphere.generated.h"
 
-class ELEMENTALCROWN_API AquaSphere : public EjectSkill {
+UCLASS()
+class ELEMENTALCROWN_API UAquaSphere : public UEjectSkill {
+
+	GENERATED_BODY()
+
 public:
-	AquaSphere();
+	UAquaSphere();
 };

@@ -6,17 +6,36 @@
 #include "../ProjectIncludes.h"
 #include "../Skill/BaseSkill.h"
 #include "../Consumable/Consumable.h"
+#include "../CustomStructures/ShopData.h"
+#include "../Interface/InteractableInterface.h"
+#include "../UI/ShopUI/ShopUI.h"
 #include "ShopActor.generated.h"
 
 UCLASS()
-class ELEMENTALCROWN_API AShopActor : public AActor
+class ELEMENTALCROWN_API AShopActor : public AActor, public IInteractableInterface
 {
 	GENERATED_BODY()
 
 protected:
-	TArray<Consumable*> AvailableConsumables;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	USceneComponent* SceneComponent = nullptr;
 
-	TArray<BaseSkill*> AvailableSkills;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPaperFlipbookComponent* ShopFlipbook = nullptr;
+
+	TArray<UConsumable*> AvailableConsumables;
+
+	TArray<UBaseSkill*> AvailableSkills;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Important | Shop data table")
+	UDataTable* ShopDataTable = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Important | Shop UI subclass")
+	TSubclassOf<UShopUI> ShopUISubclass;
+
+	bool haveWelcomedPlayer = false;
+
+	UShopUI* ShopUI = nullptr;
 
 public:	
 	// Sets default values for this actor's properties
@@ -25,4 +44,16 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void LoadShopItem();
+
+	void RefreshShopItem();
+
+	void SaveGameplay(AActor* OtherActor);
+
+	void SavePlayerInfo(AActor* OtherActor);
+
+	void Interact(ACharacter* InteractedCharacter) override;
+
+	UFUNCTION()
+	virtual void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 };

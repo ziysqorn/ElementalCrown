@@ -7,6 +7,7 @@
 #include "../../Effects/Smoke/Smoke.h"
 #include "../../SkillsIncludes.h"
 #include "../../Consumable/ConsumableComponent.h"
+#include "../../Gold/GoldComponent.h"
 #include "MainCharacter.generated.h"
 
 /**
@@ -49,13 +50,28 @@ protected:
 	UInputAction* IA_ChangeSkill = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_Interact = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_UseHealPot = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_OpenShop = nullptr;
+	UInputAction* IA_UseManaPot = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
-	UInputAction* IA_UseManaPot = nullptr;
+	UInputAction* IA_UseBleedCurePot = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_UseBurnCurePot = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_UseDrowsyCurePot = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_UseStunCurePot = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_UseVulnerableCurePot = nullptr;
 
 	//Input mapping context
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputMapping")
@@ -86,8 +102,17 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Run smoke")
 	TSubclassOf<ASmoke> RunSmokeSubclass = nullptr;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Important | Consumable  component")
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Consumable component")
 	UConsumableComponent* ConsumableComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Gold component")
+	UGoldComponent* GoldComponent = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Consumable DataTable")
+	UDataTable* DT_Consumable = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Skill DataTable")
+	UDataTable* DT_Skill = nullptr;
 
 	//Timer Handle
 	FTimerHandle ComboHandle;
@@ -128,6 +153,12 @@ public:
 	int GetATKDamage() {
 		return ATK_Damage;
 	}
+	UConsumableComponent* GetConsumableComp() {
+		return ConsumableComponent;
+	}
+	UGoldComponent* GetGoldComp() {
+		return GoldComponent;
+	}
 
 
 	//Actions
@@ -139,6 +170,9 @@ public:
 	virtual void Shoot();
 	void UseSkill();
 	void ChangeSkill();
+	void Interact();
+	void LoadGameplayFromSave();
+	void LoadInfoFromSave();
 	void SheatheSword() {
 		isSwordSheathed = true;
 	}

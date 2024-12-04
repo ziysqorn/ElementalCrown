@@ -4,18 +4,22 @@
 
 #include "CoreMinimal.h"
 #include "../BaseSkill.h"
+#include "EjectSkill.generated.h"
 
 /**
  * 
  */
-class ELEMENTALCROWN_API EjectSkill : public BaseSkill
+
+UCLASS()
+class ELEMENTALCROWN_API UEjectSkill : public UBaseSkill
 {
+	GENERATED_BODY()
+
 protected:
 	FVector SpawnLocation;
 	FRotator SpawnRotation;
 public:
 	//*************** CONSTRUCTOR *************************
-	EjectSkill();
-	EjectSkill(const TCHAR* Ref);
-	virtual ~EjectSkill();
+	UEjectSkill();
+	UEjectSkill(const TCHAR* Ref);
 };
