@@ -72,6 +72,16 @@ void AEnemy_FireWisp::SelfDestroy()
 	}), 1.0f, true);
 }
 
+void AEnemy_FireWisp::Dead()
+{
+	StatusEffectComponent->ClearAllStatusEffect();
+	CurrentState = CharacterState::DEATH;
+	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+	TriggerExplosion();
+	this->Destroy();
+}
+
 float AEnemy_FireWisp::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (CurrentHealth > 0) {
@@ -87,12 +97,7 @@ float AEnemy_FireWisp::TakeDamage(float DamageAmount, FDamageEvent const& Damage
 		}
 		CurrentHealth -= FinalDamage;
 		if (CurrentHealth <= 0) {
-			StatusEffectComponent->ClearAllStatusEffect();
-			CurrentState = CharacterState::DEATH;
-			GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-			GetWorldTimerManager().ClearAllTimersForObject(this);
-			TriggerExplosion();
-			this->Destroy();
+			this->Dead();
 		}
 		else {
 			if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN && CurrentState != CharacterState::AIRBORNE) {

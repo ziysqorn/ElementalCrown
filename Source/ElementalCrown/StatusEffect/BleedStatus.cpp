@@ -10,16 +10,16 @@ BleedStatus::BleedStatus()
 
 void BleedStatus::ExecuteStatus()
 {
-	if (OwningChar && AffectedChar) {
+	if (AffectedChar) {
 		UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp();
 		EffectComponent->GetWorld()->GetTimerManager().SetTimer(ApplyDelayHandle, FTimerDelegate::CreateLambda([this, EffectComponent]() {
 			if (this && EffectComponent) {
 				FActorSpawnParameters SpawnParams;
-				SpawnParams.Owner = OwningChar;
+				//SpawnParams.Owner = OwningChar;
 				if (ABleed* BleedEffect = AffectedChar->GetWorld()->SpawnActor<ABleed>(ABleed::StaticClass(), FVector(10.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
 					BleedEffect->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);
 					TSubclassOf<UDamageType> DamageType;
-					UGameplayStatics::ApplyDamage(AffectedChar, AffectedChar->GetMaxHealth() * 20 / 100, OwningChar->GetController(), BleedEffect, DamageType);
+					UGameplayStatics::ApplyDamage(AffectedChar, AffectedChar->GetMaxHealth() * 20 / 100, OwningChar ? OwningChar->GetController() : AffectedChar->GetController(), BleedEffect, DamageType);
 					EffectComponent->RemoveStatusEffect(this);
 				}
 			}

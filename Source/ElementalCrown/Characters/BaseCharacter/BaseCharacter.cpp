@@ -56,15 +56,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 		}
 		CurrentHealth -= FinalDamage;
 		if (CurrentHealth <= 0) {
-			StatusEffectComponent->ClearAllStatusEffect();
-			CurrentState = CharacterState::DEATH;
-			GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-			GetWorldTimerManager().ClearAllTimersForObject(this);
-			if (DeathSequence) {
-				GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
-					this->Destroy();
-					}), DeathSequence->GetTotalDuration() + 1.50f, false);
-			}
+			this->Dead();
 		}
 		else {
 			if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN && CurrentState != CharacterState::AIRBORNE) {

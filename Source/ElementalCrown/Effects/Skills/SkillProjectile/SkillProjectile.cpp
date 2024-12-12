@@ -45,6 +45,15 @@ void ASkillProjectile::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 				}
 			}
 		}
+		else {
+			TSubclassOf<UDamageType> DamageType;
+			UGameplayStatics::ApplyDamage(OtherActor, SkillDamage, nullptr, this, DamageType);
+			if (EffectElement) {
+				if (ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor)) {
+					EffectElement->ApplyStatusEffect(Character, BuildupAmount);
+				}
+			}
+		}
 		this->SpawnExplosion();
 		this->Destroy();
 	}

@@ -52,12 +52,15 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	//Event taking damage
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 	//************************************* ACTIONS *********************************************************
 	//Moving
 	virtual void Move();
 
 	//Attack
 	virtual void Attack();
+
+	virtual void Dead() override;
 	
 	void TurnBack();
 

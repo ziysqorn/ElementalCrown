@@ -80,6 +80,9 @@ public:
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	//Event landed
 	void Landed(const FHitResult& Hit) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Dead() {};
 	int GetMaxHealth() {
 		return MaxHealth;
 	}

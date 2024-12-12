@@ -23,10 +23,10 @@ StunStatus::~StunStatus()
 
 void StunStatus::ExecuteStatus()
 {
-	if (OwningChar && AffectedChar) {
+	if (AffectedChar) {
 		if (UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp()) {
 			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = OwningChar;
+			//SpawnParams.Owner = OwningChar;
 			StatusEffectActor = AffectedChar->GetWorld()->SpawnActor<AStun>(AStun::StaticClass(), AffectedChar->GetActorLocation(), AffectedChar->GetActorRotation(), SpawnParams);
 			if (StatusEffectActor) {
 				StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);

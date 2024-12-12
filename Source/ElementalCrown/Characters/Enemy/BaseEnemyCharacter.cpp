@@ -57,20 +57,12 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 		}
 		if (IGameplayInterface* CauserInteface = Cast<IGameplayInterface>(DamageCauser)) {
 			if (UElemental* CauserElemental = CauserInteface->GetElemental()) {
-				if(CharacterElement) FinalDamage += (int)ceil(DamageAmount * CharacterElement->CalcDmgByStrongerElemental(CauserElemental));
+				if (CharacterElement) FinalDamage += (int)ceil(DamageAmount * CharacterElement->CalcDmgByStrongerElemental(CauserElemental));
 			}
 		}
 		CurrentHealth -= FinalDamage;
 		if (CurrentHealth <= 0) {
-			StatusEffectComponent->ClearAllStatusEffect();
-			CurrentState = CharacterState::DEATH;
-			GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-			GetWorldTimerManager().ClearAllTimersForObject(this);
-			if (DeathSequence) {
-				GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
-					this->Destroy();
-					}), DeathSequence->GetTotalDuration() + 1.50f, false);
-			}
+			this->Dead();
 		}
 		else {
 			FlashTimeline.PlayFromStart();
@@ -87,7 +79,7 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 						FRotator CharacterRotation = (EventInstigator->GetPawn()->GetActorLocation().X > this->GetActorLocation().X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
 						this->SetActorRotation(CharacterRotation);
 					}
-				}), HurtSequence->GetTotalDuration(), false);
+					}), HurtSequence->GetTotalDuration() + 1.25f, false);
 			}
 		}
 		if (StatsPopoutSubclass) {
@@ -124,6 +116,19 @@ void ABaseEnemyCharacter::Attack()
 				this->AttackRecovered = true;
 				}), AttackSequence->GetTotalDuration() + AttackSpeed, false);
 		}
+	}
+}
+
+void ABaseEnemyCharacter::Dead()
+{
+	StatusEffectComponent->ClearAllStatusEffect();
+	CurrentState = CharacterState::DEATH;
+	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+	if (DeathSequence) {
+		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
+			this->Destroy();
+			}), DeathSequence->GetTotalDuration() + 1.50f, false);
 	}
 }
 

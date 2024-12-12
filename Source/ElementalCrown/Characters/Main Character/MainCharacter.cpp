@@ -257,6 +257,19 @@ void AMainCharacter::Shoot()
 	}
 }
 
+void AMainCharacter::Dead()
+{
+	StatusEffectComponent->ClearAllStatusEffect();
+	CurrentState = CharacterState::DEATH;
+	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+	if (DeathSequence) {
+		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
+			this->Destroy();
+			}), DeathSequence->GetTotalDuration() + 1.50f, false);
+	}
+}
+
 void AMainCharacter::UseSkill()
 {
 	if (CurrentState == CharacterState :: NONE) SkillComponent->UseSkill();

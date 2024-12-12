@@ -184,6 +184,7 @@ public:
 	virtual void EndCombo() {
 		attackCounter = 0;
 	}
+	void Dead() override;
 	//Events
 	//Event begin play
 	void BeginPlay() override;

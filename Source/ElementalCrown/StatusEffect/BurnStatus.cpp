@@ -13,9 +13,9 @@ BurnStatus::BurnStatus()
 
 void BurnStatus::ExecuteStatus()
 {
-	if (OwningChar && AffectedChar) {
+	if (AffectedChar) {
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = OwningChar;
+		//SpawnParams.Owner = OwningChar;
 		StatusEffectActor = AffectedChar->GetWorld()->SpawnActor<ABurn>(ABurn::StaticClass(), FVector(0.0f, 0.0f, 5.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
 		if (StatusEffectActor) {
 			StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);
@@ -23,9 +23,9 @@ void BurnStatus::ExecuteStatus()
 			UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp();
 			UStatusEffectProgressUI* ProgressUI = EffectComponent->GetProgressUI(this);
 			EffectComponent->GetWorld()->GetTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this, EffectComponent, ProgressUI]() {
-				if (this && OwningChar && AffectedChar && EffectComponent) {
+				if (this && AffectedChar && EffectComponent) {
 					TSubclassOf<UDamageType> DamageType;
-					UGameplayStatics::ApplyDamage(AffectedChar, BurnDamage, OwningChar->GetController(), StatusEffectActor, DamageType);
+					UGameplayStatics::ApplyDamage(AffectedChar, BurnDamage, OwningChar ? OwningChar->GetController() : AffectedChar->GetController(), StatusEffectActor, DamageType);
 					TimeElapsed += TimeBetweenEachBurn;
 					if (TimeElapsed >= AffectingTime) {
 						EffectComponent->RemoveStatusEffect(this);
