@@ -15,8 +15,10 @@ AMainCharacter::AMainCharacter()
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>("SpringArmComp");
 	CameraComp = CreateDefaultSubobject<UCameraComponent>("CameraComp");
 	GoldComponent = CreateDefaultSubobject<UGoldComponent>(TEXT("GoldComponent"));
+	PaperTileMapComp = CreateDefaultSubobject<UPaperTileMapComponent>(TEXT("PaperTileMapComp"));
 	SpringArmComp->SetupAttachment(RootComponent);
 	CameraComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
+	PaperTileMapComp->AttachToComponent(SpringArmComp, FAttachmentTransformRules::KeepRelativeTransform);
 	ConsumableComponent = CreateDefaultSubobject<UConsumableComponent>(TEXT("ConsumableComponent"));
 	//Character movement
 	GetCharacterMovement()->MaxWalkSpeed = MoveSpeed;

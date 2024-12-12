@@ -35,6 +35,7 @@
 #include "Camera/CameraComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "PaperSpriteComponent.h"
+#include "PaperTileMapComponent.h"
 #include "Notifies/PaperZDAnimNotify.h"
 #include "Notifies/PaperZDAnimNotifyState.h"
 #include "Blueprint/UserWidget.h"

@@ -27,6 +27,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	UCameraComponent* CameraComp = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Paper TileMap Component")
+	UPaperTileMapComponent* PaperTileMapComp = nullptr;
+
 	//Input Action 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_Move = nullptr;
