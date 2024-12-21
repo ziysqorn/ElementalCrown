@@ -21,7 +21,7 @@ protected:
 
 	UPaperSprite* Avatar = nullptr;
 
-	int Quantity = 3;
+	int Quantity = 0;
 
 	int maxQuantity = 5;
 

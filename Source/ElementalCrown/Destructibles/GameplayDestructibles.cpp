@@ -2,6 +2,8 @@
 
 
 #include "GameplayDestructibles.h"
+#include "../Characters/Main Character/MainCharacter.h"
+
 
 
 // Sets default values
@@ -62,7 +64,23 @@ float AGameplayDestructibles::TakeDamage(float DamageAmount, FDamageEvent const&
 		Health -= (int)DamageAmount;
 	}
 	if (Health <= 0) {
-		ObjectSprite->SetSprite(DamagedSprite);
+		DestructibleDestroyed();
 	}
 	return 0.0f;
+}
+
+void AGameplayDestructibles::DestructibleDestroyed()
+{
+	ObjectSprite->SetSprite(DamagedSprite);
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) {
+		if (AMainCharacter* MainCharacter = PlayerController->GetPawn<AMainCharacter>()) {
+			if (UGoldComponent* GoldComp = MainCharacter->GetGoldComp()) {
+				int randomPrice = FMath::RandRange(5, maxBountyPrice);
+				GoldComp->AddGold(randomPrice);
+			}
+		}
+	}
+	GetWorldTimerManager().SetTimer(DeadHandle, FTimerDelegate::CreateLambda([this]() {
+		this->Destroy();
+	}), 1.0f, false);
 }

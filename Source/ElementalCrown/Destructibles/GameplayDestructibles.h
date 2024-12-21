@@ -14,6 +14,7 @@ protected:
 	//This actor's stats
 	int Health{10};
 	
+	int maxBountyPrice = 8;
 public:	
 	// Sets default values for this actor's properties
 	AGameplayDestructibles();
@@ -41,9 +42,12 @@ protected:
 
 	FTimeline FlashTimeline;
 
+	FTimerHandle DeadHandle;
+
 public:
 	//Events
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaSeconds) override;
 	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void DestructibleDestroyed();
 };

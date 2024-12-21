@@ -52,6 +52,8 @@ public:
 
 	void SavePlayerInfo(AActor* OtherActor);
 
+	void SaveGameProgress(AActor* OtherActor);
+
 	void Interact(ACharacter* InteractedCharacter) override;
 
 	UFUNCTION()

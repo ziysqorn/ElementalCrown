@@ -41,9 +41,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UVerticalBox* VerBox_StatusProgress = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
-	USizeBox* SizeBox_BossHealthbarBox = nullptr;
-
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Slot SubClass")
 	TSubclassOf<USkillSlot> SkillSlotSubClass;
@@ -78,6 +75,4 @@ public:
 	void HideSkillLoaderUI(UBaseSkill* Skill);
 	void SwitchedSlotHighlight(int SwitchedNodeId);
 	void RefreshSkillSlots(TArray<UBaseSkill*>& list);
-	UBossHealthBar* AddBossHealthbarToBox();
-	void RemoveBossHealthbarFromBox();
 };

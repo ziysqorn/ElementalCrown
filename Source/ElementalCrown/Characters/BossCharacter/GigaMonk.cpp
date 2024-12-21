@@ -5,7 +5,8 @@
 
 AGigaMonk::AGigaMonk()
 {
-	CharacterName = FName("Giga Monk");
+	CharacterName = FName("Gigamonk");
+	NextLevelName = FName("TestOcean1");
 }
 
 void AGigaMonk::BeginPlay()

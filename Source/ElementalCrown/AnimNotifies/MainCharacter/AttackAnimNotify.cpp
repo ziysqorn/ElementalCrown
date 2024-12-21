@@ -6,7 +6,6 @@
 
 UAttackAnimNotify::UAttackAnimNotify()
 {
-	this->SetBuff(0);
 }
 
 void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const

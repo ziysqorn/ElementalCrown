@@ -21,13 +21,13 @@ protected:
 	UProgressBar* HealthBar = nullptr;
 public:
 	void SetHealthBarPercent(const float& inPercent) {
-		HealthBar->SetPercent(inPercent);
+		if (HealthBar) HealthBar->SetPercent(inPercent);
 	}
 	void SetBossName(FText name) {
-		BossName->SetText(name);
+		if(BossName) BossName->SetText(name);
 	}
 	void SetDelegateForHealthBar(UObject* object, const FName& funcName) {
-		HealthBar->PercentDelegate.BindUFunction(object, funcName);
+		if (HealthBar) HealthBar->PercentDelegate.BindUFunction(object, funcName);
 	}
 	UProgressBar* GetHealthBar() {
 		return HealthBar;

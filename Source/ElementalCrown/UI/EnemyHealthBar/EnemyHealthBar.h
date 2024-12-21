@@ -16,6 +16,7 @@ class ELEMENTALCROWN_API UEnemyHealthBar : public UUserWidget
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Enemy Health Bar", meta = (BindWidget))
 	UProgressBar* HealthBar = nullptr;
+
 public:
 	void SetHealthBarPercent(const float& inPercent) {
 		HealthBar->SetPercent(inPercent);

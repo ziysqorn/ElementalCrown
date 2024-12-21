@@ -36,8 +36,9 @@ protected:
 public:
 	UAttackAnimNotify();
 	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
-	virtual void SetBuff(const int& inBuff) {
+	void SetBuff(const int& inBuff) {
 		this->Buff = inBuff;
 	}
 	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const;
+
 };

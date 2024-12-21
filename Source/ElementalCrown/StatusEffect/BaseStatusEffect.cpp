@@ -56,13 +56,6 @@ void BaseStatusEffect::BuildingUp(ABaseCharacter* OwningCharacter, const float& 
 
 		if (ProgressUI) ProgressUI->GetProgressBar()->SetPercent(this->GetBuildupPercentage());
 
-		EffectComp->GetWorld()->GetTimerManager().SetTimer(ResetHandle, FTimerDelegate::CreateLambda([this, EffectComp, ProgressUI]() {
-			CurrentProgress -= 0.1f;
-			if (CurrentProgress <= 0.0f) {
-				EffectComp->RemoveStatusEffect(this);
-				return;
-			}
-			if (ProgressUI) ProgressUI->GetProgressBar()->SetPercent(this->GetBuildupPercentage());
-			}), TimeForAReset, true, 2.0f);
+		//EffectComp->GetWorld()->GetTimerManager().SetTimer(ResetHandle, FTimerDelegate::CreateUObject(this, ), TimeForAReset, true, 2.0f);
 	}
 }

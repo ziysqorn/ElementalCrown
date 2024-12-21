@@ -19,7 +19,7 @@ public:
 	AEnemy_Fire();
 	//************************************* EVENTS **********************************************************
 	virtual void BeginPlay() override;
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	//************************************* ACTIONS *********************************************************
 	void TriggerExplosion();
+	void Dead() override;
 };

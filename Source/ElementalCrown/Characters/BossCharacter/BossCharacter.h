@@ -19,6 +19,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Important | Time amount for new decision")
 	float NewDecisionTimeAmount = 1.5f;
 
+	int BountyPrice = 100;
+
+	FName NextLevelName;
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	int attackDecisionMode = 1;
 
@@ -44,11 +48,11 @@ public:
 
 	virtual void Attack();
 
+	void Dead() override;
+
 	virtual void ChangePos();
 
 	virtual void MakeDecision();
-
-	virtual void SetupHealthbar();
 
 
 

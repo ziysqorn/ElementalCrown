@@ -10,6 +10,7 @@ UHPPotion::UHPPotion() : UConsumable(TEXT("/Script/Paper2D.PaperSprite'/Game/Ass
 {
 	ConsumableName = "Crimson Tears";
 	ConsumablePrice = 6;
+	Quantity = maxQuantity;
 }
 
 

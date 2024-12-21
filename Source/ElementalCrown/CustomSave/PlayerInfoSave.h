@@ -16,9 +16,6 @@ class ELEMENTALCROWN_API UPlayerInfoSave : public USaveGame
 	
 protected:
 	UPROPERTY()
-	FVector PlayerLocation;
-
-	UPROPERTY()
 	int PlayerHealth;
 
 	UPROPERTY()
@@ -28,10 +25,6 @@ protected:
 	int CurrentGold;
 
 public:
-	FVector& GetPlayerLocation() {
-		return PlayerLocation;
-	}
-
 	int* GetPlayerHealth() {
 		return &PlayerHealth;
 	}

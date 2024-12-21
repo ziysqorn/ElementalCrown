@@ -19,4 +19,6 @@ public:
 	void BeginPlay() override;
 
 	void ExecuteOverlap() override;
+
+	void DamageOvertime() override;
 };

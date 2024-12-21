@@ -27,5 +27,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	UFUNCTION()
+	virtual void DamageOvertime();
+
 	virtual void ExecuteOverlap();
 };

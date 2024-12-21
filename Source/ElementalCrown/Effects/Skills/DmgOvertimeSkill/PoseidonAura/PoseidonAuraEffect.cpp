@@ -18,25 +18,28 @@ void APoseidonAuraEffect::BeginPlay()
 
 void APoseidonAuraEffect::ExecuteOverlap()
 {
-	GetWorldTimerManager().SetTimer(DamageHandle, FTimerDelegate::CreateLambda([this]() {
-		TArray<AActor*> actors;
-		this->GetOverlappingActors(actors, AActor::StaticClass());
-		for (int i = 0; i < actors.Num(); ++i) {
-			if (actors[i] && this->GetOwner() && actors[i] != this->GetOwner()) {
-				if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
-					TSubclassOf<UDamageType> DamageType;
-					if (EffectElement) {
-						if (ABaseCharacter* Character = Cast<ABaseCharacter>(actors[i])) {
-							Character->GetMovementComponent()->StopMovementImmediately();
-							if (Character->GetCharacterState() != CharacterState::STUN)
-								Character->SetCharacterState(CharacterState::AIRBORNE);
-							Character->LaunchCharacter(FVector(0.0f, 0, 500.0f), true, true);
-							UGameplayStatics::ApplyDamage(Character, SkillDamage, OwningCharacter->GetController(), this, DamageType);
-							EffectElement->ApplyStatusEffect(Character, BuildupAmount);
-						}
+	GetWorldTimerManager().SetTimer(DamageHandle, FTimerDelegate::CreateUObject(this, &APoseidonAuraEffect::DamageOvertime), TimePerHit, true, DelayTillCount);
+}
+
+void APoseidonAuraEffect::DamageOvertime()
+{
+	TArray<AActor*> actors;
+	this->GetOverlappingActors(actors, AActor::StaticClass());
+	for (int i = 0; i < actors.Num(); ++i) {
+		if (actors[i] && this->GetOwner() && actors[i] != this->GetOwner()) {
+			if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
+				TSubclassOf<UDamageType> DamageType;
+				if (EffectElement) {
+					if (ABaseCharacter* Character = Cast<ABaseCharacter>(actors[i])) {
+						Character->GetMovementComponent()->StopMovementImmediately();
+						if (Character->GetCharacterState() != CharacterState::STUN)
+							Character->SetCharacterState(CharacterState::AIRBORNE);
+						Character->LaunchCharacter(FVector(0.0f, 0, 500.0f), true, true);
+						UGameplayStatics::ApplyDamage(Character, SkillDamage, OwningCharacter->GetController(), this, DamageType);
+						EffectElement->ApplyStatusEffect(Character, BuildupAmount);
 					}
 				}
 			}
 		}
-		}), TimePerHit, true, DelayTillCount);
+	}
 }

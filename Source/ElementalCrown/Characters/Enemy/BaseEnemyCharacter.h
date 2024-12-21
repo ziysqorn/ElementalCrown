@@ -17,11 +17,19 @@ class ELEMENTALCROWN_API ABaseEnemyCharacter : public ABaseCharacter
 	GENERATED_BODY()
 
 protected:
+	UPROPERTY()
 	float AttackSpeed{ Default_Character_AttackSpeed };
+
+	UPROPERTY()
 	bool isMovingAllowed = true;
+
+	UPROPERTY()
+	int maxBountyPrice = 12;
 protected:
 	//Timer Handles
+	UPROPERTY()
 	FTimerHandle TurnBackHandle;
+	UPROPERTY()
 	FTimerHandle AttackRecoverHandle;
 	//Distance X to trigger attack
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Attack Trigger DistanceX")
@@ -33,12 +41,14 @@ protected:
 	FVector PlayerDetectBoxPos = FVector(0.0f, 0.0f, 0.0f);
 	//Size of the box that detects wall
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Wall Detect Box")
-	FVector WallDetectBox = FVector(20.0f, 0.0f, 40.0f);
+	FVector WallDetectBox = FVector(20.0f, 0.0f, 30.0f);
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Edge Detect Start Point")
 	FVector EdgeDetectStartPoint = FVector(50.0f, 0.0f, 0.0f);
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character current state")
+
 	//Decide if character can attack
+	UPROPERTY()
 	bool AttackRecovered{ true };
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Important | Enemy Health Bar")
 	UWidgetComponent* EnemyHealthBar = nullptr;
 public:
@@ -48,6 +58,7 @@ public:
 	//************************************* EVENTS **********************************************************
 	//Event Begin Play
 	virtual void BeginPlay() override;
+
 	//Event Tick
 	virtual void Tick(float DeltaSeconds) override;
 	//Event taking damage
@@ -62,7 +73,10 @@ public:
 
 	virtual void Dead() override;
 	
-	void TurnBack();
+	void TurnBackAfterTime();
+
+	UFUNCTION()
+	void TurnBackImmediate();
 
 	//Detecting player . Return true if detected player location away 50 units from this character
 	virtual bool DetectingPlayer();

@@ -6,6 +6,7 @@
 AInfernand::AInfernand()
 {
 	CharacterName = FName("Infernand");
+	NextLevelName = FName("TestFactory1");
 }
 
 void AInfernand::BeginPlay()

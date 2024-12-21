@@ -13,7 +13,7 @@ class ELEMENTALCROWN_API UGoldComponent : public UActorComponent
 	GENERATED_BODY()
 
 protected:
-	int CurrentGold = 100;
+	int CurrentGold = 0;
 
 
 public:	

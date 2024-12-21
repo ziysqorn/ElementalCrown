@@ -12,10 +12,6 @@ ABossCharacter::ABossCharacter()
 void ABossCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	SetupHealthbar();
-
-	MakeDecision();
 }
 
 void ABossCharacter::Tick(float DeltaSeconds)
@@ -39,22 +35,7 @@ float ABossCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 		}
 		CurrentHealth -= FinalDamage;
 		if (CurrentHealth <= 0) {
-			StatusEffectComponent->ClearAllStatusEffect();
-			CurrentState = CharacterState::DEATH;
-			GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-			GetWorldTimerManager().ClearAllTimersForObject(this);
-
-			if (AMainController* MainController = Cast<AMainController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))) {
-				if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-					MainHUD->RemoveBossHealthbarFromBox();
-				}
-			}
-
-			if (DeathSequence) {
-				GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
-					this->Destroy();
-					}), DeathSequence->GetTotalDuration() + 1.50f, false);
-			}
+			Dead();
 		}
 		else {
 			/*if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN && CurrentState != CharacterState::AIRBORNE) {
@@ -127,6 +108,36 @@ void ABossCharacter::Attack()
 	}
 }
 
+void ABossCharacter::Dead()
+{
+	StatusEffectComponent->ClearAllStatusEffect();
+	CurrentState = CharacterState::DEATH;
+	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
+	GetWorldTimerManager().ClearAllTimersForObject(this);
+	if (AMainController* MainController = Cast<AMainController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))) {
+		if (AMainCharacter* MainCharacter = MainController->GetPawn<AMainCharacter>()) {
+			MainCharacter->DisableInput(MainController);
+			if (UGoldComponent* GoldComponent = MainCharacter->GetGoldComp()) {
+				GoldComponent->AddGold(BountyPrice);
+			}
+			MainCharacter->SaveGameplay();
+			MainCharacter->SavePlayerInfo();
+			MainCharacter->SaveGameProgress(NextLevelName, FVector(0.0f, 0.0f, 0.0f));
+		}
+		/*if (UBossDefeatMessage* BossDefeatMessage = MainController->GetBossDefeatMessage()) {
+			BossDefeatMessage->NextLevelName = this->NextLevelName;
+			BossDefeatMessage->BossName = this->CharacterName;
+			MainController->BossDefeatMessageDisplay();
+		}*/
+		UGameplayStatics::OpenLevel(this, NextLevelName);
+	}
+	/*if (DeathSequence) {
+		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
+			this->Destroy();
+			}), DeathSequence->GetTotalDuration() + 1.50f, false);
+	}*/
+}
+
 void ABossCharacter::ChangePos()
 {
 	FVector LaunchVector = FVector(600.0f, 0.0f, 500.0f);
@@ -148,18 +159,6 @@ void ABossCharacter::MakeDecision()
 		case 2:
 			ChangePos();
 			break;
-		}
-	}
-}
-
-void ABossCharacter::SetupHealthbar()
-{
-	if (AMainController* MainController = Cast<AMainController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-			if (UBossHealthBar* BossHealthbar = MainHUD->AddBossHealthbarToBox()) {
-				BossHealthbar->SetBossName(FText::FromString(CharacterName.ToString()));
-				BossHealthbar->SetDelegateForHealthBar(this, FName("GetHealthPercentage"));
-			}
 		}
 	}
 }

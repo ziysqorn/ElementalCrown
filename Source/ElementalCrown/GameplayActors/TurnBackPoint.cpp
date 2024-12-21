@@ -24,6 +24,7 @@ void ATurnBackPoint::BeginPlay()
 	Super::BeginPlay();
 	
 	CollisionBox->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel3);
+	CollisionBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Ignore);
 }
 
 void ATurnBackPoint::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)

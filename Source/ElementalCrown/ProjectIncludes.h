@@ -1,6 +1,9 @@
 #pragma once
 
 #include "Engine/DataTable.h"
+#include "Engine/LevelScriptActor.h"
+#include "Engine/GameInstance.h"
+#include "Engine/World.h"
 #include "PaperSprite.h"
 #include "PaperFlipbook.h"
 #include "TimerManager.h"
@@ -32,6 +35,7 @@
 #include "Components/ScrollBox.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
+#include "Animation/WidgetAnimation.h"
 #include "Camera/CameraComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "PaperSpriteComponent.h"

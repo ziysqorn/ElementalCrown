@@ -8,6 +8,7 @@
 #include "../../CustomStructures/ConsumableData.h"
 #include "../../CustomSave/GameplaySave.h"
 #include "../../CustomSave/PlayerInfoSave.h"
+#include "../../CustomSave/GameProgress.h"
 
 AMainCharacter::AMainCharacter()
 {
@@ -39,21 +40,8 @@ void AMainCharacter::BeginPlay()
 
 	Super::BeginPlay();
 
-	//Setup mapping context
-	SetupMappingContext();
-
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
 
-	LoadInfoFromSave();
-
-	LoadGameplayFromSave();
-
-	if (AMainController* MainController = Cast<AMainController>(this->GetController())) {
-		if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-			MainHUD->SetupHUD();
-			MainHUD->AddToViewport(10);
-		}
-	}
 }
 
 void AMainCharacter::Tick(float DeltaSeconds)
@@ -82,6 +70,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 			EIComponent->BindAction(IA_UseStunCurePot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UsePotion, 5);
 			EIComponent->BindAction(IA_UseVulnerableCurePot, ETriggerEvent::Triggered, ConsumableComponent, &UConsumableComponent::UsePotion, 6);
 			EIComponent->BindAction(IA_Interact, ETriggerEvent::Triggered, this, &AMainCharacter::Interact);
+			EIComponent->BindAction(IA_PauseGame, ETriggerEvent::Triggered, MainController, &AMainController::PauseGame);
 		}
 	}
 }
@@ -93,6 +82,7 @@ void AMainCharacter::SetupMappingContext()
 			Subsystem->AddMappingContext(MainMappingContext, 0);
 		}
 	}
+	
 }
 
 void AMainCharacter::Move(const FInputActionValue& value)
@@ -261,15 +251,31 @@ void AMainCharacter::Shoot()
 
 void AMainCharacter::Dead()
 {
+	if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::LoadGameFromSlot("PlayerInfoSave", 0))) {
+		int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
+		int* SavedMana = PlayerInfoSave->GetPlayerMana();
+		int* SavedGold = PlayerInfoSave->GetCurrentGold();
+		*SavedHealth = MaxHealth;
+		*SavedMana = MaxMana;
+		if (GoldComponent) {
+			*SavedGold = GoldComponent->GetCurrentGold();
+		}
+		UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
+	}
+	/*if (AMainController* MainController = this->GetController<AMainController>()) {
+		DisableInput(MainController);
+		MainController->DeadMessageDisplay();
+	}*/
 	StatusEffectComponent->ClearAllStatusEffect();
 	CurrentState = CharacterState::DEATH;
 	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	GetWorldTimerManager().ClearAllTimersForObject(this);
-	if (DeathSequence) {
+	UGameplayStatics::OpenLevel(this, FName(UGameplayStatics::GetCurrentLevelName(this)));
+	/*if (DeathSequence) {
 		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
 			this->Destroy();
 			}), DeathSequence->GetTotalDuration() + 1.50f, false);
-	}
+	}*/
 }
 
 void AMainCharacter::UseSkill()
@@ -322,6 +328,112 @@ void AMainCharacter::LoadInfoFromSave()
 			*SavedMana = MaxMana;
 			UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
 		}
+	}
+}
+
+void AMainCharacter::SaveGameplay()
+{
+	if (UGameplayStatics::DoesSaveGameExist("GameplaySave", 0)) {
+		if (UGameplaySave* GameplaySave = Cast<UGameplaySave>(UGameplayStatics::LoadGameFromSlot("GameplaySave", 0))) {
+			TArray<FName>& SavedConsumable = GameplaySave->GetConsumableList();
+			TArray<int>& SavedConsumableQuant = GameplaySave->GetConsumableQuantList();
+			if (ConsumableComponent) {
+				TArray<UConsumable*>& ConsumableList = ConsumableComponent->GetConsumableList();
+				for (int i = 0; i < ConsumableList.Num(); ++i) {
+					FString ConsumableNameString = ConsumableList[i]->GetConsumableName().ToString().Replace(TEXT(" "), TEXT(""));
+					SavedConsumable[i] = FName(ConsumableNameString);
+					SavedConsumableQuant[i] = (*ConsumableList[i]->GetCurrentQuant());
+				}
+			}
+			TArray<FName>& SavedOwnedSkillList = GameplaySave->GetOwnedSkills();
+			TArray<int>& SavedEquippedSkillIdxList = GameplaySave->GetEquippedSkillIdxList();
+			SavedOwnedSkillList.Empty();
+			SavedEquippedSkillIdxList.Empty();
+			if (SkillComponent) {
+				TArray<UBaseSkill*>& OwnedSkillList = *SkillComponent->GetOwnedSkillList();
+				TArray<UBaseSkill*>& SkillList = *SkillComponent->GetSkillList();
+				SavedOwnedSkillList.Init(FName(""), OwnedSkillList.Num());
+				SavedEquippedSkillIdxList.Init(-1, OwnedSkillList.Num());
+				for (int i = 0; i < OwnedSkillList.Num(); ++i) {
+					FString SkillNameStr = OwnedSkillList[i]->GetSkillName().ToString().Replace(TEXT(" "), TEXT(""));
+					SavedOwnedSkillList[i] = FName(SkillNameStr);
+				}
+				for (int i = 0; i < SkillList.Num(); ++i) {
+					FString SkillNameStr = SkillList[i]->GetSkillName().ToString().Replace(TEXT(" "), TEXT(""));
+					int idx = SavedOwnedSkillList.Find(FName(SkillNameStr));
+					if (idx != INDEX_NONE) {
+						SavedEquippedSkillIdxList[idx] = i;
+					}
+				}
+
+			}
+			UGameplayStatics::SaveGameToSlot(GameplaySave, "GameplaySave", 0);
+		}
+	}
+	else {
+		if (UGameplaySave* GameplaySave = Cast<UGameplaySave>(UGameplayStatics::CreateSaveGameObject(UGameplaySave::StaticClass()))) {
+			TArray<FName>& SavedConsumable = GameplaySave->GetConsumableList();
+			TArray<int>& SavedConsumableQuant = GameplaySave->GetConsumableQuantList();
+			if (ConsumableComponent) {
+				TArray<UConsumable*>& ConsumableList = ConsumableComponent->GetConsumableList();
+				for (int i = 0; i < ConsumableList.Num(); ++i) {
+					FString ConsumableNameString = ConsumableList[i]->GetConsumableName().ToString().Replace(TEXT(" "), TEXT(""));
+					SavedConsumable.Add(FName(ConsumableNameString));
+					SavedConsumableQuant.Add((*ConsumableList[i]->GetCurrentQuant()));
+				}
+			}
+			TArray<FName>& SavedOwnedSkillList = GameplaySave->GetOwnedSkills();
+			TArray<int>& SavedEquippedSkillIdxList = GameplaySave->GetEquippedSkillIdxList();
+			UGameplayStatics::SaveGameToSlot(GameplaySave, "GameplaySave", 0);
+		}
+	}
+}
+
+void AMainCharacter::SavePlayerInfo()
+{
+	if (UGameplayStatics::DoesSaveGameExist("PlayerInfoSave", 0)) {
+		if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::LoadGameFromSlot("PlayerInfoSave", 0))) {
+			int* SavedGold = PlayerInfoSave->GetCurrentGold();
+			int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
+			int* SavedMana = PlayerInfoSave->GetPlayerMana();
+			*SavedHealth = (int)this->GetCurrentHealth();
+			*SavedMana = this->GetCurrentMana();
+			if (GoldComponent) {
+				*SavedGold = GoldComponent->GetCurrentGold();
+			}
+			UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
+		}
+	}
+	else if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::CreateSaveGameObject(UPlayerInfoSave::StaticClass()))) {
+		int* SavedGold = PlayerInfoSave->GetCurrentGold();
+		int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
+		int* SavedMana = PlayerInfoSave->GetPlayerMana();
+		*SavedHealth = (int)this->GetCurrentHealth();
+		*SavedMana = this->GetCurrentMana();
+		if (GoldComponent) {
+			*SavedGold = GoldComponent->GetCurrentGold();
+		}
+		UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
+	}
+}
+
+void AMainCharacter::SaveGameProgress(FName LevelName, FVector SavedLoc)
+{
+	if (UGameplayStatics::DoesSaveGameExist("GameProgress", 0)) {
+		if (UGameProgress* GameProgress = Cast<UGameProgress>(UGameplayStatics::LoadGameFromSlot("GameProgress", 0))) {
+			FVector& PlayerLocation = GameProgress->GetPlayerLocation();
+			FName& CurrentLevel = GameProgress->GetLevelName();
+			PlayerLocation = SavedLoc;
+			CurrentLevel = LevelName;
+			UGameplayStatics::SaveGameToSlot(GameProgress, "GameProgress", 0);
+		}
+	}
+	else if (UGameProgress* GameProgress = Cast<UGameProgress>(UGameplayStatics::CreateSaveGameObject(UGameProgress::StaticClass()))) {
+		FVector& PlayerLocation = GameProgress->GetPlayerLocation();
+		FName& CurrentLevel = GameProgress->GetLevelName();
+		PlayerLocation = SavedLoc;
+		CurrentLevel = LevelName;
+		UGameplayStatics::SaveGameToSlot(GameProgress, "GameProgress", 0);
 	}
 }
 

@@ -2,6 +2,7 @@
 
 
 #include "BaseEnemyCharacter.h"
+#include "../Main Character/MainCharacter.h"
 
 ABaseEnemyCharacter::ABaseEnemyCharacter()
 {
@@ -33,11 +34,13 @@ void ABaseEnemyCharacter::BeginPlay()
 		}
 	}
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 }
 
 void ABaseEnemyCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
 	if (isMovingAllowed && !DetectingEdge() && !DetectingPatrolLimit() && !DetectingPlayer()) this->Move();
 	else if (DetectingPlayer() && AttackRecovered) this->Attack();
 }
@@ -75,11 +78,11 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 					if (this->CurrentState == CharacterState::HURT) {
 						this->CurrentState = CharacterState::NONE;
 					}
-					if (EventInstigator) {
+					if (EventInstigator && EventInstigator->GetPawn()) {
 						FRotator CharacterRotation = (EventInstigator->GetPawn()->GetActorLocation().X > this->GetActorLocation().X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
 						this->SetActorRotation(CharacterRotation);
 					}
-					}), HurtSequence->GetTotalDuration() + 1.25f, false);
+					}), HurtSequence->GetTotalDuration(), false);
 			}
 		}
 		if (StatsPopoutSubclass) {
@@ -125,6 +128,14 @@ void ABaseEnemyCharacter::Dead()
 	CurrentState = CharacterState::DEATH;
 	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	GetWorldTimerManager().ClearAllTimersForObject(this);
+	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) {
+		if (AMainCharacter* MainCharacter = PlayerController->GetPawn<AMainCharacter>()) {
+			if (UGoldComponent* GoldComponent = MainCharacter->GetGoldComp()) {
+				int randomPrice = FMath::RandRange(6, maxBountyPrice);
+				GoldComponent->AddGold(randomPrice);
+			}
+		}
+	}
 	if (DeathSequence) {
 		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
 			this->Destroy();
@@ -132,14 +143,17 @@ void ABaseEnemyCharacter::Dead()
 	}
 }
 
-void ABaseEnemyCharacter::TurnBack()
+void ABaseEnemyCharacter::TurnBackAfterTime()
 {
 	if (!GetWorldTimerManager().IsTimerActive(TurnBackHandle)) {
-		GetWorldTimerManager().SetTimer(TurnBackHandle, FTimerDelegate::CreateLambda([this]() {
-			this->SetActorRotation(this->GetActorRotation() + FRotator(0.0f, 180.0f, 0.0f));
-			this->SetIsMovingAllowed(true);
-			}), 3.0f, false);
+		GetWorldTimerManager().SetTimer(TurnBackHandle, FTimerDelegate::CreateUObject(this, &ABaseEnemyCharacter::TurnBackImmediate), 3.0f, false);
 	}
+}
+
+void ABaseEnemyCharacter::TurnBackImmediate()
+{
+	this->SetActorRotation(this->GetActorRotation() + FRotator(0.0f, 180.0f, 0.0f));
+	isMovingAllowed = true;
 }
 
 bool ABaseEnemyCharacter::DetectingPlayer()
@@ -172,7 +186,7 @@ bool ABaseEnemyCharacter::DetectingPatrolLimit()
 	ObjectLookingFor.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel3);
 	bool PatrolLimitDetected = GetWorld()->SweepSingleByObjectType(PatrolLimitDetectedResult, this->GetActorLocation() + BoxPosition, this->GetActorLocation() + BoxPosition, FQuat(0, 0, 0, 0), ObjectLookingFor, FCollisionShape::MakeBox(WallDetectBox));
 	DrawDebugBox(GetWorld(), this->GetActorLocation() + BoxPosition, WallDetectBox, FColor::Red);
-	if (PatrolLimitDetected) TurnBack();
+	if (PatrolLimitDetected) TurnBackAfterTime();
 	return PatrolLimitDetected;
 }
 
@@ -187,6 +201,6 @@ bool ABaseEnemyCharacter::DetectingEdge()
 	FCollisionObjectQueryParams ObjectLookingFor;
 	ObjectLookingFor.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
 	bool GroundDetected = GetWorld()->LineTraceSingleByObjectType(EdgeDetectResult, StartPoint, EndPoint, ObjectLookingFor);
-	if (!GroundDetected) TurnBack();
+	if (!GroundDetected) TurnBackAfterTime();
 	return !GroundDetected;
 }

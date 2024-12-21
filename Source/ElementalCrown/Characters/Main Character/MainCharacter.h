@@ -76,6 +76,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
 	UInputAction* IA_UseVulnerableCurePot = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputAction")
+	UInputAction* IA_PauseGame = nullptr;
+
 	//Input mapping context
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Inputs|InputMapping")
 	UInputMappingContext* MainMappingContext = nullptr;
@@ -159,6 +162,11 @@ public:
 	UConsumableComponent* GetConsumableComp() {
 		return ConsumableComponent;
 	}
+
+	UPaperTileMapComponent* GetTilemapComp() {
+		return PaperTileMapComp;
+	}
+
 	UGoldComponent* GetGoldComp() {
 		return GoldComponent;
 	}
@@ -176,6 +184,9 @@ public:
 	void Interact();
 	void LoadGameplayFromSave();
 	void LoadInfoFromSave();
+	void SaveGameplay();
+	void SavePlayerInfo();
+	void SaveGameProgress(FName LevelName, FVector SavedLoc);
 	void SheatheSword() {
 		isSwordSheathed = true;
 	}

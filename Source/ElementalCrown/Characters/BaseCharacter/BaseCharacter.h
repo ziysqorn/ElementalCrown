@@ -75,7 +75,7 @@ protected:
 public:
 	ABaseCharacter();
 	virtual void BeginPlay() override;
-	void Tick(float DeltaSeconds) override;
+	virtual void Tick(float DeltaSeconds) override;
 	//Event taking damage
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	//Event landed
@@ -83,6 +83,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Dead() {};
+
+
 	int GetMaxHealth() {
 		return MaxHealth;
 	}
@@ -102,6 +104,11 @@ public:
 	UFUNCTION()
 	float GetManaPercentage() {
 		return (float)CurrentMana / MaxMana;
+	}
+
+	UFUNCTION()
+	FName& GetCharacterName() {
+		return CharacterName;
 	}
 
 	UElemental* GetElemental() override { 

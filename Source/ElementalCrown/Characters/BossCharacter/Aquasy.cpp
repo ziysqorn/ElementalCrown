@@ -6,6 +6,7 @@
 AAquasy::AAquasy()
 {
 	CharacterName = FName("Aquasy");
+	NextLevelName = FName("TestVolcano1");
 }
 
 void AAquasy::BeginPlay()

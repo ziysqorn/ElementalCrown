@@ -19,28 +19,32 @@ void ADmgOvertimeSkillEffect::BeginPlay()
 	if (Flipbook) {
 		ExecuteOverlap();
 		GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
+			GetWorldTimerManager().ClearAllTimersForObject(this);
 			this->Destroy();
-			}), Flipbook->GetTotalDuration(), false);
+		}), Flipbook->GetTotalDuration(), false);
+	}
+}
+
+void ADmgOvertimeSkillEffect::DamageOvertime()
+{
+	TArray<AActor*> actors;
+	this->GetOverlappingActors(actors, AActor::StaticClass());
+	for (int i = 0; i < actors.Num(); ++i) {
+		if (actors[i] && this->GetOwner() && actors[i] != this->GetOwner()) {
+			if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
+				TSubclassOf<UDamageType> DamageType;
+				UGameplayStatics::ApplyDamage(actors[i], SkillDamage, OwningCharacter->GetController(), this, DamageType);
+				if (EffectElement) {
+					if (ABaseCharacter* Character = Cast<ABaseCharacter>(actors[i])) {
+						EffectElement->ApplyStatusEffect(Character, BuildupAmount);
+					}
+				}
+			}
+		}
 	}
 }
 
 void ADmgOvertimeSkillEffect::ExecuteOverlap()
 {
-	GetWorldTimerManager().SetTimer(DamageHandle, FTimerDelegate::CreateLambda([this]() {
-		TArray<AActor*> actors;
-		this->GetOverlappingActors(actors, AActor::StaticClass());
-		for (int i = 0; i < actors.Num(); ++i) {
-			if (actors[i] && this->GetOwner() && actors[i] != this->GetOwner()) {
-				if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
-					TSubclassOf<UDamageType> DamageType;
-					UGameplayStatics::ApplyDamage(actors[i], SkillDamage, OwningCharacter->GetController(), this, DamageType);
-					if (EffectElement) {
-						if (ABaseCharacter* Character = Cast<ABaseCharacter>(actors[i])) {
-							EffectElement->ApplyStatusEffect(Character, BuildupAmount);
-						}
-					}
-				}
-			}
-		}
-		}), TimePerHit, true, DelayTillCount);
+	GetWorldTimerManager().SetTimer(DamageHandle, FTimerDelegate::CreateUObject(this, &ADmgOvertimeSkillEffect::DamageOvertime), TimePerHit, true, DelayTillCount);
 }

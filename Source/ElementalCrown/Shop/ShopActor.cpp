@@ -5,6 +5,7 @@
 #include "../CustomSave/ShopSave.h"
 #include "../CustomSave/PlayerInfoSave.h"
 #include "../CustomSave/GameplaySave.h"
+#include "../CustomSave/GameProgress.h"
 #include "../Characters/Main Character/MainCharacter.h"
 
 // Sets default values
@@ -84,78 +85,21 @@ void AShopActor::RefreshShopItem()
 void AShopActor::SaveGameplay(AActor* OtherActor)
 {
 	if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor)) {
-		if (UGameplayStatics::DoesSaveGameExist("GameplaySave", 0)) {
-			if (UGameplaySave* GameplaySave = Cast<UGameplaySave>(UGameplayStatics::LoadGameFromSlot("GameplaySave", 0))) {
-				TArray<FName>& SavedConsumable = GameplaySave->GetConsumableList();
-				TArray<int>& SavedConsumableQuant = GameplaySave->GetConsumableQuantList();
-				if (UConsumableComponent* ConsumableComp = MainCharacter->GetConsumableComp()) {
-					TArray<UConsumable*>& ConsumableList = ConsumableComp->GetConsumableList();
-					for (int i = 0; i < ConsumableList.Num(); ++i) {
-						FString ConsumableNameString = ConsumableList[i]->GetConsumableName().ToString().Replace(TEXT(" "), TEXT(""));
-						SavedConsumable.Add(FName(ConsumableNameString));
-						SavedConsumableQuant.Add((*ConsumableList[i]->GetCurrentQuant()));
-					}
-				}
-				TArray<FName>& SavedOwnedSkillList = GameplaySave->GetOwnedSkills();
-				TArray<int>& SavedEquippedSkillIdxList = GameplaySave->GetEquippedSkillIdxList();
-				UGameplayStatics::SaveGameToSlot(GameplaySave, "GameplaySave", 0);
-				haveWelcomedPlayer = true;
-			}
-		}
-		else {
-			if (UGameplaySave* GameplaySave = Cast<UGameplaySave>(UGameplayStatics::CreateSaveGameObject(UGameplaySave::StaticClass()))) {
-				TArray<FName>& SavedConsumable = GameplaySave->GetConsumableList();
-				TArray<int>& SavedConsumableQuant = GameplaySave->GetConsumableQuantList();
-				if (UConsumableComponent* ConsumableComp = MainCharacter->GetConsumableComp()) {
-					TArray<UConsumable*>& ConsumableList = ConsumableComp->GetConsumableList();
-					for (int i = 0; i < ConsumableList.Num(); ++i) {
-						FString ConsumableNameString = ConsumableList[i]->GetConsumableName().ToString().Replace(TEXT(" "), TEXT(""));
-						SavedConsumable.Add(FName(ConsumableNameString));
-						SavedConsumableQuant.Add((*ConsumableList[i]->GetCurrentQuant()));
-					}
-				}
-				TArray<FName>& SavedOwnedSkillList = GameplaySave->GetOwnedSkills();
-				TArray<int>& SavedEquippedSkillIdxList = GameplaySave->GetEquippedSkillIdxList();
-				UGameplayStatics::SaveGameToSlot(GameplaySave, "GameplaySave", 0);
-				haveWelcomedPlayer = true;
-			}
-		}
+		MainCharacter->SaveGameplay();
 	}
 }
 
 void AShopActor::SavePlayerInfo(AActor* OtherActor)
 {
 	if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor)) {
-		if (UGameplayStatics::DoesSaveGameExist("PlayerInfoSave", 0)) {
-			if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::LoadGameFromSlot("PlayerInfoSave", 0))) {
-				FVector& PlayerLocation = PlayerInfoSave->GetPlayerLocation();
-				int* SavedGold = PlayerInfoSave->GetCurrentGold();
-				int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
-				int* SavedMana = PlayerInfoSave->GetPlayerMana();
-				PlayerLocation = this->GetActorLocation();
-				*SavedHealth = (int)MainCharacter->GetCurrentHealth();
-				*SavedMana = MainCharacter->GetCurrentMana();
-				if (UGoldComponent* GoldComponent = MainCharacter->GetGoldComp()) {
-					*SavedGold = GoldComponent->GetCurrentGold();
-				}
-				UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
-				haveWelcomedPlayer = true;
-			}
-		}
-		else if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::CreateSaveGameObject(UPlayerInfoSave::StaticClass()))) {
-			FVector& PlayerLocation = PlayerInfoSave->GetPlayerLocation();
-			int* SavedGold = PlayerInfoSave->GetCurrentGold();
-			int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
-			int* SavedMana = PlayerInfoSave->GetPlayerMana();
-			PlayerLocation = this->GetActorLocation();
-			*SavedHealth = (int)MainCharacter->GetCurrentHealth();
-			*SavedMana = MainCharacter->GetCurrentMana();
-			if (UGoldComponent* GoldComponent = MainCharacter->GetGoldComp()) {
-				*SavedGold = GoldComponent->GetCurrentGold();
-			}
-			UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
-			haveWelcomedPlayer = true;
-		}
+		MainCharacter->SavePlayerInfo();
+	}
+}
+
+void AShopActor::SaveGameProgress(AActor* OtherActor)
+{
+	if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor)) {
+		MainCharacter->SaveGameProgress(FName(UGameplayStatics::GetCurrentLevelName(GetWorld())), this->GetActorLocation());
 	}
 }
 
@@ -191,8 +135,15 @@ void AShopActor::Interact(ACharacter* InteractedCharacter)
 void AShopActor::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 {
 	if (!haveWelcomedPlayer) {
+		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor)) {
+			if (UStatusEffectComponent* StatusComp = MainCharacter->GetStatusEffectComp()) {
+				StatusComp->ClearAllStatusEffect();
+			}
+		}
 		SaveGameplay(OtherActor);
 		SavePlayerInfo(OtherActor);
+		SaveGameProgress(OtherActor);
+		haveWelcomedPlayer = true;
 	}
 }
 

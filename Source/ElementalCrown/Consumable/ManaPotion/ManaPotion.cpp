@@ -10,6 +10,7 @@ UManaPotion::UManaPotion() : UConsumable(TEXT("/Script/Paper2D.PaperSprite'/Game
 {
 	ConsumableName = "Cerulean Tears";
 	ConsumablePrice = 6;
+	Quantity = maxQuantity;
 }
 
 bool UManaPotion::Consume()
