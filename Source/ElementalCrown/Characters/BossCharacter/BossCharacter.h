@@ -21,6 +21,8 @@ protected:
 
 	int BountyPrice = 100;
 
+	bool isInvincible = true;
+
 	FName NextLevelName;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
@@ -54,7 +56,11 @@ public:
 
 	virtual void MakeDecision();
 
+	void SetAttackToNoneState();
 
+	void SetInvincible(bool inBool) {
+		isInvincible = inBool;
+	}
 
 	/*void SetTargetMainChar(AMainCharacter* MainCharacter) {
 		if (MainCharacter) TargetMainChar = MainCharacter;

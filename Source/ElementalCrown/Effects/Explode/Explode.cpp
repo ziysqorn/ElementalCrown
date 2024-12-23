@@ -34,7 +34,10 @@ void AExplode::BeginPlay()
 
 	//Timing actor destroy
 	if (ExplodeFB)
-		GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
-		this->Destroy();
-		}), ExplodeFB->GetTotalDuration(), false);
+		GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateUObject(this, &AExplode::SelfDestroy), ExplodeFB->GetTotalDuration(), false);
+}
+
+void AExplode::SelfDestroy()
+{
+	this->Destroy();
 }

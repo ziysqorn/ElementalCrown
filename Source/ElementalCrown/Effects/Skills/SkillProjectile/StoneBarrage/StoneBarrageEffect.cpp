@@ -12,6 +12,7 @@ AStoneBarrageEffect::AStoneBarrageEffect() : ASkillProjectile(TEXT("/Script/Pape
 	}
 	EffectElement = CreateDefaultSubobject<UEarth>(FName("EffectElement"));
 	BuildupAmount = 2.0f;
+	SkillDamage = 4;
 	this->OnActorBeginOverlap.AddDynamic(this, &AStoneBarrageEffect::BeginOverlap);
 }
 

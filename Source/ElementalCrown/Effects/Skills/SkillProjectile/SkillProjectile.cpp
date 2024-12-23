@@ -27,9 +27,7 @@ void ASkillProjectile::BeginPlay()
 	this->SetActorScale3D(FVector(2, 1, 2));
 
 	if (DestroyDelay > 0.00f) {
-		GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
-			this->Destroy();
-		}), DestroyDelay, false);
+		GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateUObject(this, &ASkillProjectile::SelfDestroy), DestroyDelay, false);
 	}
 }
 
@@ -38,7 +36,7 @@ void ASkillProjectile::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 	if (OtherActor && this->GetOwner() && OtherActor != this->GetOwner()) {
 		if (ABaseCharacter* OwningCharacter = Cast<ABaseCharacter>(this->GetOwner())) {
 			TSubclassOf<UDamageType> DamageType;
-			UGameplayStatics::ApplyDamage(OtherActor, SkillDamage, OwningCharacter->GetController(), this, DamageType);
+			UGameplayStatics::ApplyDamage(OtherActor, OwningCharacter->CalculatedDamage(SkillDamage), OwningCharacter->GetController(), this, DamageType);
 			if (EffectElement) {
 				if (ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor)) {
 					EffectElement->ApplyStatusEffect(Character, BuildupAmount);

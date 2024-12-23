@@ -48,6 +48,9 @@ public:
 	const bool GetActivateStatus() { 
 		return isActivated; 
 	}
+	float* GetCurrentProgress() {
+		return &CurrentProgress;
+	}
 	const float GetBuildupPercentage() { 
 		return CurrentProgress / BuildupToFill; 
 	}

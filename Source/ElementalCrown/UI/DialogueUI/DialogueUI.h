@@ -25,7 +25,6 @@ protected:
 	void NativeConstruct() override;
 	FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
-
 	TArray<FDialogueLine>* DialogueLines;
 
 

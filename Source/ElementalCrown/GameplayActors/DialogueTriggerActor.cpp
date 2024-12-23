@@ -4,6 +4,7 @@
 #include "DialogueTriggerActor.h"
 #include "../Controller/MainController.h"
 #include "../Characters/BossCharacter/BossCharacter.h"
+#include "../CustomGameInstance/CustomGameInstance.h"
 
 // Sets default values
 ADialogueTriggerActor::ADialogueTriggerActor()
@@ -56,7 +57,10 @@ void ADialogueTriggerActor::ActionAfterDialogue()
 	GetOverlappingActors(actors, ABossCharacter::StaticClass());
 	for (int i = 0; i < actors.Num(); ++i) {
 		if (ABossCharacter* BossCharacter = Cast<ABossCharacter>(actors[i])) {
-			//GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("START BATTLE"));
+			BossCharacter->SetInvincible(false);
+			if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
+				CustomGameInstance->PlayBattleTheme();
+			}
 			BossCharacter->MakeDecision();
 			if (AMainController* MainController = Cast<AMainController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))) {
 				if (UBossHealthBar* BossHealthBar = MainController->GetBossHealthBar()) {

@@ -24,5 +24,8 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Level Tilemap")
 	UPaperTileMap* LevelTilemap = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Background theme")
+	USoundBase* BackgroundTheme = nullptr;
+
 	void BeginPlay() override;
 };

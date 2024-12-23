@@ -12,6 +12,7 @@ AAquilarieArrow::AAquilarieArrow() : ASkillProjectile(TEXT("/Script/Paper2D.Pape
 	}
 	EffectElement = CreateDefaultSubobject<UPlant>(FName("EffectElement"));
 	BuildupAmount = 3.0f;
+	SkillDamage = 5;
 	this->OnActorBeginOverlap.AddDynamic(this, &AAquilarieArrow::BeginOverlap);
 }
 

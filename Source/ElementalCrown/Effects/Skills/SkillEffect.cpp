@@ -42,3 +42,8 @@ void ASkillEffect::BeginPlay()
 {
 	Super::BeginPlay();
 }
+
+void ASkillEffect::SelfDestroy()
+{
+	this->Destroy();
+}

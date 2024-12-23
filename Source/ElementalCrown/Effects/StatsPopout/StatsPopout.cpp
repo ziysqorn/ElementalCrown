@@ -29,15 +29,19 @@ void AStatsPopout::BeginPlay()
 			}));
 	}
 	StatsPopoutTimeline.PlayFromStart();
-	GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
-		this->Destroy();
-	}), 1.0f, false);
+	GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateUObject(this, &AStatsPopout::SelfDestroy), 1.0f, false);
 }
+
 
 void AStatsPopout::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	StatsPopoutTimeline.TickTimeline(DeltaSeconds);
+}
+
+void AStatsPopout::SelfDestroy()
+{
+	this->Destroy();
 }
 
 

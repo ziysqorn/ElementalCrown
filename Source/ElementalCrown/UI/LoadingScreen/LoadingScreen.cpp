@@ -2,6 +2,7 @@
 
 
 #include "LoadingScreen.h"
+#include "Animation/UMGSequencePlayer.h"
 
 void ULoadingScreen::NativeOnInitialized()
 {
@@ -33,7 +34,5 @@ void ULoadingScreen::PlayFadeinAnimReverse()
 {
 	if (FadeinBackground) {
 		GetWorld()->GetTimerManager().SetTimer(LoadTimeHandle, FTimerDelegate::CreateUObject(this, &ULoadingScreen::PlayReverseImmediate), 6.0f, false);
-		GetWorld()->GetTimerManager().SetTimer(FadeAwayEndHandle, FTimerDelegate::CreateLambda([this]() {
-		}), abs(FadeinBackground->GetStartTime() - FadeinBackground->GetEndTime()), false);
 	}
 }

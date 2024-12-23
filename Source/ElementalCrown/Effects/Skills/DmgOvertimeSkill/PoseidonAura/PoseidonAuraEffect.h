@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../DmgOvertimeSkillEffect.h"
+#include "../../../../Characters/BossCharacter/BossCharacter.h"
 #include "PoseidonAuraEffect.generated.h"
 
 /**

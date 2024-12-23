@@ -40,6 +40,8 @@ public:
 
 	void RemoveStatusEffect(BaseStatusEffect* Effect);
 
+	void ReduceStatusBuildup(BaseStatusEffect* Effect);
+
 	void ClearAllStatusEffect();
 
 	int FindStatusEffect(BaseStatusEffect* Effect) {

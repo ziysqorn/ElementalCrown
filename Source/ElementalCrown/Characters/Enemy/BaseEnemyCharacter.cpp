@@ -6,8 +6,6 @@
 
 ABaseEnemyCharacter::ABaseEnemyCharacter()
 {
-	//Stats setup
-	DeStun = Default_Enemy_DeStun;
 	MaxMana = -1;
 	CurrentMana = MaxMana;
 	//CharacterMovement setup

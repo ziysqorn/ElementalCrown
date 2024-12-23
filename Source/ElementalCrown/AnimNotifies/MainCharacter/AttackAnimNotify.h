@@ -33,6 +33,12 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Hit stop duration")
 	float HitStopDuration = 0.05f;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Sword Swoosh SFX")
+	USoundBase* SwordSwooshSFX = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Sword Hit SFX")
+	USoundBase* SwordHitSFX = nullptr;
+
 public:
 	UAttackAnimNotify();
 	void OnReceiveNotify_Implementation(UPaperZDAnimInstance* OwningInstance) const override;
@@ -41,4 +47,5 @@ public:
 	}
 	virtual void SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const;
 
+	void SetHitStopToNormal() const;
 };

@@ -31,6 +31,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Important")
 	UDataTable* DT_Consumable = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Important | SFX")
+	USoundBase* UsePotionSFX = nullptr;
+
 public:	
 	// Sets default values for this component's properties
 	UConsumableComponent();

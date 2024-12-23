@@ -50,6 +50,7 @@ void UConsumableComponent::UsePotion(UConsumable* DesiredConsumable)
 		if (ConsumableList[idx]->Consume()) {
 			if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwner())) {
 				if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
+					if (UsePotionSFX) UGameplayStatics::PlaySound2D(this, UsePotionSFX);
 					if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
 						UConsumableSlot* ConsumableSlot = MainHUD->GetConsumableSlot(idx);
 						if (ConsumableSlot) {
@@ -72,6 +73,7 @@ void UConsumableComponent::UsePotion(const FInputActionValue& inputValue, int id
 			if (ConsumableList[idx]->Consume()) {
 				if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwner())) {
 					if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
+						if (UsePotionSFX) UGameplayStatics::PlaySound2D(this, UsePotionSFX);
 						if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
 							UConsumableSlot* ConsumableSlot = MainHUD->GetConsumableSlot(idx);
 							if (ConsumableSlot) {

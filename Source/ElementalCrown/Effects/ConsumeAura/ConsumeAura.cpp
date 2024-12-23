@@ -19,12 +19,11 @@ AConsumeAura::AConsumeAura(const TCHAR* FlipbookRef)
 
 	ConstructorHelpers::FObjectFinder<UPaperFlipbook> Flipbook(FlipbookRef);
 	if (Flipbook.Succeeded()) {
-		SymmetryPoint = CreateDefaultSubobject<USceneComponent>("Symmetric Point");
+		RootComponent = CreateDefaultSubobject<USceneComponent>("Symmetric Point");
 		MirroredFlipbookComp = CreateDefaultSubobject<UPaperFlipbookComponent>("Mirrored Flipbook Component");
 		StatusFlipbookComp = CreateDefaultSubobject<UPaperFlipbookComponent>("Flipbook Component");
-		SymmetryPoint->SetupAttachment(RootComponent);
-		MirroredFlipbookComp->AttachToComponent(SymmetryPoint, FAttachmentTransformRules::KeepRelativeTransform);
-		StatusFlipbookComp->AttachToComponent(SymmetryPoint, FAttachmentTransformRules::KeepRelativeTransform);
+		MirroredFlipbookComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
+		StatusFlipbookComp->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 		UPaperFlipbook* PaperFlipbook = Flipbook.Object;
 		StatusFlipbookComp->SetFlipbook(PaperFlipbook);
 		MirroredFlipbookComp->SetFlipbook(StatusFlipbookComp->GetFlipbook());
@@ -39,14 +38,17 @@ void AConsumeAura::BeginPlay()
 	Super::BeginPlay();
 	
 	if (StatusFlipbookComp && StatusFlipbookComp->GetFlipbook()) {
-		GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
-			this->Destroy();
-			}), StatusFlipbookComp->GetFlipbookLength(), false);
+		GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateUObject(this, &AConsumeAura::SelfDestroy), StatusFlipbookComp->GetFlipbookLength(), false);
 	}
 
 	StatusFlipbookComp->SetRelativeLocation(FVector(0.0f, 2.0f, 20.0f));
-	StatusFlipbookComp->SetRelativeScale3D(FVector(3.0f, 0.0f, 1.5f));
+	StatusFlipbookComp->SetRelativeScale3D(FVector(3.0f, 1.0f, 1.5f));
 	MirroredFlipbookComp->SetRelativeLocation(FVector(0.0f, -2.0f, 20.0f));
-	MirroredFlipbookComp->SetRelativeScale3D(FVector(3.0f, 0.0f, 1.5f));
+	MirroredFlipbookComp->SetRelativeScale3D(FVector(3.0f, 1.0f, 1.5f));
+}
+
+void AConsumeAura::SelfDestroy()
+{
+	this->Destroy();
 }
 

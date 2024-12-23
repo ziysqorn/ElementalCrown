@@ -13,7 +13,6 @@ class ELEMENTALCROWN_API AConsumeAura : public AActor
 	GENERATED_BODY()
 
 protected:
-	USceneComponent* SymmetryPoint = nullptr;
 	UPaperFlipbookComponent* StatusFlipbookComp = nullptr;
 	UPaperFlipbookComponent* MirroredFlipbookComp = nullptr;
 
@@ -26,4 +25,5 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void SelfDestroy();
 };

@@ -21,6 +21,9 @@ protected:
 	UPROPERTY(meta=(BindWidgetAnim), Transient)
 	UWidgetAnimation* FadeinBackground = nullptr;
 
+	UPROPERTY(meta=(BindWidget))
+	UBorder* Background = nullptr;
+
 	FTimerHandle LoadTimeHandle;
 
 	FTimerHandle FadeAwayEndHandle;
@@ -33,6 +36,20 @@ protected:
 
 public:
 	FLoadingScreenEndDel LoadingScreenEndDel;
+
+	void SetBackground(UObject* object) {
+		if(Background && object){
+			FSlateBrush BrushObject;
+			BrushObject.SetResourceObject(object);
+			Background->SetBrush(BrushObject);
+		}
+	}
+
+	void SetBackgroundColor(FLinearColor color) {
+		if (Background) {
+			Background->SetBrushColor(color);
+		}
+	}
 
 	void PlayFadeinAnim();
 

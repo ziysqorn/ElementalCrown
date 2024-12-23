@@ -23,6 +23,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UHorizontalBox* HorBox_SkillSlotBox = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	UHorizontalBox* HorBox_LiveCountSlotBox = nullptr;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UHorizontalBox* HorBox_ConsumableList = nullptr;
 
@@ -44,8 +47,10 @@ protected:
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Skill Slot SubClass")
 	TSubclassOf<USkillSlot> SkillSlotSubClass;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Boss Healthbar SubClass")
-	TSubclassOf<UBossHealthBar> BossHealthbarSubclass;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Live Count UI SubClass")
+	TSubclassOf<UUserWidget> LiveCountUISubclass;
+
+
 	UHorizontalBox* GetSkillSlotBox() { return HorBox_SkillSlotBox; }
 	UConsumableSlot* GetConsumableSlot(int idx) {
 		if (idx < 0 || idx > HorBox_ConsumableList->GetChildrenCount()) return nullptr;

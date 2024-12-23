@@ -31,7 +31,7 @@ void StunStatus::ExecuteStatus()
 			if (StatusEffectActor) {
 				StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);
 				StatusEffectActor->SetActorRelativeLocation(FVector(-15.0f, 0.0f, 55.0f));
-				StatusEffectActor->SetActorRelativeScale3D(FVector(2.0f, 0.0f, 2.0f));
+				//StatusEffectActor->SetActorRelativeScale3D(FVector(2.0f, 1.0f, 2.0f));
 				//StunEffect->SetActorRelativeRotation(FRotator(0.0f, 180.0f, 0.0f));
 				if (AffectedChar->GetCharacterState() != CharacterState::DEATH) AffectedChar->SetCharacterState(CharacterState::STUN);
 				UStatusEffectProgressUI* ProgressUI = EffectComponent->GetProgressUI(this);

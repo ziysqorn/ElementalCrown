@@ -23,4 +23,6 @@ public:
 	AExplode(const TCHAR* Ref);
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	void SelfDestroy();
 };

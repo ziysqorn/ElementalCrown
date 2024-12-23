@@ -18,10 +18,7 @@ void ADmgOvertimeSkillEffect::BeginPlay()
 
 	if (Flipbook) {
 		ExecuteOverlap();
-		GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
-			GetWorldTimerManager().ClearAllTimersForObject(this);
-			this->Destroy();
-		}), Flipbook->GetTotalDuration(), false);
+		GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateUObject(this, &ADmgOvertimeSkillEffect::SelfDestroy), Flipbook->GetTotalDuration(), false);
 	}
 }
 
@@ -47,4 +44,9 @@ void ADmgOvertimeSkillEffect::DamageOvertime()
 void ADmgOvertimeSkillEffect::ExecuteOverlap()
 {
 	GetWorldTimerManager().SetTimer(DamageHandle, FTimerDelegate::CreateUObject(this, &ADmgOvertimeSkillEffect::DamageOvertime), TimePerHit, true, DelayTillCount);
+}
+
+void ADmgOvertimeSkillEffect::SelfDestroy()
+{
+	this->Destroy();
 }

@@ -4,6 +4,7 @@ AAbyssalSurgeEffect::AAbyssalSurgeEffect() : ASkillCCEffect(TEXT("/Script/Paper2
 {
 	EffectElement = CreateDefaultSubobject<UWater>(FName("EffectElement"));
 	BuildupAmount = 4.0f;
+	SkillDamage = 5;
 	FlipbookComponent->SetLooping(false);
 	LaunchVector = FVector(300.0f, 0.0f, 300.0f);
 	this->OnActorBeginOverlap.AddDynamic(this, &AAbyssalSurgeEffect::BeginOverlap);

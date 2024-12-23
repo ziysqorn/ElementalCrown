@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../SkillEffect.h"
-#include "../../../Characters/BaseCharacter/BaseCharacter.h"
+#include "../../../Characters/BossCharacter/BossCharacter.h"
 #include "SkillCCEffect.generated.h"
 
 /**

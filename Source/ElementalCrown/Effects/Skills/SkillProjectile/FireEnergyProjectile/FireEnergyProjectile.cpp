@@ -8,6 +8,7 @@ AFireEnergyProjectile::AFireEnergyProjectile() : ASkillProjectile(TEXT("/Script/
 	}
 	EffectElement = CreateDefaultSubobject<UFire>(FName("EffectElement"));
 	BuildupAmount = 10.0f;
+	SkillDamage = 6;
 	this->OnActorBeginOverlap.AddDynamic(this, &AFireEnergyProjectile::BeginOverlap);
 }
 

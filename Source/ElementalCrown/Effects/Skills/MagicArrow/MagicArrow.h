@@ -37,4 +37,6 @@ public:
 	UFUNCTION()
 	//Event begin overlap other actor
 	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
+
+	void SelfDestroy();
 };

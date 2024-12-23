@@ -6,7 +6,7 @@
 ASilvas::ASilvas()
 {
 	CharacterName = FName("Silvas");
-	NextLevelName = FName("EndLevel");
+	NextLevelName = FName("Ending");
 }
 
 void ASilvas::BeginPlay()

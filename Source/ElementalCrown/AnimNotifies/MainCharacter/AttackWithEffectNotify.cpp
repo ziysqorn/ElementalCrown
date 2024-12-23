@@ -22,9 +22,7 @@ void UAttackWithEffectNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstanc
 					TSubclassOf<UDamageType> DamageType;
 					this->SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
 					UGameplayStatics::SetGlobalTimeDilation(this, HitStopDilation);
-					GetWorld()->GetTimerManager().SetTimer(Character->GetHitStopHandle(), FTimerDelegate::CreateLambda([this]() {
-						UGameplayStatics::SetGlobalTimeDilation(this, 1.0f);
-						}), HitStopDuration, false);
+					GetWorld()->GetTimerManager().SetTimer(Character->GetHitStopHandle(), FTimerDelegate::CreateUObject(this, &UAttackAnimNotify::SetHitStopToNormal), HitStopDuration, false);
 					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(this->Buff), Character->GetController(), Character, DamageType);
 					if (IGameplayInterface* GameplayInterface = Cast<IGameplayInterface>(Character)) {
 						if (UElemental* CharacterElement = GameplayInterface->GetElemental())

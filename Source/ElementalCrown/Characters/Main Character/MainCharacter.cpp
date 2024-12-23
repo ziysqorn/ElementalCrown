@@ -49,6 +49,53 @@ void AMainCharacter::Tick(float DeltaSeconds)
 	ABaseCharacter::Tick(DeltaSeconds);
 }
 
+float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
+{
+	if (CurrentHealth > 0) {
+		int FinalDamage = (int)DamageAmount;
+		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Drowsy")) {
+			if (Effect->GetActivateStatus()) {
+				FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+				StatusEffectComponent->RemoveStatusEffect(Effect);
+			}
+		}
+		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
+			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+		}
+		CurrentHealth -= FinalDamage;
+		if (CurrentHealth <= 0) {
+			this->Dead();
+		}
+		else {
+			if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN && CurrentState != CharacterState::AIRBORNE) {
+				ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
+				if (!StatusEffect) {
+					CurrentState = CharacterState::HURT;
+					if (HurtSFX) UGameplayStatics::PlaySound2D(this, HurtSFX);
+				}
+			}
+			FlashTimeline.PlayFromStart();
+			if (HurtSequence) {
+				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {
+					if (this->CurrentState == CharacterState::HURT)
+						this->CurrentState = CharacterState::NONE;
+					}), HurtSequence->GetTotalDuration(), false);
+			}
+		}
+		if (StatsPopoutSubclass) {
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			if (AStatsPopout* stats = GetWorld()->SpawnActor<AStatsPopout>(StatsPopoutSubclass, this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
+				if (UStatsPopoutUI* statsUI = stats->GetStatsPopoutUI()) {
+					FText inText = FText::FromString(FString::FromInt(FinalDamage));
+					statsUI->SetText(inText);
+				}
+			}
+		}
+	}
+	return 0.0f;
+}
+
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -165,9 +212,22 @@ void AMainCharacter::CustomJump()
 			}
 			this->JumpCurrentCount = 0;
 			this->GetCharacterMovement()->AddImpulse(FVector(1000 * GetSprite()->GetForwardVector().X, 0, 600), true);
+			if (JumpCurrentCount == 0) {
+				if (JumpSFX1) UGameplayStatics::PlaySound2D(this, JumpSFX1);
+			}
+			else if (JumpCurrentCount == 1) {
+				if (JumpSFX2) UGameplayStatics::PlaySound2D(this, JumpSFX2);
+			}
 		}
-		else
-		AMainCharacter::Jump();
+		else {
+			AMainCharacter::Jump();
+			if (JumpCurrentCount == 0) {
+				if (JumpSFX1) UGameplayStatics::PlaySound2D(this, JumpSFX1);
+			}
+			else if (JumpCurrentCount == 1) {
+				if (JumpSFX2) UGameplayStatics::PlaySound2D(this, JumpSFX2);
+			}
+		}
 	}
 }
 
@@ -251,26 +311,38 @@ void AMainCharacter::Shoot()
 
 void AMainCharacter::Dead()
 {
+	if (DieSFX) UGameplayStatics::PlaySound2D(this, DieSFX);
 	if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::LoadGameFromSlot("PlayerInfoSave", 0))) {
 		int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
 		int* SavedMana = PlayerInfoSave->GetPlayerMana();
 		int* SavedGold = PlayerInfoSave->GetCurrentGold();
+		int* SavedLiveCount = PlayerInfoSave->GetPlayerLiveCount();
 		*SavedHealth = MaxHealth;
 		*SavedMana = MaxMana;
 		if (GoldComponent) {
 			*SavedGold = GoldComponent->GetCurrentGold();
 		}
+		--LiveCount;
+		if (LiveCount >= 0) *SavedLiveCount = LiveCount;
+		else {
+			*SavedLiveCount = 3;
+			if (GoldComponent) {
+				*SavedGold = 0;
+			}
+			ClearAllSaveGame();
+			SaveGameProgress(FName("Jungle1"), FVector(0.0f, 0.0f, 0.0f));
+		}
 		UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
 	}
-	/*if (AMainController* MainController = this->GetController<AMainController>()) {
+	if (AMainController* MainController = this->GetController<AMainController>()) {
 		DisableInput(MainController);
 		MainController->DeadMessageDisplay();
-	}*/
+		if (DieMessageSFX) UGameplayStatics::PlaySound2D(this, DieMessageSFX);
+	}
 	StatusEffectComponent->ClearAllStatusEffect();
 	CurrentState = CharacterState::DEATH;
 	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	GetWorldTimerManager().ClearAllTimersForObject(this);
-	UGameplayStatics::OpenLevel(this, FName(UGameplayStatics::GetCurrentLevelName(this)));
 	/*if (DeathSequence) {
 		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
 			this->Destroy();
@@ -313,6 +385,7 @@ void AMainCharacter::LoadInfoFromSave()
 		if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::LoadGameFromSlot("PlayerInfoSave", 0))) {
 			CurrentHealth = *PlayerInfoSave->GetPlayerHealth();
 			CurrentMana = *PlayerInfoSave->GetPlayerMana();
+			LiveCount = *PlayerInfoSave->GetPlayerLiveCount();
 			if (GoldComponent) {
 				GoldComponent->SetCurrentGold((*PlayerInfoSave->GetCurrentGold()));
 			}
@@ -323,9 +396,11 @@ void AMainCharacter::LoadInfoFromSave()
 			int* SavedGold = PlayerInfoSave->GetCurrentGold();
 			int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
 			int* SavedMana = PlayerInfoSave->GetPlayerMana();
+			int* SavedLiveCount = PlayerInfoSave->GetPlayerLiveCount();
 			*SavedGold = GoldComponent->GetCurrentGold();
 			*SavedHealth = MaxHealth;
 			*SavedMana = MaxMana;
+			*SavedLiveCount = LiveCount;
 			UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
 		}
 	}
@@ -396,8 +471,10 @@ void AMainCharacter::SavePlayerInfo()
 			int* SavedGold = PlayerInfoSave->GetCurrentGold();
 			int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
 			int* SavedMana = PlayerInfoSave->GetPlayerMana();
+			int* SavedLiveCount = PlayerInfoSave->GetPlayerLiveCount();
 			*SavedHealth = (int)this->GetCurrentHealth();
 			*SavedMana = this->GetCurrentMana();
+			*SavedLiveCount = LiveCount;
 			if (GoldComponent) {
 				*SavedGold = GoldComponent->GetCurrentGold();
 			}
@@ -408,8 +485,10 @@ void AMainCharacter::SavePlayerInfo()
 		int* SavedGold = PlayerInfoSave->GetCurrentGold();
 		int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
 		int* SavedMana = PlayerInfoSave->GetPlayerMana();
+		int* SavedLiveCount = PlayerInfoSave->GetPlayerLiveCount();
 		*SavedHealth = (int)this->GetCurrentHealth();
 		*SavedMana = this->GetCurrentMana();
+		*SavedLiveCount = LiveCount;
 		if (GoldComponent) {
 			*SavedGold = GoldComponent->GetCurrentGold();
 		}
@@ -435,6 +514,14 @@ void AMainCharacter::SaveGameProgress(FName LevelName, FVector SavedLoc)
 		CurrentLevel = LevelName;
 		UGameplayStatics::SaveGameToSlot(GameProgress, "GameProgress", 0);
 	}
+}
+
+void AMainCharacter::ClearAllSaveGame()
+{
+	UGameplayStatics::DeleteGameInSlot("ShopSave", 0);
+	UGameplayStatics::DeleteGameInSlot("GameplaySave", 0);
+	UGameplayStatics::DeleteGameInSlot("PlayerInfoSave", 0);
+	UGameplayStatics::DeleteGameInSlot("GameProgress", 0);
 }
 
 void AMainCharacter::EndAirAttack()

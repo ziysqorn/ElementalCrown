@@ -10,30 +10,35 @@ void AOceanLevelScript::BeginPlay()
 	Super::BeginPlay();
 
 	if (UGameProgress* GameProgress = Cast<UGameProgress>(UGameplayStatics::LoadGameFromSlot("GameProgress", 0))) {
-		GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("Map here"));
+		//GEngine->AddOnScreenDebugMessage(-1, 10.0f, FColor::Red, TEXT("Map here"));
 		FName& LevelName = GameProgress->GetLevelName();
 		FVector& PlayerLoc = GameProgress->GetPlayerLocation();
 		if (PlayerLoc == FVector(0.0f, 0.0f, 0.0f)) {
 			if (AActor* PlayerStart = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass())) {
 				PlayerLoc = PlayerStart->GetActorLocation();
+				PlayerLoc.Y = 0.0f;
 			}
 		}
+		PlayerLoc.Y = 0.0f;
 		LevelName = FName(UGameplayStatics::GetCurrentLevelName(GetWorld()));
 		FActorSpawnParameters SpawnParams;
 		if (MainCharSubclass && LevelTilemap) {
 			if (AMainCharacter* MainCharacter = GetWorld()->SpawnActor<AMainCharacter>(MainCharSubclass, PlayerLoc, FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
 				MainCharacter->GetTilemapComp()->SetTileMap(LevelTilemap);
 				if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) {
-					/*if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
+					if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
 						CustomGameInstance->SpawnReverseLoadingScreen();
 						if (ULoadingScreen* LoadingScreen = CustomGameInstance->GetLoadingScreen()) {
-							LoadingScreen->LoadingScreenEndDel.BindLambda([MainCharacter, PlayerController]() {
-								MainCharacter->EnableInput(PlayerController);
+							LoadingScreen->LoadingScreenEndDel.BindLambda([this, CustomGameInstance, MainCharacter, PlayerController]() {
+								if (this && CustomGameInstance && MainCharacter && PlayerController) {
+									MainCharacter->EnableInput(PlayerController);
+									CustomGameInstance->PlayBackgroundTheme(BackgroundTheme);
+								}
 								});
 						}
-					}*/
+					}
 					PlayerController->Possess(MainCharacter);
-					//MainCharacter->DisableInput(PlayerController);
+					MainCharacter->DisableInput(PlayerController);
 				}
 			}
 

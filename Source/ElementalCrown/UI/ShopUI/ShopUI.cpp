@@ -81,10 +81,10 @@ void UShopUI::PopoutSkill()
 void UShopUI::SetupShopUI(TArray<UConsumable*>& ConsumableList, TArray<UBaseSkill*>& SkillsList)
 {
 	if (ShopItemUISubclass && SkillItemUISubclass) {
-		VerBox_ConsumablesList->ClearChildren();
-		ScrBox_AvailableSkillsList->ClearChildren();
-		ScrBox_OwnedSkillsList->ClearChildren();
-		HorBox_EquippedSkills->ClearChildren();
+		if(VerBox_ConsumablesList->GetChildrenCount() > 0) VerBox_ConsumablesList->ClearChildren();
+		if (ScrBox_AvailableSkillsList->GetChildrenCount() > 0) ScrBox_AvailableSkillsList->ClearChildren();
+		if (ScrBox_OwnedSkillsList->GetChildrenCount() > 0) ScrBox_OwnedSkillsList->ClearChildren();
+		if (HorBox_EquippedSkills->GetChildrenCount() > 0) HorBox_EquippedSkills->ClearChildren();
 
 		for (int i = 0; i < ConsumableList.Num(); ++i) {
 			if (UShopItemButtonUI* ShopItemUI = CreateWidget<UShopItemButtonUI>(this->GetWorld(), ShopItemUISubclass)) {

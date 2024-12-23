@@ -23,6 +23,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Saved start menu subclass")
 	TSubclassOf<USavedStartMenu> SavedStartMenuSubclass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Background theme")
+	USoundBase* BackgroundTheme = nullptr;
 
 	void BeginPlay() override;
+
 };

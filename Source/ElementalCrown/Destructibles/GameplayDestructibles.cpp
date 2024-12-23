@@ -72,6 +72,7 @@ float AGameplayDestructibles::TakeDamage(float DamageAmount, FDamageEvent const&
 void AGameplayDestructibles::DestructibleDestroyed()
 {
 	ObjectSprite->SetSprite(DamagedSprite);
+	ObjectSprite->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) {
 		if (AMainCharacter* MainCharacter = PlayerController->GetPawn<AMainCharacter>()) {
 			if (UGoldComponent* GoldComp = MainCharacter->GetGoldComp()) {
@@ -80,7 +81,10 @@ void AGameplayDestructibles::DestructibleDestroyed()
 			}
 		}
 	}
-	GetWorldTimerManager().SetTimer(DeadHandle, FTimerDelegate::CreateLambda([this]() {
-		this->Destroy();
-	}), 1.0f, false);
+	GetWorldTimerManager().SetTimer(DeadHandle, FTimerDelegate::CreateUObject(this, &AGameplayDestructibles::SelfDestroy), 1.0f, false);
+}
+
+void AGameplayDestructibles::SelfDestroy()
+{
+	this->Destroy();
 }

@@ -29,4 +29,6 @@ public:
 
 	void SelfDestroy();
 
+	void ExplodePending();
+
 };

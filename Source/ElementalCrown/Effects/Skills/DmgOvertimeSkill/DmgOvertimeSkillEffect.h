@@ -31,4 +31,6 @@ public:
 	virtual void DamageOvertime();
 
 	virtual void ExecuteOverlap();
+
+	void SelfDestroy();
 };

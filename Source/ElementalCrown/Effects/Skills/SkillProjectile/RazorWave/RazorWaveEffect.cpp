@@ -12,6 +12,7 @@ ARazorWaveEffect::ARazorWaveEffect() : ASkillProjectile(TEXT("/Script/Paper2D.Pa
 	}
 	EffectElement = CreateDefaultSubobject<UMetal>(FName("EffectElement"));
 	BuildupAmount = 3.0f;
+	SkillDamage = 3;
 	this->OnActorBeginOverlap.AddDynamic(this, &ARazorWaveEffect::BeginOverlap);
 }
 

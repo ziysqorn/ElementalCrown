@@ -18,7 +18,7 @@ void UStartMenuUI::StartNewGame()
 		FVector& PlayerLocation = GameProgress->GetPlayerLocation();
 		FName& CurrentLevel = GameProgress->GetLevelName();
 		PlayerLocation = FVector(0.0f, 0.0f, 0.0f);
-		CurrentLevel = FName("Jungle1");
+		CurrentLevel = FName("Intro1");
 		UGameplayStatics::DeleteGameInSlot("ShopSave", 0);
 		UGameplayStatics::DeleteGameInSlot("GameplaySave", 0);
 		UGameplayStatics::DeleteGameInSlot("PlayerInfoSave", 0);

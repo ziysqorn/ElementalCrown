@@ -17,9 +17,7 @@ void ASkillCCEffect::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
-		this->Destroy();
-		}), Flipbook->GetTotalDuration(), false);
+	GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateUObject(this, &ASkillCCEffect::SelfDestroy), Flipbook->GetTotalDuration(), false);
 }
 
 void ASkillCCEffect::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
@@ -31,11 +29,14 @@ void ASkillCCEffect::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 				if (ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor)) {
 					int BackwardDir = Character->GetActorRotation().Yaw == 0.0f ? -1 : 1;
 					LaunchVector.X *= BackwardDir;
-					Character->GetMovementComponent()->StopMovementImmediately();
-					if(Character->GetCharacterState() != CharacterState::STUN) 
-						Character->SetCharacterState(CharacterState::AIRBORNE);
-					Character->LaunchCharacter(LaunchVector, true, true);
-					UGameplayStatics::ApplyDamage(Character, SkillDamage, OwningCharacter->GetController(), this, DamageType);
+					ABossCharacter* BossCharacter = Cast<ABossCharacter>(Character);
+					if (!BossCharacter) {
+						Character->GetMovementComponent()->StopMovementImmediately();
+						if (Character->GetCharacterState() != CharacterState::STUN)
+							Character->SetCharacterState(CharacterState::AIRBORNE);
+						Character->LaunchCharacter(LaunchVector, true, true);
+					}
+					UGameplayStatics::ApplyDamage(Character, OwningCharacter->CalculatedDamage(SkillDamage), OwningCharacter->GetController(), this, DamageType);
 					EffectElement->ApplyStatusEffect(Character, BuildupAmount);
 				}
 			}

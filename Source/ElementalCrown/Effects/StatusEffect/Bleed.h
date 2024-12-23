@@ -11,11 +11,10 @@ class ELEMENTALCROWN_API ABleed : public ABaseStatus
 	GENERATED_BODY()
 protected:
 	FTimerHandle DestroyHandle;
-	USceneComponent* SymmetryPoint = nullptr;
-	UPaperFlipbookComponent* MirroredFlipbookComp = nullptr;
 public:
 	ABleed();
 	void BeginPlay() override;
+	void SelfDestroy();
 	void BloodSpray() {
 		StatusFlipbookComp->PlayFromStart();
 	}

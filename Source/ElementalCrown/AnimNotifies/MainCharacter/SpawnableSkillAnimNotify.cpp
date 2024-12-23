@@ -51,6 +51,7 @@ void USpawnableSkillAnimNotify::SpawnSkillActor(ABaseCharacter* BaseCharacter) c
 		SpawnRot.Yaw = (BaseCharacter->GetSprite()->GetForwardVector().X > 0) ? 0 : 180;
 		SpawnRot += AdditionalSpawnRot;
 		SpawnLoc += TempAdditionLoc;
+		SpawnLoc.Y = 0.0f;
 		TSubclassOf<AActor>  TempSubclass = SkillActorSubclass;
 		BaseCharacter->GetWorld()->SpawnActor<AActor>(TempSubclass, SpawnLoc, SpawnRot, SpawnParams);
 	}

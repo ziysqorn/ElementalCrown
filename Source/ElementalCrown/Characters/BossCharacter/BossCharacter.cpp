@@ -3,10 +3,13 @@
 
 #include "BossCharacter.h"
 #include "../../Controller/MainController.h"
-#include "../../ElementalCrownGameModeBase.h"
+#include "../../CustomGameInstance/CustomGameInstance.h"
 
 ABossCharacter::ABossCharacter()
 {
+	MaxHealth = Default_Boss_MaxHealth;
+	CurrentHealth = MaxHealth;
+	ATK_Damage = Default_Boss_ATKDamage;
 }
 
 void ABossCharacter::BeginPlay()
@@ -22,41 +25,43 @@ void ABossCharacter::Tick(float DeltaSeconds)
 
 float ABossCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
-	if (CurrentHealth > 0) {
-		int FinalDamage = (int)DamageAmount;
-		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Drowsy")) {
-			if (Effect->GetActivateStatus()) {
-				FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
-				StatusEffectComponent->RemoveStatusEffect(Effect);
+	if (!isInvincible) {
+		if (CurrentHealth > 0) {
+			int FinalDamage = (int)DamageAmount;
+			if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Drowsy")) {
+				if (Effect->GetActivateStatus()) {
+					FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+					StatusEffectComponent->RemoveStatusEffect(Effect);
+				}
 			}
-		}
-		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
-			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
-		}
-		CurrentHealth -= FinalDamage;
-		if (CurrentHealth <= 0) {
-			Dead();
-		}
-		else {
-			/*if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN && CurrentState != CharacterState::AIRBORNE) {
-				ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
-				if (!StatusEffect) CurrentState = CharacterState::HURT;
-			}*/
-			FlashTimeline.PlayFromStart();
-			/*if (HurtSequence) {
-				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {
-					if (this->CurrentState == CharacterState::HURT)
-						this->CurrentState = CharacterState::NONE;
-					}), HurtSequence->GetTotalDuration(), false);
-			}*/
-		}
-		if (StatsPopoutSubclass) {
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			if (AStatsPopout* stats = GetWorld()->SpawnActor<AStatsPopout>(StatsPopoutSubclass, this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
-				if (UStatsPopoutUI* statsUI = stats->GetStatsPopoutUI()) {
-					FText inText = FText::FromString(FString::FromInt(FinalDamage));
-					statsUI->SetText(inText);
+			if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
+				if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+			}
+			CurrentHealth -= FinalDamage;
+			if (CurrentHealth <= 0) {
+				Dead();
+			}
+			else {
+				/*if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN && CurrentState != CharacterState::AIRBORNE) {
+					ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
+					if (!StatusEffect) CurrentState = CharacterState::HURT;
+				}*/
+				FlashTimeline.PlayFromStart();
+				/*if (HurtSequence) {
+					GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {
+						if (this->CurrentState == CharacterState::HURT)
+							this->CurrentState = CharacterState::NONE;
+						}), HurtSequence->GetTotalDuration(), false);
+				}*/
+			}
+			if (StatsPopoutSubclass) {
+				FActorSpawnParameters SpawnParams;
+				SpawnParams.Owner = this;
+				if (AStatsPopout* stats = GetWorld()->SpawnActor<AStatsPopout>(StatsPopoutSubclass, this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
+					if (UStatsPopoutUI* statsUI = stats->GetStatsPopoutUI()) {
+						FText inText = FText::FromString(FString::FromInt(FinalDamage));
+						statsUI->SetText(inText);
+					}
 				}
 			}
 		}
@@ -70,9 +75,7 @@ void ABossCharacter::Landed(const FHitResult& Hit)
 
 	FRotator NewRotation = FRotator(0.0f, 180.0f, 0.0f);
 	this->SetActorRotation(this->GetActorRotation() + NewRotation);
-	GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateLambda([this]() {
-		MakeDecision();
-		}), NewDecisionTimeAmount, false);
+	GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::MakeDecision), NewDecisionTimeAmount, false);
 }
 
 
@@ -82,28 +85,16 @@ void ABossCharacter::Attack()
 	CurrentState = CharacterState::ATTACK;
 	switch (attackDecisionMode) {
 	case 1:
-		GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateLambda([this]() {
-			if (CurrentState == CharacterState::ATTACK) CurrentState = CharacterState::NONE;
-			}), AttackSequence->GetTotalDuration(), false);
-		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateLambda([this]() {
-			MakeDecision();
-			}), AttackSequence->GetTotalDuration() + NewDecisionTimeAmount, false);
+		GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetAttackToNoneState), AttackSequence->GetTotalDuration(), false);
+		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::MakeDecision), AttackSequence->GetTotalDuration() + NewDecisionTimeAmount, false);
 		break;
 	case 2:
-		GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateLambda([this]() {
-			if (CurrentState == CharacterState::ATTACK) CurrentState = CharacterState::NONE;
-			}), Attack2Sequence->GetTotalDuration(), false);
-		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateLambda([this]() {
-			MakeDecision();
-			}), Attack2Sequence->GetTotalDuration() + NewDecisionTimeAmount, false);
+		GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetAttackToNoneState), Attack2Sequence->GetTotalDuration(), false);
+		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::MakeDecision), Attack2Sequence->GetTotalDuration() + NewDecisionTimeAmount, false);
 		break;
 	case 3:
-		GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateLambda([this]() {
-			if (CurrentState == CharacterState::ATTACK) CurrentState = CharacterState::NONE;
-			}), SpecialAtkSequence->GetTotalDuration(), false);
-		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateLambda([this]() {
-			MakeDecision();
-			}), SpecialAtkSequence->GetTotalDuration() + NewDecisionTimeAmount, false);
+		GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetAttackToNoneState), SpecialAtkSequence->GetTotalDuration(), false);
+		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::MakeDecision), SpecialAtkSequence->GetTotalDuration() + NewDecisionTimeAmount, false);
 		break;
 	}
 }
@@ -124,12 +115,15 @@ void ABossCharacter::Dead()
 			MainCharacter->SavePlayerInfo();
 			MainCharacter->SaveGameProgress(NextLevelName, FVector(0.0f, 0.0f, 0.0f));
 		}
-		/*if (UBossDefeatMessage* BossDefeatMessage = MainController->GetBossDefeatMessage()) {
+		if (UBossDefeatMessage* BossDefeatMessage = MainController->GetBossDefeatMessage()) {
 			BossDefeatMessage->NextLevelName = this->NextLevelName;
 			BossDefeatMessage->BossName = this->CharacterName;
+			if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
+				CustomGameInstance->FadeoutBattleTheme();
+				CustomGameInstance->PlayBossDefeatSFX();
+			}
 			MainController->BossDefeatMessageDisplay();
-		}*/
-		UGameplayStatics::OpenLevel(this, NextLevelName);
+		}
 	}
 	/*if (DeathSequence) {
 		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
@@ -161,4 +155,9 @@ void ABossCharacter::MakeDecision()
 			break;
 		}
 	}
+}
+
+void ABossCharacter::SetAttackToNoneState()
+{
+	if (CurrentState == CharacterState::ATTACK) CurrentState = CharacterState::NONE;
 }

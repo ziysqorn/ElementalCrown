@@ -50,4 +50,5 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void DestructibleDestroyed();
+	void SelfDestroy();
 };

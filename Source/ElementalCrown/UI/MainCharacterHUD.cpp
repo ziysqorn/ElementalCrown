@@ -12,6 +12,13 @@ void UMainCharacterHUD::SetupHUD()
 				SetupSkillSlotBox(*(SkillComponent->GetSkillList()));
 				SwitchedSlotHighlight(0);
 			}
+			for (int i = 0; i < MainCharacter->GetLiveCount(); ++i) {
+				if (LiveCountUISubclass) {
+					if (UUserWidget* liveCount = CreateWidget<UUserWidget>(this, LiveCountUISubclass)) {
+						HorBox_LiveCountSlotBox->AddChild(liveCount);
+					}
+				}
+			}
 			if (UConsumableComponent* ConsumableComponent = MainCharacter->GetConsumableComp()) {
 				TArray<UConsumable*>& ConsumableList = ConsumableComponent->GetConsumableList();
 				for (int i = 0; i < ConsumableList.Num(); ++i) {

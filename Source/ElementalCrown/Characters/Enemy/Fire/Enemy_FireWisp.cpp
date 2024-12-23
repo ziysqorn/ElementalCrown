@@ -14,14 +14,14 @@ void AEnemy_FireWisp::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (!DetectingPlayer() && !DetectingPatrolLimit()) GetCharacterMovement()->MaxWalkSpeed = BaseEnemySpeed;
-	else if (DetectingPlayer()) {
+	if (!DetectingPlayer()) GetCharacterMovement()->MaxWalkSpeed = BaseEnemySpeed;
+	else {
 		GetCharacterMovement()->MaxWalkSpeed = BaseEnemySpeed * 2.0f;
 		PlayerDetectBox.X = 500.0f;
 		PlayerDetectBox.Z = 1000.0f;
 		if (!isCountdowning) SelfDestroy();
 	}
-	this->Move();
+	if(!DetectingEdge() && !DetectingPatrolLimit()) this->Move();
 }
 
 bool AEnemy_FireWisp::DetectingPlayer()
@@ -47,24 +47,27 @@ bool AEnemy_FireWisp::DetectingPlayer()
 void AEnemy_FireWisp::SelfDestroy()
 {
 	isCountdowning = true;
-	GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
-		if (DeathCountdown > 0 && StatsPopoutSubclass) {
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.Owner = this;
-			if (AStatsPopout* stats = GetWorld()->SpawnActor<AStatsPopout>(StatsPopoutSubclass, this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
-				stats->setDistanceX(0.0f);
-				if (UStatsPopoutUI* statsUI = stats->GetStatsPopoutUI()) {
-					FText inText = FText::FromString(FString::FromInt(DeathCountdown));
-					statsUI->SetText(inText);
-					statsUI->SetTextColor(FLinearColor::Yellow);
-				}
+	GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateUObject(this, &AEnemy_FireWisp::ExplodePending), 1.0f, true);
+}
+
+void AEnemy_FireWisp::ExplodePending()
+{
+	if (DeathCountdown > 0 && StatsPopoutSubclass) {
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		if (AStatsPopout* stats = GetWorld()->SpawnActor<AStatsPopout>(StatsPopoutSubclass, this->GetActorLocation(), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
+			stats->setDistanceX(0.0f);
+			if (UStatsPopoutUI* statsUI = stats->GetStatsPopoutUI()) {
+				FText inText = FText::FromString(FString::FromInt(DeathCountdown));
+				statsUI->SetText(inText);
+				statsUI->SetTextColor(FLinearColor::Yellow);
 			}
 		}
-		DeathCountdown -= 1;
-		if (DeathCountdown < 0) {
-			this->Dead();
-			return;
-		}
-	}), 1.0f, true);
+	}
+	DeathCountdown -= 1;
+	if (DeathCountdown < 0) {
+		this->Dead();
+		return;
+	}
 }
 

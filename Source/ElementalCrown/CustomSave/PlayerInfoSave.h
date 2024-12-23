@@ -24,6 +24,9 @@ protected:
 	UPROPERTY()
 	int CurrentGold;
 
+	UPROPERTY()
+	int LiveCount;
+
 public:
 	int* GetPlayerHealth() {
 		return &PlayerHealth;
@@ -35,5 +38,9 @@ public:
 
 	int* GetCurrentGold() {
 		return &CurrentGold;
+	}
+
+	int* GetPlayerLiveCount() {
+		return &LiveCount;
 	}
 };

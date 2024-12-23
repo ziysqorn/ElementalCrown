@@ -8,6 +8,7 @@ AFireWispExplode::AFireWispExplode() : ASkillCCEffect(TEXT("/Script/Paper2D.Pape
 	EffectElement = CreateDefaultSubobject<UFire>(FName("EffectElement"));
 	BuildupAmount = 10.0f;
 	FlipbookComponent->SetLooping(false);
+	SkillDamage = 5;
 	LaunchVector = FVector(500.0f, 0.0f, 100.0f);
 	this->OnActorBeginOverlap.AddDynamic(this, &AFireWispExplode::BeginOverlap);
 }
@@ -25,7 +26,7 @@ void AFireWispExplode::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 			TSubclassOf<UDamageType> DamageType;
 			if (EffectElement) {
 				if (ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor)) {
-					UGameplayStatics::ApplyDamage(Character, SkillDamage, OwningCharacter->GetController(), this, DamageType);
+					UGameplayStatics::ApplyDamage(Character, OwningCharacter->CalculatedDamage(SkillDamage), OwningCharacter->GetController(), this, DamageType);
 					EffectElement->ApplyStatusEffect(Character, BuildupAmount);
 				}
 			}

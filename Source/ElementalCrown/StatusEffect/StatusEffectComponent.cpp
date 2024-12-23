@@ -51,6 +51,27 @@ void UStatusEffectComponent::RemoveStatusEffect(BaseStatusEffect* Effect)
 	delete Effect;
 }
 
+void UStatusEffectComponent::ReduceStatusBuildup(BaseStatusEffect* Effect)
+{
+	if (Effect) {
+		float* CurrentProgPtr = Effect->GetCurrentProgress();
+		*CurrentProgPtr -= 0.1f;
+		if (*CurrentProgPtr <= 0.0f) RemoveStatusEffect(Effect);
+		else {
+			if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwner())) {
+				if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
+					UMainCharacterHUD* MainHUD = MainController->GetMainHUD();
+					if (MainHUD) {
+						if (UStatusEffectProgressUI* ProgressUI = MainHUD->GetStatusProgressUI(this->FindStatusEffect(Effect))) {
+							ProgressUI->GetProgressBar()->SetPercent(Effect->GetBuildupPercentage());
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 void UStatusEffectComponent::ClearAllStatusEffect()
 {
 	for (int i = 0; i < StatusList.Num(); ++i) {

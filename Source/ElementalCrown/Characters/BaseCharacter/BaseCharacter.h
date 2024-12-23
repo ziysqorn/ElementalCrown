@@ -28,8 +28,6 @@ protected:
 	int MaxHealth{ Default_Character_MaxHealth };
 	int MaxMana{ Default_Character_MaxMana };
 	int ATK_Damage{ Default_Character_ATKDamage };
-	int Resist{ Default_Character_Resist };
-	uint8 DeStun{ Default_Character_DeStun };
 	//Character's gameplay temporary stats
 	int CurrentHealth{ MaxHealth };
 	int CurrentMana{ MaxMana };
@@ -75,6 +73,7 @@ protected:
 public:
 	ABaseCharacter();
 	virtual void BeginPlay() override;
+
 	virtual void Tick(float DeltaSeconds) override;
 	//Event taking damage
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
@@ -174,24 +173,7 @@ public:
 			MaxHealth = 0;
 		}
 	}
-	//Set resist(min=1) by a buff (pass in negative value = debuff)
-	void SetResistByBuff(const int& Buff) {
-		if ((Buff < 0 && abs(Buff) < Resist) || Buff >= 0) {
-			Resist += Buff;
-		}
-		else {
-			Resist = 1;
-		}
-	}
-	//Set resist(min=0) directly by a new value
-	void SetResistByNewValue(const int& NewResist) {
-		if (NewResist >= 0) {
-			Resist = NewResist;
-		}
-		else {
-			Resist = 0;
-		}
-	}
+	
 	//Return character damage amount after a buff (or debuff)
 	virtual int CalculatedDamage(const int& Buff) {
 		if ((Buff < 0 && abs(Buff) < ATK_Damage) || Buff >= 0) {

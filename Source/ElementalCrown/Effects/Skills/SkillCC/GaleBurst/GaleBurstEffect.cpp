@@ -8,6 +8,7 @@ AGaleBurstEffect::AGaleBurstEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.Pape
 	EffectElement = CreateDefaultSubobject<UPlant>(FName("EffectElement"));
 	BuildupAmount = 4.0f;
 	FlipbookComponent->SetLooping(false);
+	SkillDamage = 4;
 	LaunchVector = FVector(300.0f, 0.0f, 300.0f);
 	this->OnActorBeginOverlap.AddDynamic(this, &AGaleBurstEffect::BeginOverlap);
 }

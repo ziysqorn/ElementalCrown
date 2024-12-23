@@ -11,6 +11,7 @@ AFireTornadoProjectile::AFireTornadoProjectile() : ASkillProjectile(TEXT("/Scrip
 	}
 	this->DestroyDelay = 2.00f;
 	this->BuildupAmount = 10.0f;
+	SkillDamage = 5;
 	EffectElement = CreateDefaultSubobject<UFire>(FName("EffectElement"));
 	this->OnActorBeginOverlap.AddDynamic(this, &AFireTornadoProjectile::BeginOverlap);
 }
@@ -28,10 +29,14 @@ void AFireTornadoProjectile::BeginOverlap(AActor* OverlappedActor, AActor* Other
 			TSubclassOf<UDamageType> DamageType;
 			if (EffectElement) {
 				if (ABaseCharacter* Character = Cast<ABaseCharacter>(OtherActor)) {
-					Character->SetCharacterState(CharacterState::AIRBORNE);
-					Character->GetMovementComponent()->StopMovementImmediately();
-					Character->LaunchCharacter(FVector(0.0f, 0, 500.0f), false, true);
-					UGameplayStatics::ApplyDamage(OtherActor, SkillDamage, OwningCharacter->GetController(), this, DamageType);
+					ABossCharacter* BossCharacter = Cast<ABossCharacter>(Character);
+					if (!BossCharacter) {
+						Character->GetMovementComponent()->StopMovementImmediately();
+						if (Character->GetCharacterState() != CharacterState::STUN)
+							Character->SetCharacterState(CharacterState::AIRBORNE);
+						Character->LaunchCharacter(FVector(0.0f, 0, 500.0f), true, true);
+					}
+					UGameplayStatics::ApplyDamage(OtherActor, OwningCharacter->CalculatedDamage(SkillDamage), OwningCharacter->GetController(), this, DamageType);
 					EffectElement->ApplyStatusEffect(Character, BuildupAmount);
 				}
 			}

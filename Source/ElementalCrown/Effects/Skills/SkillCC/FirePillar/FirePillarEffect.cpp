@@ -8,6 +8,7 @@ AFirePillarEffect::AFirePillarEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.Pa
 {
 	EffectElement = CreateDefaultSubobject<UFire>(FName("EffectElement"));
 	BuildupAmount = 10.0f;
+	SkillDamage = 6;
 	FlipbookComponent->SetLooping(false);
 	LaunchVector = FVector(500.0f, 0.0f, 100.0f);
 	this->OnActorBeginOverlap.AddDynamic(this, &AFirePillarEffect::BeginOverlap);

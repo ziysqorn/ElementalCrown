@@ -12,6 +12,7 @@ AAquaSphereProjectile::AAquaSphereProjectile() : ASkillProjectile(TEXT("/Script/
 	EffectElement = CreateDefaultSubobject<UWater>(FName("EffectElement"));
 	BuildupAmount = 10.0f;
 	FlipbookComponent->SetLooping(false);
+	SkillDamage = 4;
 	this->OnActorBeginOverlap.AddDynamic(this, &AAquaSphereProjectile::BeginOverlap);
 	FlipbookComponent->OnFinishedPlaying.AddDynamic(this, &AAquaSphereProjectile::SetLoopAtRightPos);
 }

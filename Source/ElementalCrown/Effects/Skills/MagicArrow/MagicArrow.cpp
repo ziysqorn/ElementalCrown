@@ -37,9 +37,7 @@ AMagicArrow::AMagicArrow(const TCHAR* Ref)
 void AMagicArrow::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorldTimerManager().SetTimer(ExpiredHandle, FTimerDelegate::CreateLambda([this]() {
-		this->Destroy();
-	}), 4, false);
+	GetWorldTimerManager().SetTimer(ExpiredHandle, FTimerDelegate::CreateUObject(this, &AMagicArrow::SelfDestroy), 4, false);
 	ArrowComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel1, ECollisionResponse::ECR_Ignore);
 	ArrowComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel2, ECollisionResponse::ECR_Ignore);
 	ArrowComponent->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel3, ECollisionResponse::ECR_Ignore);
@@ -75,5 +73,10 @@ void AMagicArrow::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor)
 			this->Destroy();
 		}
 	}
+}
+
+void AMagicArrow::SelfDestroy()
+{
+	this->Destroy();
 }
 

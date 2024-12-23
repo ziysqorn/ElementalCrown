@@ -26,5 +26,8 @@ void AStartLevelScript::BeginPlay()
 				}
 			}
 		}
+		if (BackgroundTheme) {
+			UGameplayStatics::PlaySound2D(this, BackgroundTheme);
+		}
 	}
 }

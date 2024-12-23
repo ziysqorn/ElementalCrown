@@ -8,8 +8,8 @@ ASmoke::ASmoke()
 {
 	//Setup components
 	DefaultRootComponent = CreateDefaultSubobject<USceneComponent>("Default Root Component");
-	DefaultRootComponent->SetupAttachment(RootComponent);
 	FlipbookComponent = CreateDefaultSubobject<UPaperFlipbookComponent>("Flipbook Component");
+	RootComponent = DefaultRootComponent;
 	FlipbookComponent->AttachToComponent(DefaultRootComponent, FAttachmentTransformRules::KeepRelativeTransform);
 	FlipbookComponent->SetLooping(false);
 }
@@ -19,7 +19,10 @@ void ASmoke::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateLambda([this]() {
-		this->Destroy();
-	}), FlipbookComponent->GetFlipbook()->GetTotalDuration(), false);
+	GetWorldTimerManager().SetTimer(DestroyHandle, FTimerDelegate::CreateUObject(this, &ASmoke::SelfDestroy), FlipbookComponent->GetFlipbook()->GetTotalDuration(), false);
+}
+
+void ASmoke::SelfDestroy()
+{
+	this->Destroy();
 }

@@ -6,7 +6,7 @@
 AAquilarie::AAquilarie()
 {
 	CharacterName = FName("Aquilarie");
-	NextLevelName = FName("TestRocky");
+	NextLevelName = FName("Rocky");
 }
 
 void AAquilarie::BeginPlay()

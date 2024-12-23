@@ -32,11 +32,10 @@ void ASwitchLevelActor::BeginOverlap(AActor* OverlappedActor, AActor* OtherActor
 		MainCharacter->SaveGameplay();
 		MainCharacter->SavePlayerInfo();
 		MainCharacter->SaveGameProgress(NextLevelName, FVector(0.0f, 0.0f, 0.0f));
-		/*if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
+		if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
 			CustomGameInstance->SpawnLoadingScreen();
 			CustomGameInstance->OpenLevel(NextLevelName);
-		}*/
-		UGameplayStatics::OpenLevel(this, NextLevelName);
+		}
 	}
 }
 

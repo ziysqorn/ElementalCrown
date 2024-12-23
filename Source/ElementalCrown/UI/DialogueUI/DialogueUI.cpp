@@ -33,7 +33,6 @@ FReply UDialogueUI::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent
 				if (APlayerController* PlayerController = this->GetOwningPlayer()) {
 					if (PlayerController->GetPawn()) PlayerController->GetPawn()->EnableInput(PlayerController);
 					this->RemoveFromParent();
-					this->ConditionalBeginDestroy();
 				}
 			}
 			else if (FDialogueLine* DialogueLine = &(*DialogueLines)[CurrentDialogueLine]) {

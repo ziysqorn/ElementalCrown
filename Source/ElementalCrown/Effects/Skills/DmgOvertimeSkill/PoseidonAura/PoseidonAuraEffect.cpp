@@ -31,11 +31,14 @@ void APoseidonAuraEffect::DamageOvertime()
 				TSubclassOf<UDamageType> DamageType;
 				if (EffectElement) {
 					if (ABaseCharacter* Character = Cast<ABaseCharacter>(actors[i])) {
-						Character->GetMovementComponent()->StopMovementImmediately();
-						if (Character->GetCharacterState() != CharacterState::STUN)
-							Character->SetCharacterState(CharacterState::AIRBORNE);
-						Character->LaunchCharacter(FVector(0.0f, 0, 500.0f), true, true);
-						UGameplayStatics::ApplyDamage(Character, SkillDamage, OwningCharacter->GetController(), this, DamageType);
+						ABossCharacter* BossCharacter = Cast<ABossCharacter>(Character);
+						if (!BossCharacter) {
+							Character->GetMovementComponent()->StopMovementImmediately();
+							if (Character->GetCharacterState() != CharacterState::STUN)
+								Character->SetCharacterState(CharacterState::AIRBORNE);
+							Character->LaunchCharacter(FVector(0.0f, 0, 500.0f), true, true);
+						}
+						UGameplayStatics::ApplyDamage(Character, OwningCharacter->CalculatedDamage(SkillDamage), OwningCharacter->GetController(), this, DamageType);
 						EffectElement->ApplyStatusEffect(Character, BuildupAmount);
 					}
 				}

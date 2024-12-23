@@ -9,6 +9,7 @@ AFireSlashWave::AFireSlashWave(): ASkillProjectile(TEXT("/Script/Paper2D.PaperFl
 	}
 	EffectElement = CreateDefaultSubobject<UFire>(FName("EffectElement"));
 	BuildupAmount = 5.0f;
+	SkillDamage = 4;
 	this->OnActorBeginOverlap.AddDynamic(this, &AFireSlashWave::BeginOverlap);
 }
 

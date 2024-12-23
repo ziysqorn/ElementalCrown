@@ -19,6 +19,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Components/AudioComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Components/WidgetComponent.h"
@@ -43,8 +44,8 @@
 #include "Notifies/PaperZDAnimNotify.h"
 #include "Notifies/PaperZDAnimNotifyState.h"
 #include "Blueprint/UserWidget.h"
-#include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\PaperZDAnimSequence.h"
-#include "C:\Program Files\Epic Games\UE_5.2\Engine\Plugins\Marketplace\PaperZD\Source\PaperZD\Public\AnimSequences\Players\PaperZDAnimPlayer.h"
+#include "PaperZD/Public/AnimSequences/PaperZDAnimSequence.h"
+#include "PaperZD/Public/AnimSequences/Players/PaperZDAnimPlayer.h"
 
 
 

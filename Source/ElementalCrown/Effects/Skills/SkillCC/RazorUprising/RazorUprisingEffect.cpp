@@ -9,6 +9,7 @@ ARazorUprisingEffect::ARazorUprisingEffect() : ASkillCCEffect(TEXT("/Script/Pape
 	BuildupAmount = 4.0f;
 	FlipbookComponent->SetLooping(false);
 	LaunchVector = FVector(300.0f, 0.0f, 300.0f);
+	SkillDamage = 7;
 	this->OnActorBeginOverlap.AddDynamic(this, &ARazorUprisingEffect::BeginOverlap);
 }
 

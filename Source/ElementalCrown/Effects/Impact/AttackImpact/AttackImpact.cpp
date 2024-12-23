@@ -33,9 +33,12 @@ void AAttackImpact::BeginPlay()
 	this->SetActorScale3D(FVector(2, 1, 2));
 
 	if (AttackImpact) {
-		GetWorldTimerManager().SetTimer(ImpactHandle, FTimerDelegate::CreateLambda([this]() {
-			this->Destroy();
-			}), AttackImpact->GetFlipbookLength(), false);
+		GetWorldTimerManager().SetTimer(ImpactHandle, FTimerDelegate::CreateUObject(this, &AAttackImpact::SelfDestroy), AttackImpact->GetFlipbookLength(), false);
 	}
+}
+
+void AAttackImpact::SelfDestroy()
+{
+	this->Destroy();
 }
 

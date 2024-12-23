@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../../SkillProjectile/SkillProjectile.h"
+#include "../../../../Characters/BossCharacter/BossCharacter.h"
 #include "FireTornadoProjectile.generated.h"
 
 /**

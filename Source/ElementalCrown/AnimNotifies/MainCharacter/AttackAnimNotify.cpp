@@ -19,14 +19,18 @@ void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* Own
 			ObjectFilter.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
 			ObjectFilter.AddObjectTypesToQuery(ECollisionChannel::ECC_Destructible);
 		    AdditionParams.AddIgnoredActor(Character);
+			if (SwordSwooshSFX) {
+				UGameplayStatics::PlaySound2D(this, SwordSwooshSFX);
+			}
 			if (GetWorld()->SweepMultiByObjectType(Hits, Character->GetActorLocation() + FVector(BoxPosition.X * Character->GetSprite()->GetForwardVector().X), Character->GetActorLocation() + FVector(BoxPosition.X*Character->GetSprite()->GetForwardVector().X, BoxPosition.Y, BoxPosition.Z), FQuat(0, 0, 0, 0), ObjectFilter, FCollisionShape::MakeBox(BoxExtent), AdditionParams)) {
 				for (const FHitResult& Result : Hits) {
 					TSubclassOf<UDamageType> DamageType;
+					if (SwordHitSFX) {
+						UGameplayStatics::PlaySound2D(this, SwordHitSFX);
+					}
 					this->SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
 					UGameplayStatics::SetGlobalTimeDilation(this, HitStopDilation);
-					GetWorld()->GetTimerManager().SetTimer(Character->GetHitStopHandle(), FTimerDelegate::CreateLambda([this]() {
-						UGameplayStatics::SetGlobalTimeDilation(this, 1.0f);
-					}), HitStopDuration, false);
+					GetWorld()->GetTimerManager().SetTimer(Character->GetHitStopHandle(), FTimerDelegate::CreateUObject(this, &UAttackAnimNotify::SetHitStopToNormal), HitStopDuration, false);
 					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(this->Buff), Character->GetController(), Character, DamageType);
 				}
 			}
@@ -49,6 +53,11 @@ void UAttackAnimNotify::SpawnImpact(APaperZDCharacter* Character, const ECollisi
 		GetWorld()->SpawnActor<ANoBloodSlashImpact>(ANoBloodSlashImpact::StaticClass(), ImpactLocation, ImpactRotation, SpawnParams);
 		break;
 	}
+}
+
+void UAttackAnimNotify::SetHitStopToNormal() const
+{
+	UGameplayStatics::SetGlobalTimeDilation(this, 1.0f);
 }
 
 

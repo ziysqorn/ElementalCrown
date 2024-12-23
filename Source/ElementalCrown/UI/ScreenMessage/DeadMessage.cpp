@@ -25,9 +25,19 @@ void UDeadMessage::AnimEndAction()
 	if (AMainController* MainController = this->GetOwningPlayer<AMainController>()) {
 		if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
 			CustomGameInstance->SpawnLoadingScreen();
-			GetWorld()->GetTimerManager().SetTimer(ReloadLevelHandle, FTimerDelegate::CreateLambda([this, CustomGameInstance]() {
-				CustomGameInstance->OpenLevel(FName(UGameplayStatics::GetCurrentLevelName(GetWorld())));
-			}), 1.0f, false);
+			if (AMainCharacter* MainCharacter = MainController->GetPawn<AMainCharacter>()) {
+				int PlayerLiveCount = MainCharacter->GetLiveCount();
+				if (PlayerLiveCount >= 0) {
+					GetWorld()->GetTimerManager().SetTimer(ReloadLevelHandle, FTimerDelegate::CreateLambda([this, CustomGameInstance]() {
+						CustomGameInstance->OpenLevel(FName(UGameplayStatics::GetCurrentLevelName(GetWorld())));
+					}), 1.0f, false);
+				}
+				else {
+					GetWorld()->GetTimerManager().SetTimer(ReloadLevelHandle, FTimerDelegate::CreateLambda([this, CustomGameInstance]() {
+						CustomGameInstance->OpenLevel(FName("Jungle1"));
+					}), 1.0f, false);
+				}
+			}
 		}
 	}
 	this->RemoveFromParent();

@@ -12,6 +12,7 @@ ABowHuntressArrow::ABowHuntressArrow() : ASkillProjectile(TEXT("/Script/Paper2D.
 	}
 	EffectElement = CreateDefaultSubobject<UPlant>(FName("EffectElement"));
 	BuildupAmount = 2.0f;
+	SkillDamage = 3;
 	this->OnActorBeginOverlap.AddDynamic(this, &ABowHuntressArrow::BeginOverlap);
 }
 

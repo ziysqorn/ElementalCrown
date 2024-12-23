@@ -7,6 +7,7 @@ AEarthshatterUpliftEffect::AEarthshatterUpliftEffect() : ASkillCCEffect(TEXT("/S
 {
 	EffectElement = CreateDefaultSubobject<UEarth>(FName("EffectElement"));
 	BuildupAmount = 4.0f;
+	SkillDamage = 5;
 	FlipbookComponent->SetLooping(false);
 	LaunchVector = FVector(0.0f, 0.0f, 400.0f);
 	this->OnActorBeginOverlap.AddDynamic(this, &AEarthshatterUpliftEffect::BeginOverlap);

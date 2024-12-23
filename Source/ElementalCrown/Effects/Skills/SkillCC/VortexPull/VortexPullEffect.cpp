@@ -9,6 +9,7 @@ AVortexPullEffect::AVortexPullEffect() : ASkillCCEffect(TEXT("/Script/Paper2D.Pa
 	BuildupAmount = 4.0f;
 	FlipbookComponent->SetLooping(false);
 	LaunchVector = FVector(-200.0f, 0.0f, 300.0f);
+	SkillDamage = 4;
 	this->OnActorBeginOverlap.AddDynamic(this, &AVortexPullEffect::BeginOverlap);
 }
 

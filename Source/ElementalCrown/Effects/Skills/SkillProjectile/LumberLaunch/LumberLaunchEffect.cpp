@@ -12,6 +12,7 @@ ALumberLaunchEffect::ALumberLaunchEffect() : ASkillProjectile(TEXT("/Script/Pape
 	}
 	EffectElement = CreateDefaultSubobject<UPlant>(FName("EffectElement"));
 	BuildupAmount = 5.0f;
+	SkillDamage = 7;
 	this->OnActorBeginOverlap.AddDynamic(this, &ALumberLaunchEffect::BeginOverlap);
 }
 

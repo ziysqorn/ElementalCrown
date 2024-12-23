@@ -15,11 +15,10 @@ void BurnStatus::ExecuteStatus()
 {
 	if (AffectedChar) {
 		FActorSpawnParameters SpawnParams;
-		//SpawnParams.Owner = OwningChar;
+		SpawnParams.Owner = OwningChar;
 		StatusEffectActor = AffectedChar->GetWorld()->SpawnActor<ABurn>(ABurn::StaticClass(), FVector(0.0f, 0.0f, 5.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
 		if (StatusEffectActor) {
 			StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);
-
 			UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp();
 			UStatusEffectProgressUI* ProgressUI = EffectComponent->GetProgressUI(this);
 			EffectComponent->GetWorld()->GetTimerManager().SetTimer(EffectHandle, FTimerDelegate::CreateLambda([this, EffectComponent, ProgressUI]() {

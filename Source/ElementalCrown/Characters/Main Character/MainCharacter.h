@@ -120,9 +120,26 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Skill DataTable")
 	UDataTable* DT_Skill = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Important | SFX | Jump SFX")
+	USoundBase* JumpSFX1 = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | SFX | Jump SFX")
+	USoundBase* JumpSFX2 = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | SFX | Hurt SFX")
+	USoundBase* HurtSFX = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | SFX | Die SFX")
+	USoundBase* DieSFX = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | SFX | Die Message SFX")
+	USoundBase* DieMessageSFX = nullptr;
+
 	//Timer Handle
 	FTimerHandle ComboHandle;
 	FTimerHandle SheatheSwordHandle;
+
+	int LiveCount = 3;
 
 	//Sheathe the sword
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Is the Sword Sheathed ?")
@@ -155,6 +172,11 @@ public:
 	float const GetRunSpeed() {
 		return RunSpeed;
 	}
+
+	int GetLiveCount() {
+		return LiveCount;
+	}
+
 	UFUNCTION(BlueprintCallable)
 	int GetATKDamage() {
 		return ATK_Damage;
@@ -187,6 +209,7 @@ public:
 	void SaveGameplay();
 	void SavePlayerInfo();
 	void SaveGameProgress(FName LevelName, FVector SavedLoc);
+	void ClearAllSaveGame();
 	void SheatheSword() {
 		isSwordSheathed = true;
 	}
@@ -204,6 +227,9 @@ public:
 	void BeginPlay() override;
 	//Event tick
 	void Tick(float DeltaSeconds) override;
+
+	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
 	//Event landed
 	void Landed(const FHitResult& Hit) override;
 	//Event on jumped
