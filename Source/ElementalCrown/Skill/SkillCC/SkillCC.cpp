@@ -6,12 +6,12 @@
 USkillCC::USkillCC()
 {
 	CooldownTime = 7.00f;
-	ManaConsumption = 5;
+	ManaConsumption = 7;
 }
 
 USkillCC::USkillCC(const TCHAR* Ref) : UBaseSkill(Ref)
 {
 	CooldownTime = 7.00f;
-	ManaConsumption = 5;
+	ManaConsumption = 7;
 }
 

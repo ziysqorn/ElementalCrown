@@ -34,6 +34,15 @@ protected:
 	UPROPERTY(EditDefaultsOnly, Category = "Important | SFX | Battle theme")
 	USoundBase* BattleTheme = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Music class")
+	USoundClass* MusicClass = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | SFX class")
+	USoundClass* SFXClass = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Overall Game Sound Mix")
+	USoundMix* OverallGameSoundMix = nullptr;
+
 	UPROPERTY()
 	UAudioComponent* BattleThemeManager = nullptr;
 
@@ -43,17 +52,35 @@ protected:
 
 	FTimerHandle SwitchLevelHandle;
 
+	FTimerHandle SetSoundMixHandle;
+
 public:
+	void Init() override;
+
 	void SpawnLoadingScreen();
+
 	void SpawnReverseLoadingScreen();
+
 	void SpawnFlashScreen();
+
 	void SpawnReverseFlashScreen();
+
 	void OpenLevel(FName LevelName);
+
 	void OpenLevelAfterFlash(FName LevelName);
+
 	void PlayBattleTheme();
+
 	void PlayBackgroundTheme(USoundBase* BackgroundTheme);
+
 	void FadeoutBattleTheme();
+
 	void PlayBossDefeatSFX();
+
+	void ApplySoundSetting(float MusicVolume, float SFXVolume);
+
+	void LoadSoundSetting();
+
 	ULoadingScreen* GetLoadingScreen() {
 		return LoadingScreen;
 	}

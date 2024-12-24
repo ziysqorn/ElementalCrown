@@ -8,7 +8,7 @@ namespace Constants {
 	const float RunSpeed{ 600.00f };
 	const int Default_Character_MaxHealth{ 100 };
 	const int Default_Boss_MaxHealth{ 200 };
-	const int Default_Character_MaxMana{ 20 };
+	const int Default_Character_MaxMana{ 50 };
 	const int Default_Character_ATKDamage{ 5 };
 	const int Default_Boss_ATKDamage{ 8 };
 	const float Default_Character_AttackSpeed{ 1.0f };

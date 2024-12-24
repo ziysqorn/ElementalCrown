@@ -21,6 +21,9 @@ void ABossCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
+	if (canMakeDecision) {
+		MakeDecision();
+	}
 }
 
 float ABossCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
@@ -36,6 +39,11 @@ float ABossCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 			}
 			if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
 				if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+			}
+			if (IGameplayInterface* CauserInteface = Cast<IGameplayInterface>(DamageCauser)) {
+				if (UElemental* CauserElemental = CauserInteface->GetElemental()) {
+					if (CharacterElement) FinalDamage += (int)ceil(DamageAmount * CharacterElement->CalcDmgByElemental(CauserElemental));
+				}
 			}
 			CurrentHealth -= FinalDamage;
 			if (CurrentHealth <= 0) {
@@ -75,7 +83,7 @@ void ABossCharacter::Landed(const FHitResult& Hit)
 
 	FRotator NewRotation = FRotator(0.0f, 180.0f, 0.0f);
 	this->SetActorRotation(this->GetActorRotation() + NewRotation);
-	GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::MakeDecision), NewDecisionTimeAmount, false);
+	GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetCanMakeDecision, true), NewDecisionTimeAmount, false);
 }
 
 
@@ -86,15 +94,15 @@ void ABossCharacter::Attack()
 	switch (attackDecisionMode) {
 	case 1:
 		GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetAttackToNoneState), AttackSequence->GetTotalDuration(), false);
-		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::MakeDecision), AttackSequence->GetTotalDuration() + NewDecisionTimeAmount, false);
+		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetCanMakeDecision, true), AttackSequence->GetTotalDuration() + NewDecisionTimeAmount, false);
 		break;
 	case 2:
 		GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetAttackToNoneState), Attack2Sequence->GetTotalDuration(), false);
-		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::MakeDecision), Attack2Sequence->GetTotalDuration() + NewDecisionTimeAmount, false);
+		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetCanMakeDecision, true), Attack2Sequence->GetTotalDuration() + NewDecisionTimeAmount, false);
 		break;
 	case 3:
 		GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetAttackToNoneState), SpecialAtkSequence->GetTotalDuration(), false);
-		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::MakeDecision), SpecialAtkSequence->GetTotalDuration() + NewDecisionTimeAmount, false);
+		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &ABossCharacter::SetCanMakeDecision, true), SpecialAtkSequence->GetTotalDuration() + NewDecisionTimeAmount, false);
 		break;
 	}
 }
@@ -103,6 +111,7 @@ void ABossCharacter::Dead()
 {
 	StatusEffectComponent->ClearAllStatusEffect();
 	CurrentState = CharacterState::DEATH;
+	canMakeDecision = false;
 	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
 	GetWorldTimerManager().ClearAllTimersForObject(this);
 	if (AMainController* MainController = Cast<AMainController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))) {
@@ -134,11 +143,12 @@ void ABossCharacter::Dead()
 
 void ABossCharacter::ChangePos()
 {
-	FVector LaunchVector = FVector(600.0f, 0.0f, 500.0f);
 	int BackwardDir = this->GetActorRotation().Yaw == 0.0f ? 1 : -1;
-	LaunchVector.X *= BackwardDir;
+	float LaunchVectorX = abs(LaunchVector.X);
+	LaunchVectorX *= BackwardDir;
 	/*if (this->GetCharacterState() != CharacterState::STUN)
 		this->SetCharacterState(CharacterState::AIRBORNE);*/
+	LaunchVector.X = LaunchVectorX;
 	this->LaunchCharacter(LaunchVector, true, true);
 }
 
@@ -148,9 +158,11 @@ void ABossCharacter::MakeDecision()
 		int finalDecision = FMath::RandRange(1, 2);
 		switch (finalDecision) {
 		case 1:
+			canMakeDecision = false;
 			Attack();
 			break;
 		case 2:
+			canMakeDecision = false;
 			ChangePos();
 			break;
 		}

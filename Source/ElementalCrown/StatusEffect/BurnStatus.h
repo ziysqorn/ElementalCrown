@@ -12,7 +12,7 @@
 class ELEMENTALCROWN_API BurnStatus : public BaseStatusEffect
 {
 protected:
-	int BurnDamage = 1;
+	int BurnDamage = 2;
 	float TimeBetweenEachBurn = 0.5f;
 public:
 	BurnStatus();

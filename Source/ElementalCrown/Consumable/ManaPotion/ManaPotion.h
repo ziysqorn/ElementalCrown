@@ -16,7 +16,7 @@ class ELEMENTALCROWN_API UManaPotion : public UConsumable
 	GENERATED_BODY()
 
 protected:
-	int ManaAmount = 20;
+	int ManaAmount = 10;
 
 public:
 	UManaPotion();

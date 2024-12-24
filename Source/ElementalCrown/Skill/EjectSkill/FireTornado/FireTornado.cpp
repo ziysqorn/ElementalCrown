@@ -4,4 +4,5 @@ UFireTornadoSkill::UFireTornadoSkill() : UEjectSkill(TEXT("/Script/Paper2D.Paper
 {
 	this->SKillName = "Fire Tornado";
 	this->SkillPrice = 45;
+	ManaConsumption = 8;
 }

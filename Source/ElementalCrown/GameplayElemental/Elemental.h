@@ -28,7 +28,7 @@ public:
 	//Constructor
 	UElemental();
 	virtual void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) {}
-	virtual float CalcDmgByStrongerElemental(UElemental* inElemental) {
+	virtual float CalcDmgByElemental(UElemental* inElemental) {
 		return 0.0f;
 	}
 	FName GetName() { return ElementalName; }
@@ -41,9 +41,10 @@ class ELEMENTALCROWN_API UFire :public UElemental {
 public:
 	UFire();
 	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
-	float CalcDmgByStrongerElemental(UElemental* inElemental) override {
+	float CalcDmgByElemental(UElemental* inElemental) override {
 		if (inElemental) {
-			if (inElemental->GetName().IsEqual("Water")) return 1.5f;
+			if (inElemental->GetName().IsEqual("Water")) return 0.5f;
+			else if (inElemental->GetName().IsEqual("Plant")) return -0.8f;
 		}
 		return 0.0f;
 	}
@@ -56,9 +57,10 @@ class ELEMENTALCROWN_API UWater :public UElemental {
 public:
 	UWater();
 	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
-	float CalcDmgByStrongerElemental(UElemental* inElemental) override {
+	float CalcDmgByElemental(UElemental* inElemental) override {
 		if (inElemental) {
-			if (inElemental->GetName().IsEqual("Earth")) return 1.5f;
+			if (inElemental->GetName().IsEqual("Earth")) return 0.5f;
+			else if (inElemental->GetName().IsEqual("Metal")) return -0.8f;
 		}
 		return 0.0f;
 	}
@@ -71,9 +73,10 @@ class ELEMENTALCROWN_API UEarth : public UElemental {
 public:
 	UEarth();
 	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
-	float CalcDmgByStrongerElemental(UElemental* inElemental) override {
+	float CalcDmgByElemental(UElemental* inElemental) override {
 		if (inElemental) {
-			if (inElemental->GetName().IsEqual("Plant")) return 1.5f;
+			if (inElemental->GetName().IsEqual("Plant")) return 0.5f;
+			else if (inElemental->GetName().IsEqual("Fire")) return -0.8f;
 		}
 		return 0.0f;
 	}
@@ -86,9 +89,10 @@ class ELEMENTALCROWN_API UMetal : public UElemental {
 public:
 	UMetal();
 	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
-	float CalcDmgByStrongerElemental(UElemental* inElemental) override {
+	float CalcDmgByElemental(UElemental* inElemental) override {
 		if (inElemental) {
-			if (inElemental->GetName().IsEqual("Fire")) return 1.5f;
+			if (inElemental->GetName().IsEqual("Fire")) return 0.5f;
+			else if (inElemental->GetName().IsEqual("Earth")) return -0.8f;
 		}
 		return 0.0f;
 	}
@@ -101,9 +105,10 @@ class ELEMENTALCROWN_API UPlant : public UElemental {
 public:
 	UPlant();
 	void ApplyStatusEffect(ABaseCharacter* AffectedCharacter, const float& inBuildup) override;
-	float CalcDmgByStrongerElemental(UElemental* inElemental) override {
+	float CalcDmgByElemental(UElemental* inElemental) override {
 		if (inElemental) {
-			if (inElemental->GetName().IsEqual("Metal")) return 1.5f;
+			if (inElemental->GetName().IsEqual("Metal")) return 0.5f;
+			else if (inElemental->GetName().IsEqual("Water")) return -0.8f;
 		}
 		return 0.0f;
 	}

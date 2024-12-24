@@ -20,7 +20,7 @@ protected:
 	float CurrentCooldown = 0.0f;
 	float CooldownTime;
 	//Mana consumption
-	int ManaConsumption{3};
+	int ManaConsumption = 5;
 	//Skill price
 	int SkillPrice;
 	//Return true if this skill can be used

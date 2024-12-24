@@ -23,7 +23,12 @@ protected:
 
 	bool isInvincible = true;
 
+	bool canMakeDecision = false;
+
 	FName NextLevelName;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Important | Launch Vector")
+	FVector LaunchVector = FVector(600.0f, 0.0f, 500.0f);
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite)
 	int attackDecisionMode = 1;
@@ -60,6 +65,10 @@ public:
 
 	void SetInvincible(bool inBool) {
 		isInvincible = inBool;
+	}
+
+	void SetCanMakeDecision(bool inBool) {
+		canMakeDecision = inBool;
 	}
 
 	/*void SetTargetMainChar(AMainCharacter* MainCharacter) {

@@ -323,7 +323,10 @@ void AMainCharacter::Dead()
 			*SavedGold = GoldComponent->GetCurrentGold();
 		}
 		--LiveCount;
-		if (LiveCount >= 0) *SavedLiveCount = LiveCount;
+		if (LiveCount >= 0) {
+			*SavedLiveCount = LiveCount;
+			SaveGameplay();
+		}
 		else {
 			*SavedLiveCount = 3;
 			if (GoldComponent) {

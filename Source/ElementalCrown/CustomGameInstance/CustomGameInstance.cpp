@@ -4,6 +4,15 @@
 #include "CustomGameInstance.h"
 #include "../Controller/MainController.h"
 #include "../Characters/Main Character/MainCharacter.h"
+#include "../CustomSave/GameSettingSave.h"
+
+void UCustomGameInstance::Init()
+{
+	Super::Init();
+
+
+	GetWorld()->GetTimerManager().SetTimer(SetSoundMixHandle, FTimerDelegate::CreateUObject(this, &UCustomGameInstance::LoadSoundSetting), 1.0f, false);
+}
 
 void UCustomGameInstance::SpawnLoadingScreen()
 {
@@ -105,5 +114,31 @@ void UCustomGameInstance::FadeoutBattleTheme()
 void UCustomGameInstance::PlayBossDefeatSFX()
 {
 	if (BossDefeatSFX) UGameplayStatics::PlaySound2D(this, BossDefeatSFX);
+}
+
+void UCustomGameInstance::ApplySoundSetting(float MusicVolume, float SFXVolume)
+{
+	UGameplayStatics::SetSoundMixClassOverride(this, OverallGameSoundMix, MusicClass, MusicVolume, 1.0f, 0.0f);
+	UGameplayStatics::SetSoundMixClassOverride(this, OverallGameSoundMix, SFXClass, SFXVolume, 1.0f, 0.0f);
+	UGameplayStatics::PushSoundMixModifier(this, OverallGameSoundMix);
+}
+
+void UCustomGameInstance::LoadSoundSetting()
+{
+	if (UGameplayStatics::DoesSaveGameExist("GameSetting", 0)) {
+		if (UGameSettingSave* GameSetting = Cast<UGameSettingSave>(UGameplayStatics::LoadGameFromSlot("GameSetting", 0))) {
+			ApplySoundSetting(*GameSetting->GetSavedMusicVolume(), *GameSetting->GetSavedSFXVolume());
+		}
+	}
+	else {
+		if (UGameSettingSave* GameSetting = Cast<UGameSettingSave>(UGameplayStatics::CreateSaveGameObject(UGameSettingSave::StaticClass()))) {
+			float* SavedMusicVolume = GameSetting->GetSavedMusicVolume();
+			float* SavedSFXVolume = GameSetting->GetSavedSFXVolume();
+			*SavedMusicVolume = 1.0f;
+			*SavedSFXVolume = 1.0f;
+			ApplySoundSetting(*SavedMusicVolume, *SavedSFXVolume);
+			UGameplayStatics::SaveGameToSlot(GameSetting, "GameSetting", 0);
+		}
+	}
 }
 

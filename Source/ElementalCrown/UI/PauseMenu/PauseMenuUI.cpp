@@ -10,6 +10,7 @@ void UPauseMenuUI::NativeOnInitialized()
 
 	Btn_Resume->OnClicked.AddDynamic(this, &UPauseMenuUI::ResumeClick);
 	Btn_ReturnToMenu->OnClicked.AddDynamic(this, &UPauseMenuUI::ReturnToMenuClick);
+	Btn_Option->OnClicked.AddDynamic(this, &UPauseMenuUI::OpenOptionMenu);
 	SetIsFocusable(true);
 }
 
@@ -25,6 +26,19 @@ FReply UPauseMenuUI::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEven
 void UPauseMenuUI::ResumeClick()
 {
 	CloseMenu();
+}
+
+void UPauseMenuUI::OpenOptionMenu()
+{
+	if (OptionUISubclass) {
+		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0)) {
+			if (UOptionUI* OptionUI = CreateWidget<UOptionUI>(PlayerController, OptionUISubclass)) {
+				OptionUI->SetOwningPlayer(PlayerController);
+				OptionUI->AddToViewport(13);
+				OptionUI->SetFocus();
+			}
+		}
+	}
 }
 
 void UPauseMenuUI::ReturnToMenuClick()

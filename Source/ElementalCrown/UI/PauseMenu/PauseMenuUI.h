@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../../ProjectIncludes.h"
+#include "../OptionUI/OptionUI.h"
 #include "PauseMenuUI.generated.h"
 
 /**
@@ -17,13 +18,25 @@ class ELEMENTALCROWN_API UPauseMenuUI : public UUserWidget
 protected:
 	void NativeOnInitialized() override;
 	FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	UButton* Btn_Resume = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
+	UButton* Btn_Option = nullptr;
+
 	UPROPERTY(EditDefaultsOnly, meta=(BindWidget))
 	UButton* Btn_ReturnToMenu = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UOptionUI> OptionUISubclass;
+
 public:
 	UFUNCTION()
 	void ResumeClick();
+
+	UFUNCTION()
+	void OpenOptionMenu();
 
 	UFUNCTION()
 	void ReturnToMenuClick();

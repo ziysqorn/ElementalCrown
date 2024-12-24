@@ -11,6 +11,7 @@ void USavedStartMenu::NativeOnInitialized()
 	Btn_NewGame->OnClicked.AddDynamic(this, &USavedStartMenu::StartNewGame);
 	Btn_Continue->OnClicked.AddDynamic(this, &USavedStartMenu::ContinueGame);
 	Btn_QuitGame->OnClicked.AddDynamic(this, &USavedStartMenu::QuitGame);
+	Btn_Options->OnClicked.AddDynamic(this, &USavedStartMenu::OpenOptionMenu);
 	SetIsFocusable(true);
 }
 
@@ -41,6 +42,19 @@ void USavedStartMenu::StartNewGame()
 		if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
 			CustomGameInstance->SpawnLoadingScreen();
 			CustomGameInstance->OpenLevel(CurrentLevel);
+		}
+	}
+}
+
+void USavedStartMenu::OpenOptionMenu()
+{
+	if (OptionUISubclass) {
+		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0)) {
+			if (UOptionUI* OptionUI = CreateWidget<UOptionUI>(PlayerController, OptionUISubclass)) {
+				OptionUI->SetOwningPlayer(PlayerController);
+				OptionUI->AddToViewport(1);
+				OptionUI->SetFocus();
+			}
 		}
 	}
 }

@@ -36,6 +36,7 @@
 #include "Components/ScrollBox.h"
 #include "Components/WidgetSwitcher.h"
 #include "Components/Button.h"
+#include "Components/Slider.h"
 #include "Animation/WidgetAnimation.h"
 #include "Camera/CameraComponent.h"
 #include "PaperFlipbookComponent.h"

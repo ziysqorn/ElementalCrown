@@ -3,12 +3,14 @@
 
 #include "StartMenuUI.h"
 #include "../../CustomGameInstance/CustomGameInstance.h"
+#include "../OptionUI/OptionUI.h"
 
 void UStartMenuUI::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 	Btn_NewGame->OnClicked.AddDynamic(this, &UStartMenuUI::StartNewGame);
 	Btn_QuitGame->OnClicked.AddDynamic(this, &UStartMenuUI::QuitGame);
+	Btn_Options->OnClicked.AddDynamic(this, &UStartMenuUI::OpenOptionMenu);
 	SetIsFocusable(true);
 }
 
@@ -29,6 +31,19 @@ void UStartMenuUI::StartNewGame()
 			CustomGameInstance->OpenLevel(CurrentLevel);
 		}
 		
+	}
+}
+
+void UStartMenuUI::OpenOptionMenu()
+{
+	if (OptionUISubclass) {
+		if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0)) {
+			if (UOptionUI* OptionUI = CreateWidget<UOptionUI>(PlayerController, OptionUISubclass)) {
+				OptionUI->SetOwningPlayer(PlayerController);
+				OptionUI->AddToViewport(1);
+				OptionUI->SetFocus();
+			}
+		}
 	}
 }
 

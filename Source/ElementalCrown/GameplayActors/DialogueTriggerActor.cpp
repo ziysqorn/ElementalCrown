@@ -61,7 +61,7 @@ void ADialogueTriggerActor::ActionAfterDialogue()
 			if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
 				CustomGameInstance->PlayBattleTheme();
 			}
-			BossCharacter->MakeDecision();
+			BossCharacter->SetCanMakeDecision(true);
 			if (AMainController* MainController = Cast<AMainController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))) {
 				if (UBossHealthBar* BossHealthBar = MainController->GetBossHealthBar()) {
 					BossHealthBar->SetBossName(FText::FromName(BossCharacter->GetCharacterName()));

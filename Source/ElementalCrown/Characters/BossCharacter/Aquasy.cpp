@@ -20,9 +20,7 @@ void AAquasy::BeginPlay()
 		if (CurrentState == CharacterState::SURF) CurrentState = CharacterState::NONE;
 		FRotator NewRotation = FRotator(0.0f, 180.0f, 0.0f);
 		this->SetActorRotation(this->GetActorRotation() + NewRotation);
-		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateLambda([this]() {
-			MakeDecision();
-		}), NewDecisionTimeAmount, false);
+		GetWorldTimerManager().SetTimer(NewDecisionTimer, FTimerDelegate::CreateUObject(this, &AAquasy::SetCanMakeDecision, true), NewDecisionTimeAmount, false);
 	}));
 
 	FOnTimelineEvent PostUpdateCallback;
@@ -36,6 +34,10 @@ void AAquasy::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 
 	SurfTimeline.TickTimeline(DeltaSeconds);
+
+	if (canMakeDecision) {
+		MakeDecision();
+	}
 }
 
 void AAquasy::OnTimelinePostUpdate()
@@ -57,7 +59,7 @@ void AAquasy::Surf()
 	CurrentState = CharacterState::SURF;
 	int ForwardDir = this->GetActorRotation().Yaw == 0.0f ? 1 : -1;
 	FVector CurrentLoc = this->GetActorLocation();
-	FVector Destination = CurrentLoc + FVector(500.0f * ForwardDir, 0.0f, 0.0f);
+	FVector Destination = CurrentLoc + FVector(550.0f * ForwardDir, 0.0f, 0.0f);
 	if (SurfCurveFloat) {
 		SurfTimeline.AddInterpFloat(SurfCurveFloat, FOnTimelineFloatStatic::CreateLambda([this, CurrentLoc, Destination](const float& Value) {
 			FVector NewLocation = FMath::Lerp(CurrentLoc, Destination, Value);
@@ -74,9 +76,11 @@ void AAquasy::MakeDecision()
 		int finalDecision = FMath::RandRange(1, 2);
 		switch (finalDecision) {
 		case 1:
+			canMakeDecision = false;
 			Attack();
 			break;
 		case 2:
+			canMakeDecision = false;
 			Surf();
 			break;
 		}

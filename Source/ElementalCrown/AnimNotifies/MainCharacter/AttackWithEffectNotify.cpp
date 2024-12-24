@@ -10,7 +10,7 @@ void UAttackWithEffectNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstanc
 {
 	if (OwningInstance && OwningInstance->GetOwningActor()) {
 		if (ABaseCharacter* Character = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
-			DrawDebugBox(GetWorld(), Character->GetActorLocation() + FVector(BoxPosition.X * Character->GetSprite()->GetForwardVector().X, BoxPosition.Y, BoxPosition.Z), BoxExtent, FColor::Purple, false, 2);
+			//DrawDebugBox(GetWorld(), Character->GetActorLocation() + FVector(BoxPosition.X * Character->GetSprite()->GetForwardVector().X, BoxPosition.Y, BoxPosition.Z), BoxExtent, FColor::Purple, false, 2);
 			TArray<FHitResult> Hits;
 			FCollisionObjectQueryParams ObjectFilter;
 			FCollisionQueryParams AdditionParams;

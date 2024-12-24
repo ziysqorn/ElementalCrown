@@ -4,4 +4,5 @@ UPoseidonAura::UPoseidonAura() : USkillCC(TEXT("/Script/Paper2D.PaperSprite'/Gam
 {
 	this->SKillName = "Poseidon Aura";
 	this->SkillPrice = 60;
+	ManaConsumption = 10;
 }

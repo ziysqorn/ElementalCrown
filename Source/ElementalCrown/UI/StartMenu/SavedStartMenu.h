@@ -6,6 +6,7 @@
 #include "../../ProjectIncludes.h"
 #include "../../CustomSave/GameProgress.h"
 #include "../../UI/LoadingScreen/LoadingScreen.h"
+#include "../OptionUI/OptionUI.h"
 #include "SavedStartMenu.generated.h"
 
 /**
@@ -25,7 +26,13 @@ protected:
 	UButton* Btn_NewGame = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
+	UButton* Btn_Options = nullptr;
+
+	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	UButton* Btn_QuitGame = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UOptionUI> OptionUISubclass;
 
 	FTimerHandle SwitchLevelHandle;
 
@@ -34,6 +41,9 @@ protected:
 
 	UFUNCTION()
 	void StartNewGame();
+
+	UFUNCTION()
+	void OpenOptionMenu();
 
 	UFUNCTION()
 	void QuitGame();
