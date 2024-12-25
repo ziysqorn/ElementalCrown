@@ -55,7 +55,7 @@ public:
 
 	virtual void Attack();
 
-	void Dead() override;
+	virtual void Dead() override;
 
 	virtual void ChangePos();
 

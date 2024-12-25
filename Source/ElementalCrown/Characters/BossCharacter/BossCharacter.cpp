@@ -110,10 +110,10 @@ void ABossCharacter::Attack()
 void ABossCharacter::Dead()
 {
 	StatusEffectComponent->ClearAllStatusEffect();
+	GetWorldTimerManager().ClearAllTimersForObject(this);
 	CurrentState = CharacterState::DEATH;
 	canMakeDecision = false;
 	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-	GetWorldTimerManager().ClearAllTimersForObject(this);
 	if (AMainController* MainController = Cast<AMainController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))) {
 		if (AMainCharacter* MainCharacter = MainController->GetPawn<AMainCharacter>()) {
 			MainCharacter->DisableInput(MainController);

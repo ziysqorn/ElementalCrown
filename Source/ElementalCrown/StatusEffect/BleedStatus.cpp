@@ -13,7 +13,7 @@ void BleedStatus::ExecuteStatus()
 	if (AffectedChar) {
 		UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp();
 		EffectComponent->GetWorld()->GetTimerManager().SetTimer(ApplyDelayHandle, FTimerDelegate::CreateLambda([this, EffectComponent]() {
-			if (this && EffectComponent) {
+			if (this && EffectComponent && AffectedChar) {
 				FActorSpawnParameters SpawnParams;
 				//SpawnParams.Owner = OwningChar;
 				if (ABleed* BleedEffect = AffectedChar->GetWorld()->SpawnActor<ABleed>(ABleed::StaticClass(), FVector(10.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {

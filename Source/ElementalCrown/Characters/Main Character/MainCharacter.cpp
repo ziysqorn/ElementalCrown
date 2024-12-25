@@ -328,7 +328,7 @@ void AMainCharacter::Dead()
 			SaveGameplay();
 		}
 		else {
-			*SavedLiveCount = 3;
+			*SavedLiveCount = 1;
 			if (GoldComponent) {
 				*SavedGold = 0;
 			}

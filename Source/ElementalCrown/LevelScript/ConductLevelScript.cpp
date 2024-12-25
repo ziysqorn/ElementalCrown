@@ -13,8 +13,19 @@ void AConductLevelScript::BeginPlay()
 		CustomGameInstance->SpawnReverseFlashScreen();
 		if (ULoadingScreen* Screen = CustomGameInstance->GetFlashScreen()) {
 			Screen->LoadingScreenEndDel.BindLambda([this]() {
-				if (this && BackgroundTheme) {
-					UGameplayStatics::PlaySound2D(this, BackgroundTheme);
+				if (this) {
+					if (BackgroundTheme) {
+						UGameplayStatics::PlaySound2D(this, BackgroundTheme);
+					}
+					if (ScreenMessageSubclass) {
+						if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) {
+							if (UScreenMessage* ScreenMessage = CreateWidget<UScreenMessage>(PlayerController, ScreenMessageSubclass)) {
+								ScreenMessage->SetOwningPlayer(PlayerController);
+								ScreenMessage->AddToViewport(1);
+								ScreenMessage->PlayFadein();
+							}
+						}
+					}
 				}
 			});
 		}

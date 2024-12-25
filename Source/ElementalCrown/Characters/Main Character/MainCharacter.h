@@ -139,7 +139,7 @@ protected:
 	FTimerHandle ComboHandle;
 	FTimerHandle SheatheSwordHandle;
 
-	int LiveCount = 3;
+	int LiveCount = 1;
 
 	//Sheathe the sword
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Is the Sword Sheathed ?")

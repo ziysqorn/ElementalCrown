@@ -165,7 +165,7 @@ bool ABaseEnemyCharacter::DetectingPlayer()
 	FCollisionObjectQueryParams DetectObjectsParams(ECollisionChannel::ECC_Pawn);
 	FCollisionQueryParams DetectParams;
 	DetectParams.AddIgnoredActor(this);
-	//DrawDebugBox(GetWorld(), this->GetActorLocation() + PlayerDetectBoxPos, PlayerDetectBox, FColor::Blue);
+	DrawDebugBox(GetWorld(), this->GetActorLocation() + PlayerDetectBoxPos, PlayerDetectBox, FColor::Blue);
 	bool PlayerDetected = GetWorld()->SweepSingleByObjectType(PlayerDetectResult, this->GetActorLocation() + PlayerDetectBoxPos, this->GetActorLocation() + PlayerDetectBoxPos, FQuat(0, 0, 0, 0), DetectObjectsParams, FCollisionShape::MakeBox(PlayerDetectBox), DetectParams);
 	if (PlayerDetected) {
 		FRotator CharacterRotation = (PlayerDetectResult.GetActor()->GetActorLocation().X > this->GetActorLocation().X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
@@ -188,7 +188,7 @@ bool ABaseEnemyCharacter::DetectingPatrolLimit()
 	ObjectLookingFor.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
 	ObjectLookingFor.AddObjectTypesToQuery(ECollisionChannel::ECC_GameTraceChannel3);
 	bool PatrolLimitDetected = GetWorld()->SweepSingleByObjectType(PatrolLimitDetectedResult, this->GetActorLocation() + BoxPosition, this->GetActorLocation() + BoxPosition, FQuat(0, 0, 0, 0), ObjectLookingFor, FCollisionShape::MakeBox(WallDetectBox));
-	//DrawDebugBox(GetWorld(), this->GetActorLocation() + BoxPosition, WallDetectBox, FColor::Red);
+	DrawDebugBox(GetWorld(), this->GetActorLocation() + BoxPosition, WallDetectBox, FColor::Red);
 	if (PatrolLimitDetected) TurnBackAfterTime();
 	return PatrolLimitDetected;
 }

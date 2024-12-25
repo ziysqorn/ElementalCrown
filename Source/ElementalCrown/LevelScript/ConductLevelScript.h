@@ -6,6 +6,7 @@
 #include "../ProjectIncludes.h"
 #include "../UI/DialogueUI/DialogueUI.h"
 #include "../UI/LoadingScreen/LoadingScreen.h"
+#include "../UI/ScreenMessage/ScreenMessage.h"
 #include "ConductLevelScript.generated.h"
 
 /**
@@ -22,6 +23,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Background")
 	TSubclassOf<ULoadingScreen>  BackgroundSubclass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Important | Message")
+	TSubclassOf<UScreenMessage> ScreenMessageSubclass;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Next Level Name")
 	FName NextLevelName;

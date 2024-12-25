@@ -26,7 +26,7 @@ void UBossDefeatMessage::AnimEndAction()
 			CustomGameInstance->SpawnLoadingScreen();
 			GetWorld()->GetTimerManager().SetTimer(LoadLevelHandle, FTimerDelegate::CreateLambda([this, CustomGameInstance]() {
 				CustomGameInstance->OpenLevel(NextLevelName);
-			}), 1.0f, false);
+				}), 1.0f, false);
 		}
 	}
 	this->RemoveFromParent();

@@ -36,7 +36,7 @@ protected:
 	float AttackTriggerDistanceX = 70.0f;
 	//Size of the box that detects player
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Player Detect Box")
-	FVector PlayerDetectBox = FVector(150.0f, 0.0f, 40.0f);
+	FVector PlayerDetectBox = FVector(250.0f, 0.0f, 40.0f);
 	UPROPERTY(EditDefaultsOnly, Category = "Important | Player Detect Box Position")
 	FVector PlayerDetectBoxPos = FVector(0.0f, 0.0f, 0.0f);
 	//Size of the box that detects wall

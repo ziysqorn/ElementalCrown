@@ -30,7 +30,7 @@ bool AEnemy_FireWisp::DetectingPlayer()
 	FCollisionObjectQueryParams DetectObjectsParams(ECollisionChannel::ECC_Pawn);
 	FCollisionQueryParams DetectParams;
 	DetectParams.AddIgnoredActor(this);
-	DrawDebugBox(GetWorld(), this->GetActorLocation(), PlayerDetectBox, FColor::Blue);
+	//DrawDebugBox(GetWorld(), this->GetActorLocation(), PlayerDetectBox, FColor::Blue);
 	bool PlayerDetected = GetWorld()->SweepSingleByObjectType(PlayerDetectResult, this->GetActorLocation(), this->GetActorLocation(), FQuat(0, 0, 0, 0), DetectObjectsParams, FCollisionShape::MakeBox(PlayerDetectBox), DetectParams);
 	if (PlayerDetected) {
 		FRotator CharacterRotation = (PlayerDetectResult.GetActor()->GetActorLocation().X > this->GetActorLocation().X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);

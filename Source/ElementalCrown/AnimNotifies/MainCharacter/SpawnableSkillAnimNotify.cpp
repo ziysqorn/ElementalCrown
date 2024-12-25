@@ -10,8 +10,10 @@ void USpawnableSkillAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInsta
 			float CurrentPlaybackTime = OwningInstance->GetPlayer()->GetCurrentPlaybackTime();
 			float CurrentAnimSequenceDuration = OwningInstance->GetPlayer()->GetCurrentAnimSequence()->GetTotalDuration();
 			BaseCharacter->GetWorldTimerManager().SetTimer(FinishSkill, FTimerDelegate::CreateLambda([BaseCharacter]() {
-				BaseCharacter->SetCharacterState(CharacterState::NONE);
-				BaseCharacter->GetCharacterMovement()->GravityScale = 1.0f;
+				if (BaseCharacter) {
+					BaseCharacter->SetCharacterState(CharacterState::NONE);
+					BaseCharacter->GetCharacterMovement()->GravityScale = 1.0f;
+				}
 				}), CurrentAnimSequenceDuration - CurrentPlaybackTime, false);
 			if (BaseCharacter->GetCharacterState() != CharacterState::SHOOT && BaseCharacter->GetCharacterMovement()->JumpZVelocity != 0.0f) {
 				BaseCharacter->GetCharacterMovement()->GravityScale = 0.5f;

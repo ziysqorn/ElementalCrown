@@ -2,11 +2,24 @@
 
 
 #include "StartLevelScript.h"
+#include "../CustomGameInstance/CustomGameInstance.h"
 
 void AStartLevelScript::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
+		CustomGameInstance->SpawnReverseFlashScreen();
+		if (ULoadingScreen* Screen = CustomGameInstance->GetFlashScreen()) {
+			Screen->LoadingScreenEndDel.BindLambda([this]() {
+				if (this) {
+					if (BackgroundTheme) {
+						UGameplayStatics::PlaySound2D(this, BackgroundTheme);
+					}
+				}
+			});
+		}
+	}
 	if (APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) {
 		if (UGameplayStatics::DoesSaveGameExist("GameProgress", 0)) {
 			if (SavedStartMenuSubclass) {
@@ -25,9 +38,6 @@ void AStartLevelScript::BeginPlay()
 					PlayerController->SetShowMouseCursor(true);
 				}
 			}
-		}
-		if (BackgroundTheme) {
-			UGameplayStatics::PlaySound2D(this, BackgroundTheme);
 		}
 	}
 }
