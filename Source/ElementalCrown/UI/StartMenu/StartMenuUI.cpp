@@ -27,8 +27,8 @@ void UStartMenuUI::StartNewGame()
 		UGameplayStatics::DeleteGameInSlot("GameProgress", 0);
 		UGameplayStatics::SaveGameToSlot(GameProgress, "GameProgress", 0);
 		if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
-			CustomGameInstance->SpawnLoadingScreen();
-			CustomGameInstance->OpenLevel(CurrentLevel);
+			CustomGameInstance->SpawnFlashScreen();
+			CustomGameInstance->OpenLevelAfterFlash(CurrentLevel);
 		}
 		
 	}

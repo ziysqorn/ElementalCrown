@@ -29,13 +29,8 @@ FReply UShopItemButtonUI::NativeOnPreviewMouseButtonDown(const FGeometry& InGeom
 										if (ConsumableComponent->IsValidQuantityAfterAdding(Consumable->GetConsumableName(), 1)) {
 											GoldComponent->ReduceGold(ItemPrice);
 											int quantityAfterAdding = ConsumableComponent->AddPotionQuantity(Consumable->GetConsumableName(), 1);
-											UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::LoadGameFromSlot("PlayerInfoSave", 0));
 											UGameplaySave* GameplaySave = Cast<UGameplaySave>(UGameplayStatics::LoadGameFromSlot("GameplaySave", 0));
-											if (PlayerInfoSave) {
-												int* SavedGold = PlayerInfoSave->GetCurrentGold();
-												*SavedGold -= ItemPrice;
-												UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
-											}
+											MainCharacter->SavePlayerInfo();
 											if (GameplaySave) {
 												FString ConsumableString = Consumable->GetConsumableName().ToString().Replace(TEXT(" "), TEXT(""));
 												const TArray<FName>& ConsumableList = GameplaySave->GetConsumableList();
@@ -69,14 +64,9 @@ FReply UShopItemButtonUI::NativeOnPreviewMouseButtonDown(const FGeometry& InGeom
 										EquippedSkillIdxList.Add(-1);
 										UGameplayStatics::SaveGameToSlot(GameplaySave, "GameplaySave", 0);
 									}
-									UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::LoadGameFromSlot("PlayerInfoSave", 0));
 									UShopSave* ShopSave = Cast<UShopSave>(UGameplayStatics::LoadGameFromSlot("ShopSave", 0));
-									if (PlayerInfoSave) {
-										int* SavedGold = PlayerInfoSave->GetCurrentGold();
-										*SavedGold -= ItemPrice;
-										GoldComponent->ReduceGold(ItemPrice);
-										UGameplayStatics::SaveGameToSlot(PlayerInfoSave, "PlayerInfoSave", 0);
-									}
+									GoldComponent->ReduceGold(ItemPrice);
+									MainCharacter->SavePlayerInfo();
 									if (ShopSave) {
 										FString SkillString = Skill->GetSkillName().ToString().Replace(TEXT(" "), TEXT(""));
 										TArray<FName>& ShopSkillList = ShopSave->GetSavedAvailableSkills();

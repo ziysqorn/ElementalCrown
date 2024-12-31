@@ -24,8 +24,8 @@ void AMainController::OnPossess(APawn* inPawn)
 		if (MainHUDSubClass) {
 			MainHUD = CreateWidget<UMainCharacterHUD>(this, MainHUDSubClass);
 			if (MainHUD) {
-				MainHUD->SetOwningPlayer(this);
 				MainHUD->SetupHUD();
+				MainHUD->SetOwningPlayer(this);
 				MainHUD->AddToViewport(10);
 			} 
 		}

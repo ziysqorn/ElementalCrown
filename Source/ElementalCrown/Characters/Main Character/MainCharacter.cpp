@@ -152,8 +152,10 @@ void AMainCharacter::Move(const FInputActionValue& value)
 					this->GetCharacterMovement()->GravityScale = 1;
 				}
 			}
+
 			//Move the character
 			AddMovementInput(FVector(1, 0, 0), DirectionValue);
+
 			//Rotate the character
 			if (this->GetVelocity().Z == 0 || WallSliding) {
 				if (DirectionValue > 0) {
@@ -189,14 +191,18 @@ void AMainCharacter::Dodge()
 		GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel2);
 		GetWorld()->SpawnActor<ASmoke>(RunSmokeSubclass, GetSprite()->GetSocketLocation(FName("RunSmoke")), GetSprite()->GetSocketRotation(FName("RunSmoke")));
 		this->GetWorldTimerManager().SetTimer(DodgeHandle, FTimerDelegate::CreateLambda([this]() {
-			if (CurrentState == CharacterState::DODGE) {
-				CurrentState = CharacterState::NONE;
-				GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
-				GetCharacterMovement()->GravityScale = 1.0f;
+			if (this) {
+				if (CurrentState == CharacterState::DODGE) {
+					CurrentState = CharacterState::NONE;
+					GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+					GetCharacterMovement()->GravityScale = 1.0f;
+				}
 			}
 			}), 0.35f, false);
 		this->GetWorldTimerManager().SetTimer(DodgeEnableHandle, FTimerDelegate::CreateLambda([this]() {
-			if (!canDodge) canDodge = true;
+			if (this) {
+				if (!canDodge) canDodge = true;
+			}
 			}), 1.0f, false);
 	}
 }
@@ -311,6 +317,7 @@ void AMainCharacter::Shoot()
 
 void AMainCharacter::Dead()
 {
+	GetWorldTimerManager().ClearAllTimersForObject(this);
 	if (DieSFX) UGameplayStatics::PlaySound2D(this, DieSFX);
 	if (UPlayerInfoSave* PlayerInfoSave = Cast<UPlayerInfoSave>(UGameplayStatics::LoadGameFromSlot("PlayerInfoSave", 0))) {
 		int* SavedHealth = PlayerInfoSave->GetPlayerHealth();
@@ -345,7 +352,6 @@ void AMainCharacter::Dead()
 	StatusEffectComponent->ClearAllStatusEffect();
 	CurrentState = CharacterState::DEATH;
 	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-	GetWorldTimerManager().ClearAllTimersForObject(this);
 	/*if (DeathSequence) {
 		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
 			this->Destroy();

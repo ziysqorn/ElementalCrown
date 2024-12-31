@@ -56,7 +56,7 @@ void UConsumableComponent::UsePotion(UConsumable* DesiredConsumable)
 						if (ConsumableSlot) {
 							ConsumableSlot->SetQuantityText(FText::FromString(FString::FromInt(*(ConsumableList[idx]->GetCurrentQuant()))));
 							GetWorld()->GetTimerManager().SetTimer(ConsumeCooldownHandle, FTimerDelegate::CreateLambda([this]() {
-								canConsume = true;
+								if (this) canConsume = true;
 								}), 1.0f, false);
 						}
 					}

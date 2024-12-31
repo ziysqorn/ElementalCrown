@@ -4,7 +4,7 @@
 VulnerableStatus::VulnerableStatus()
 {
 	StatusName = "Vulnerable";
-	AffectingTime = 2.0f;
+	AffectingTime = 10.0f;
 	TimeForAReset = 0.2f;
 }
 

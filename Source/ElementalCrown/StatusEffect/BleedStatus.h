@@ -13,5 +13,6 @@ protected:
 	FTimerHandle ApplyDelayHandle;
 public:
 	BleedStatus();
+	~BleedStatus() override;
 	void ExecuteStatus() override;
 };

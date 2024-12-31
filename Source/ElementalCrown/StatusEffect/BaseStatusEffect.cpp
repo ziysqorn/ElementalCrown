@@ -18,9 +18,8 @@ BaseStatusEffect::~BaseStatusEffect()
 	if(AffectedChar) EffectComp = AffectedChar->GetStatusEffectComp();
 
 	if (EffectComp) {
-		if (EffectComp->GetWorld()->GetTimerManager().IsTimerActive(EffectHandle)) EffectComp->GetWorld()->GetTimerManager().ClearTimer(EffectHandle);
-		if (EffectComp->GetWorld()->GetTimerManager().IsTimerActive(ResetHandle) || EffectComp->GetWorld()->GetTimerManager().IsTimerPending(ResetHandle))
-			EffectComp->GetWorld()->GetTimerManager().ClearTimer(ResetHandle);
+		EffectComp->GetWorld()->GetTimerManager().ClearTimer(EffectHandle);
+		EffectComp->GetWorld()->GetTimerManager().ClearTimer(ResetHandle);
 	}
 }
 

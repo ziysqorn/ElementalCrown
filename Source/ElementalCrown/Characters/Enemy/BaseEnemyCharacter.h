@@ -18,7 +18,7 @@ class ELEMENTALCROWN_API ABaseEnemyCharacter : public ABaseCharacter
 
 protected:
 	UPROPERTY()
-	float AttackSpeed{ Default_Character_AttackSpeed };
+	float AttackSpeed = Default_Character_AttackSpeed;
 
 	UPROPERTY()
 	bool isMovingAllowed = true;
@@ -47,7 +47,7 @@ protected:
 
 	//Decide if character can attack
 	UPROPERTY()
-	bool AttackRecovered{ true };
+	bool AttackRecovered = true;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Important | Enemy Health Bar")
 	UWidgetComponent* EnemyHealthBar = nullptr;

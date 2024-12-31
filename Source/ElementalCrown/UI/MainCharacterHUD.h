@@ -20,6 +20,8 @@ class ELEMENTALCROWN_API UMainCharacterHUD : public UUserWidget
 {
 	GENERATED_BODY()
 protected:
+	void NativeOnInitialized() override;
+	void NativeConstruct() override;
 	UPROPERTY(BlueprintReadOnly, Category = "Main character HUD", meta = (BindWidget))
 	UHorizontalBox* HorBox_SkillSlotBox = nullptr;
 

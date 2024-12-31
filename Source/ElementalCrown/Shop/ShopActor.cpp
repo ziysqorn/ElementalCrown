@@ -78,6 +78,7 @@ void AShopActor::RefreshShopItem()
 {
 	if (ShopUI) {
 		LoadShopItem();
+		ShopUI->RefreshShop();
 		ShopUI->SetupShopUI(AvailableConsumables, AvailableSkills);
 	}
 }
@@ -111,22 +112,22 @@ void AShopActor::Interact(ACharacter* InteractedCharacter)
 				ShopUI = CreateWidget<UShopUI>(PlayerController, ShopUISubclass);
 				if (IsValid(ShopUI) && InteractedCharacter) {
 					LoadShopItem();
-					ShopUI->SetupShopUI(AvailableConsumables, AvailableSkills);
 					ShopUI->AddToViewport(11);
 					ShopUI->SetFocus();
 					PlayerController->SetShowMouseCursor(true);
 					InteractedCharacter->DisableInput(PlayerController);
+					ShopUI->SetupShopUI(AvailableConsumables, AvailableSkills);
 				}
 			}
 		}
 		else {
 			if (ShopUI && InteractedCharacter) {
 				LoadShopItem();
-				ShopUI->SetupShopUI(AvailableConsumables, AvailableSkills);
 				ShopUI->AddToViewport(11);
 				ShopUI->SetFocus();
 				PlayerController->SetShowMouseCursor(true);
 				InteractedCharacter->DisableInput(PlayerController);
+				ShopUI->SetupShopUI(AvailableConsumables, AvailableSkills);
 			}
 		}
 	}

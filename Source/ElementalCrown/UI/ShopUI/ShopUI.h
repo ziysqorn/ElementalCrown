@@ -26,8 +26,6 @@ protected:
 
 	virtual void NativeConstruct() override;
 
-	virtual void NativeDestruct() override;
-
 	UPROPERTY(EditDefaultsOnly, meta = (BindWidget))
 	UWidgetSwitcher* WidgetSwitcher_ShopContent = nullptr;
 
@@ -84,6 +82,8 @@ public:
 	void SetupShopUI(TArray<UConsumable*>& ConsumableList, TArray<UBaseSkill*>& SkillsList);
 
 	void RefreshEquipSkillBox();
+
+	void RefreshShop();
 
 	FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 };

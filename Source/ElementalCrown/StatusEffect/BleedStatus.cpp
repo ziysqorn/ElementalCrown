@@ -8,6 +8,14 @@ BleedStatus::BleedStatus()
 	TimeForAReset = 0.1f;
 }
 
+BleedStatus::~BleedStatus()
+{
+	UStatusEffectComponent* EffectComp = nullptr;
+	if (AffectedChar) EffectComp = AffectedChar->GetStatusEffectComp();
+
+	if (EffectComp) EffectComp->GetWorld()->GetTimerManager().ClearTimer(ApplyDelayHandle);
+}
+
 void BleedStatus::ExecuteStatus()
 {
 	if (AffectedChar) {

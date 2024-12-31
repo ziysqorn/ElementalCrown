@@ -4,6 +4,16 @@
 #include "MainCharacterHUD.h"
 #include "../Characters/Main Character/MainCharacter.h"
 
+void UMainCharacterHUD::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+}
+
+void UMainCharacterHUD::NativeConstruct()
+{
+	Super::NativeConstruct();
+}
+
 void UMainCharacterHUD::SetupHUD()
 {
 	if (this->GetOwningPlayer()) {

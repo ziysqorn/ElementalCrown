@@ -23,17 +23,19 @@ void URazorWaveSkill::PerformSkill()
 					}
 					this->isAvailable = false;
 					OwningCharacter->GetWorldTimerManager().SetTimer(this->CountdownProgHandle, FTimerDelegate::CreateLambda([this, OwningCharacter]() {
-						if (AMainController* MainController = Cast<AMainController>(OwningCharacter->GetController())) {
-							if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-								CurrentCooldown += 0.1f;
-								if (CurrentCooldown > CooldownTime) {
-									this->isAvailable = true;
-									CurrentCooldown = 0.0f;
-									MainHUD->HideSkillLoaderUI(this);
-									OwningCharacter->GetWorldTimerManager().ClearTimer(CountdownProgHandle);
-									return;
+						if (this && OwningCharacter) {
+							if (AMainController* MainController = Cast<AMainController>(OwningCharacter->GetController())) {
+								if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
+									CurrentCooldown += 0.1f;
+									if (CurrentCooldown > CooldownTime) {
+										this->isAvailable = true;
+										CurrentCooldown = 0.0f;
+										MainHUD->HideSkillLoaderUI(this);
+										OwningCharacter->GetWorldTimerManager().ClearTimer(CountdownProgHandle);
+										return;
+									}
+									MainHUD->UpdateSkillCountdownProgUI(this, CurrentCooldown / CooldownTime);
 								}
-								MainHUD->UpdateSkillCountdownProgUI(this, CurrentCooldown / CooldownTime);
 							}
 						}
 						}), 0.1f, true);

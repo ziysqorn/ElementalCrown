@@ -23,16 +23,13 @@ void UShopUI::NativeConstruct()
 	Super::NativeConstruct();
 
 	if (WidgetSwitcher_ShopContent) WidgetSwitcher_ShopContent->SetActiveWidgetIndex(0);
+
+	if (VerBox_ConsumablesList) VerBox_ConsumablesList->ClearChildren();
+	if (ScrBox_AvailableSkillsList) ScrBox_AvailableSkillsList->ClearChildren();
+	if (ScrBox_OwnedSkillsList) ScrBox_OwnedSkillsList->ClearChildren();
+	if (HorBox_EquippedSkills) HorBox_EquippedSkills->ClearChildren();
 }
 
-void UShopUI::NativeDestruct()
-{
-	Super::NativeDestruct();
-
-	VerBox_ConsumablesList->ClearChildren();
-	ScrBox_AvailableSkillsList->ClearChildren();
-	ScrBox_OwnedSkillsList->ClearChildren();
-}
 
 void UShopUI::CloseShop()
 {
@@ -81,11 +78,6 @@ void UShopUI::PopoutSkill()
 void UShopUI::SetupShopUI(TArray<UConsumable*>& ConsumableList, TArray<UBaseSkill*>& SkillsList)
 {
 	if (ShopItemUISubclass && SkillItemUISubclass) {
-		if(VerBox_ConsumablesList->GetChildrenCount() > 0) VerBox_ConsumablesList->ClearChildren();
-		if (ScrBox_AvailableSkillsList->GetChildrenCount() > 0) ScrBox_AvailableSkillsList->ClearChildren();
-		if (ScrBox_OwnedSkillsList->GetChildrenCount() > 0) ScrBox_OwnedSkillsList->ClearChildren();
-		if (HorBox_EquippedSkills->GetChildrenCount() > 0) HorBox_EquippedSkills->ClearChildren();
-
 		for (int i = 0; i < ConsumableList.Num(); ++i) {
 			if (UShopItemButtonUI* ShopItemUI = CreateWidget<UShopItemButtonUI>(this->GetWorld(), ShopItemUISubclass)) {
 				if (i > 0) {
@@ -155,8 +147,8 @@ void UShopUI::SetupShopUI(TArray<UConsumable*>& ConsumableList, TArray<UBaseSkil
 
 void UShopUI::RefreshEquipSkillBox()
 {
-	ScrBox_OwnedSkillsList->ClearChildren();
-	HorBox_EquippedSkills->ClearChildren();
+	if(ScrBox_OwnedSkillsList) ScrBox_OwnedSkillsList->ClearChildren();
+	if(HorBox_EquippedSkills) HorBox_EquippedSkills->ClearChildren();
 	if (APlayerController* PlayerController = GetOwningPlayer()) {
 		if (ABaseCharacter* BaseCharacter = PlayerController->GetPawn<ABaseCharacter>()) {
 			if (USkillComponent* SkillComponent = BaseCharacter->GetSkillComp()) {
@@ -195,6 +187,14 @@ void UShopUI::RefreshEquipSkillBox()
 			}
 		}
 	}
+}
+
+void UShopUI::RefreshShop()
+{
+	if (VerBox_ConsumablesList) VerBox_ConsumablesList->ClearChildren();
+	if (ScrBox_AvailableSkillsList) ScrBox_AvailableSkillsList->ClearChildren();
+	if (ScrBox_OwnedSkillsList) ScrBox_OwnedSkillsList->ClearChildren();
+	if (HorBox_EquippedSkills) HorBox_EquippedSkills->ClearChildren();
 }
 
 FReply UShopUI::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)

@@ -20,13 +20,15 @@ void UAttackWithEffectNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstanc
 			if (GetWorld()->SweepMultiByObjectType(Hits, Character->GetActorLocation() + FVector(BoxPosition.X * Character->GetSprite()->GetForwardVector().X), Character->GetActorLocation() + FVector(BoxPosition.X * Character->GetSprite()->GetForwardVector().X, BoxPosition.Y, BoxPosition.Z), FQuat(0, 0, 0, 0), ObjectFilter, FCollisionShape::MakeBox(BoxExtent), AdditionParams)) {
 				for (const FHitResult& Result : Hits) {
 					TSubclassOf<UDamageType> DamageType;
-					this->SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
-					UGameplayStatics::SetGlobalTimeDilation(this, HitStopDilation);
-					GetWorld()->GetTimerManager().SetTimer(Character->GetHitStopHandle(), FTimerDelegate::CreateUObject(this, &UAttackAnimNotify::SetHitStopToNormal), HitStopDuration, false);
-					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(this->Buff), Character->GetController(), Character, DamageType);
-					if (IGameplayInterface* GameplayInterface = Cast<IGameplayInterface>(Character)) {
-						if (UElemental* CharacterElement = GameplayInterface->GetElemental())
-							CharacterElement->ApplyStatusEffect(Cast<ABaseCharacter>(Result.GetActor()), BuildupAmount);
+					if (Result.GetComponent()) {
+						this->SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
+						//UGameplayStatics::SetGlobalTimeDilation(this, HitStopDilation);
+						//GetWorld()->GetTimerManager().SetTimer(Character->GetHitStopHandle(), FTimerDelegate::CreateUObject(this, &UAttackAnimNotify::SetHitStopToNormal), HitStopDuration, false);
+						UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(this->Buff), Character->GetController(), Character, DamageType);
+						if (IGameplayInterface* GameplayInterface = Cast<IGameplayInterface>(Character)) {
+							if (UElemental* CharacterElement = GameplayInterface->GetElemental())
+								CharacterElement->ApplyStatusEffect(Cast<ABaseCharacter>(Result.GetActor()), BuildupAmount);
+						}
 					}
 				}
 			}

@@ -35,6 +35,7 @@ protected:
 
 	bool haveWelcomedPlayer = false;
 
+	UPROPERTY()
 	UShopUI* ShopUI = nullptr;
 
 public:	

@@ -28,10 +28,12 @@ void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* Own
 					if (SwordHitSFX) {
 						UGameplayStatics::PlaySound2D(this, SwordHitSFX);
 					}
-					this->SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
-					UGameplayStatics::SetGlobalTimeDilation(this, HitStopDilation);
-					GetWorld()->GetTimerManager().SetTimer(Character->GetHitStopHandle(), FTimerDelegate::CreateUObject(this, &UAttackAnimNotify::SetHitStopToNormal), HitStopDuration, false);
-					UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(this->Buff), Character->GetController(), Character, DamageType);
+					if (Result.GetComponent()) {
+						this->SpawnImpact(Character, Result.GetComponent()->GetCollisionObjectType(), Result);
+						UGameplayStatics::SetGlobalTimeDilation(this, HitStopDilation);
+						GetWorld()->GetTimerManager().SetTimer(Character->GetHitStopHandle(), FTimerDelegate::CreateUObject(this, &UAttackAnimNotify::SetHitStopToNormal), HitStopDuration, false);
+						UGameplayStatics::ApplyDamage(Result.GetActor(), Character->CalculatedDamage(this->Buff), Character->GetController(), Character, DamageType);
+					}
 				}
 			}
 		}
@@ -40,18 +42,20 @@ void UAttackAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInstance* Own
 
 void UAttackAnimNotify::SpawnImpact(APaperZDCharacter* Character, const ECollisionChannel& OwnerObjectType, const FHitResult& Target) const
 {
-	FVector ImpactLocation = Target.GetActor()->GetActorLocation();
-	FRotator ImpactRotation = (Character->GetActorLocation().X <= ImpactLocation.X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
-	FActorSpawnParameters SpawnParams;
-	ImpactLocation.Y += 1.1;
-	SpawnParams.Owner = Character;
-	switch (OwnerObjectType) {
-	case ECollisionChannel::ECC_Pawn:
-		GetWorld()->SpawnActor<ABloodSlashImpact>(ABloodSlashImpact::StaticClass(), ImpactLocation, ImpactRotation, SpawnParams);
-		break;
-	case ECollisionChannel::ECC_Destructible:
-		GetWorld()->SpawnActor<ANoBloodSlashImpact>(ANoBloodSlashImpact::StaticClass(), ImpactLocation, ImpactRotation, SpawnParams);
-		break;
+	if (Target.GetActor()) {
+		FVector ImpactLocation = Target.GetActor()->GetActorLocation();
+		FRotator ImpactRotation = (Character->GetActorLocation().X <= ImpactLocation.X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
+		FActorSpawnParameters SpawnParams;
+		ImpactLocation.Y += 1.1;
+		SpawnParams.Owner = Character;
+		switch (OwnerObjectType) {
+		case ECollisionChannel::ECC_Pawn:
+			GetWorld()->SpawnActor<ABloodSlashImpact>(ABloodSlashImpact::StaticClass(), ImpactLocation, ImpactRotation, SpawnParams);
+			break;
+		case ECollisionChannel::ECC_Destructible:
+			GetWorld()->SpawnActor<ANoBloodSlashImpact>(ANoBloodSlashImpact::StaticClass(), ImpactLocation, ImpactRotation, SpawnParams);
+			break;
+		}
 	}
 }
 

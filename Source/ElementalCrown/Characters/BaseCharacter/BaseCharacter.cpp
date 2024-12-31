@@ -67,7 +67,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 			FlashTimeline.PlayFromStart();
 			if (HurtSequence) {
 				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {
-					if (this->CurrentState == CharacterState::HURT)
+					if (this && this->CurrentState == CharacterState::HURT)
 						this->CurrentState = CharacterState::NONE;
 					}), HurtSequence->GetTotalDuration(), false);
 			}
