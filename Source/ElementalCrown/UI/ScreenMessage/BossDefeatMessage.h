@@ -19,8 +19,6 @@ protected:
 
 	void NativeConstruct() override;
 
-	FTimerHandle LoadLevelHandle;
-
 public:
 	FName BossName;
 

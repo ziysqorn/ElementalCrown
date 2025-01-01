@@ -17,7 +17,7 @@ bool UBleedCurePotion::Consume()
 		if (AMainCharacter* MainCharacter = ConsumableComponent->GetOwner<AMainCharacter>()) {
 			if (MainCharacter && Quantity > 0) {
 				if (UStatusEffectComponent* StatusEffectComponent = Cast<UStatusEffectComponent>(MainCharacter->GetStatusEffectComp())) {
-					BaseStatusEffect* FoundStatus = StatusEffectComponent->FindStatusEffect(FName("Bleed"));
+					UBaseStatusEffect* FoundStatus = StatusEffectComponent->FindStatusEffect(FName("Bleed"));
 					if (FoundStatus) {
 						--Quantity;
 						StatusEffectComponent->RemoveStatusEffect(FoundStatus);

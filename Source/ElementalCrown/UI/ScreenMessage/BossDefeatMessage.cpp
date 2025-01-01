@@ -24,9 +24,7 @@ void UBossDefeatMessage::AnimEndAction()
 	if (AMainController* MainController = this->GetOwningPlayer<AMainController>()) {
 		if (UCustomGameInstance* CustomGameInstance = GetWorld()->GetGameInstance<UCustomGameInstance>()) {
 			CustomGameInstance->SpawnLoadingScreen();
-			GetWorld()->GetTimerManager().SetTimer(LoadLevelHandle, FTimerDelegate::CreateLambda([this, CustomGameInstance]() {
-				CustomGameInstance->OpenLevel(NextLevelName);
-				}), 1.0f, false);
+			CustomGameInstance->OpenLevel(NextLevelName);
 		}
 	}
 	this->RemoveFromParent();

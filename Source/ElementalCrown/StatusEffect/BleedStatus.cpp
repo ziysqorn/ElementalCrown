@@ -1,36 +1,43 @@
 #include "BleedStatus.h"
 #include "../Characters/BaseCharacter/BaseCharacter.h"
 
-BleedStatus::BleedStatus()
+UBleedStatus::UBleedStatus()
 {
 	StatusName = "Bleed";
 	AffectingTime = 8.0f;
 	TimeForAReset = 0.1f;
 }
 
-BleedStatus::~BleedStatus()
+void UBleedStatus::BeginDestroy()
 {
-	UStatusEffectComponent* EffectComp = nullptr;
-	if (AffectedChar) EffectComp = AffectedChar->GetStatusEffectComp();
+	Super::BeginDestroy();
 
-	if (EffectComp) EffectComp->GetWorld()->GetTimerManager().ClearTimer(ApplyDelayHandle);
+	if (GetWorld()) GetWorld()->GetTimerManager().ClearTimer(ApplyDelayHandle);
 }
 
-void BleedStatus::ExecuteStatus()
+void UBleedStatus::ExecuteStatus()
 {
-	if (AffectedChar) {
+	if (IsValid(OwningChar) && IsValid(AffectedChar)) {
 		UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp();
-		EffectComponent->GetWorld()->GetTimerManager().SetTimer(ApplyDelayHandle, FTimerDelegate::CreateLambda([this, EffectComponent]() {
-			if (this && EffectComponent && AffectedChar) {
-				FActorSpawnParameters SpawnParams;
-				//SpawnParams.Owner = OwningChar;
-				if (ABleed* BleedEffect = AffectedChar->GetWorld()->SpawnActor<ABleed>(ABleed::StaticClass(), FVector(10.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams)) {
-					BleedEffect->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);
-					TSubclassOf<UDamageType> DamageType;
-					UGameplayStatics::ApplyDamage(AffectedChar, AffectedChar->GetMaxHealth() * 20 / 100, OwningChar ? OwningChar->GetController() : AffectedChar->GetController(), BleedEffect, DamageType);
-					EffectComponent->RemoveStatusEffect(this);
+		GetWorld()->GetTimerManager().SetTimer(ApplyDelayHandle, FTimerDelegate::CreateUObject(this, &UBleedStatus::BloodSoaking), 0.3f, false);
+	}
+}
+
+void UBleedStatus::BloodSoaking()
+{
+	if (IsValid(OwningChar) && IsValid(AffectedChar)) {
+		if (UStatusEffectComponent* EffectComponent = AffectedChar->GetStatusEffectComp()) {
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = OwningChar;
+			StatusEffectActor = GetWorld()->SpawnActor<ABleed>(ABleed::StaticClass(), FVector(10.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
+			if (StatusEffectActor) {
+				StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);
+				TSubclassOf<UDamageType> DamageType = UDamageType::StaticClass();
+				if (DamageType) {
+					UGameplayStatics::ApplyDamage(AffectedChar, AffectedChar->GetMaxHealth() * 20 / 100, OwningChar ? OwningChar->GetController() : AffectedChar->GetController(), StatusEffectActor, DamageType);
 				}
+				EffectComponent->RemoveStatusEffect(this);
 			}
-		}), 0.3f, false);
+		}
 	}
 }

@@ -27,6 +27,7 @@ FReply USkillItemButton::NativeOnPreviewMouseButtonDown(const FGeometry& InGeome
 									if (EquippedSkillIdxList.IsValidIndex(idx)) {
 										EquippedSkillIdxList[idx] = EquippedSkillList.Num() - 1;
 										UGameplayStatics::SaveGameToSlot(GameplaySave, "GameplaySave", 0);
+										MainCharacter->SavePlayerInfo();
 										SkillComponent->LoadSkill();
 										if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
 											MainHUD->RefreshSkillSlots(EquippedSkillList);

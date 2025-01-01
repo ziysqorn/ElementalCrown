@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../ProjectIncludes.h"
 #include "../Effects/StatusEffect/BaseStatus.h"
+#include "BaseStatusEffect.generated.h"
 
 /**
  * 
@@ -12,9 +13,11 @@
 
 class ABaseCharacter;
 
-
-class ELEMENTALCROWN_API BaseStatusEffect
+UCLASS()
+class ELEMENTALCROWN_API UBaseStatusEffect : public UObject
 {
+	GENERATED_BODY()
+
 protected:
 	FName StatusName;
 
@@ -22,10 +25,13 @@ protected:
 
 	float AffectingTime;
 
+	UPROPERTY()
 	ABaseStatus* StatusEffectActor = nullptr;
 
+	UPROPERTY()
 	ABaseCharacter* OwningChar = nullptr;
 
+	UPROPERTY()
 	ABaseCharacter* AffectedChar = nullptr;
 
 	FTimerHandle EffectHandle;
@@ -40,8 +46,8 @@ protected:
 
 	float TimeForAReset;
 public:
-	BaseStatusEffect();
-	virtual ~BaseStatusEffect();
+	UBaseStatusEffect();
+	virtual void BeginDestroy() override;
 	FName GetStatusName() const { 
 		return StatusName; 
 	}
@@ -63,6 +69,8 @@ public:
 	void SetAffectedCharacter(ABaseCharacter* Character) {
 		AffectedChar = Character;
 	}
+	void ReduceStatusBuildup();
+	void AffectingCountdown();
 	virtual void BuildingUp(ABaseCharacter* OwningCharacter, const float& inBuildup);
 	virtual void ExecuteStatus() {};
 };

@@ -17,7 +17,7 @@ bool UStunCurePotion::Consume()
 		if (AMainCharacter* MainCharacter = ConsumableComponent->GetOwner<AMainCharacter>()) {
 			if (MainCharacter && Quantity > 0) {
 				if (UStatusEffectComponent* StatusEffectComponent = Cast<UStatusEffectComponent>(MainCharacter->GetStatusEffectComp())) {
-					BaseStatusEffect* FoundStatus = StatusEffectComponent->FindStatusEffect(FName("Stun"));
+					UBaseStatusEffect* FoundStatus = StatusEffectComponent->FindStatusEffect(FName("Stun"));
 					if (FoundStatus) {
 						--Quantity;
 						StatusEffectComponent->RemoveStatusEffect(FoundStatus);

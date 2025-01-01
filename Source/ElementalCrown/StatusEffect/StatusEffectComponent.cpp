@@ -11,7 +11,7 @@ UStatusEffectComponent::UStatusEffectComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void UStatusEffectComponent::AddStatusEffect(BaseStatusEffect* Effect)
+void UStatusEffectComponent::AddStatusEffect(UBaseStatusEffect* Effect)
 {
 	if (Effect) {
 		int findIdx = StatusList.Find(Effect);
@@ -37,7 +37,7 @@ void UStatusEffectComponent::AddStatusEffect(BaseStatusEffect* Effect)
 	}
 }
 
-void UStatusEffectComponent::RemoveStatusEffect(BaseStatusEffect* Effect)
+void UStatusEffectComponent::RemoveStatusEffect(UBaseStatusEffect* Effect)
 {
 	int removedIdx = StatusList.Find(Effect);
 	if (removedIdx == INDEX_NONE) return;
@@ -48,34 +48,13 @@ void UStatusEffectComponent::RemoveStatusEffect(BaseStatusEffect* Effect)
 		}
 	}
 	StatusList.RemoveAt(removedIdx);
-	delete Effect;
-}
-
-void UStatusEffectComponent::ReduceStatusBuildup(BaseStatusEffect* Effect)
-{
-	if (Effect) {
-		float* CurrentProgPtr = Effect->GetCurrentProgress();
-		*CurrentProgPtr -= 0.1f;
-		if (*CurrentProgPtr <= 0.0f) RemoveStatusEffect(Effect);
-		else {
-			if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwner())) {
-				if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
-					UMainCharacterHUD* MainHUD = MainController->GetMainHUD();
-					if (MainHUD) {
-						if (UStatusEffectProgressUI* ProgressUI = MainHUD->GetStatusProgressUI(this->FindStatusEffect(Effect))) {
-							ProgressUI->GetProgressBar()->SetPercent(Effect->GetBuildupPercentage());
-						}
-					}
-				}
-			}
-		}
-	}
+	Effect->ConditionalBeginDestroy();
 }
 
 void UStatusEffectComponent::ClearAllStatusEffect()
 {
 	for (int i = 0; i < StatusList.Num(); ++i) {
-		BaseStatusEffect* Effect = StatusList[i];
+		UBaseStatusEffect* Effect = StatusList[i];
 		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(this->GetOwner())) {
 			if (AMainController* MainController = Cast<AMainController>(MainCharacter->GetController())) {
 				UMainCharacterHUD* MainHUD = MainController->GetMainHUD();
@@ -83,12 +62,12 @@ void UStatusEffectComponent::ClearAllStatusEffect()
 			}
 		}
 		StatusList.RemoveAt(i);
-		delete Effect;
+		Effect->ConditionalBeginDestroy();
 	}
 }
 
 
-UStatusEffectProgressUI* UStatusEffectComponent::GetProgressUI(BaseStatusEffect* Effect)
+UStatusEffectProgressUI* UStatusEffectComponent::GetProgressUI(UBaseStatusEffect* Effect)
 {
 	int findIdx = StatusList.Find(Effect);
 	if (findIdx == INDEX_NONE) return nullptr;

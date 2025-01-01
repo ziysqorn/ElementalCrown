@@ -69,6 +69,8 @@ public:
 
 	void OpenLevelAfterFlash(FName LevelName);
 
+	void OpenLevelImmediate(FName LevelName);
+
 	void PlayBattleTheme();
 
 	void PlayBackgroundTheme(USoundBase* BackgroundTheme);

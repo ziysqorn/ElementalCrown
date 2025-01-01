@@ -24,7 +24,7 @@ protected:
 	//Skill price
 	int SkillPrice;
 	//Return true if this skill can be used
-	bool isAvailable{ true };
+	bool isAvailable = true;
 
 	//*********************TIMER HANDLE**************************
 	FTimerHandle CountdownProgHandle;
@@ -60,4 +60,6 @@ public:
 	//******************** ACTION *******************************
 	//Perform this skill
 	virtual void PerformSkill();
+
+	void CooldownSkill();
 };

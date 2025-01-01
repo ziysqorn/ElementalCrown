@@ -17,7 +17,7 @@ bool UVulnerableCurePotion::Consume()
 		if (AMainCharacter* MainCharacter = ConsumableComponent->GetOwner<AMainCharacter>()) {
 			if (MainCharacter && Quantity > 0) {
 				if (UStatusEffectComponent* StatusEffectComponent = Cast<UStatusEffectComponent>(MainCharacter->GetStatusEffectComp())) {
-					BaseStatusEffect* FoundStatus = StatusEffectComponent->FindStatusEffect(FName("Vulnerable"));
+					UBaseStatusEffect* FoundStatus = StatusEffectComponent->FindStatusEffect(FName("Vulnerable"));
 					if (FoundStatus) {
 						--Quantity;
 						StatusEffectComponent->RemoveStatusEffect(FoundStatus);

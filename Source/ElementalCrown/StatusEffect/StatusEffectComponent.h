@@ -16,7 +16,8 @@ class ELEMENTALCROWN_API UStatusEffectComponent : public UActorComponent
 
 protected:
 
-	TArray<BaseStatusEffect*> StatusList;
+	UPROPERTY()
+	TArray<UBaseStatusEffect*> StatusList;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "StatusProgressSubClass")
 	TSubclassOf<UStatusEffectProgressUI> BurnProgressSubClass;
@@ -36,31 +37,29 @@ protected:
 public:	
 	UStatusEffectComponent();
 
-	void AddStatusEffect(BaseStatusEffect* Effect);
+	void AddStatusEffect(UBaseStatusEffect* Effect);
 
-	void RemoveStatusEffect(BaseStatusEffect* Effect);
-
-	void ReduceStatusBuildup(BaseStatusEffect* Effect);
+	void RemoveStatusEffect(UBaseStatusEffect* Effect);
 
 	void ClearAllStatusEffect();
 
-	int FindStatusEffect(BaseStatusEffect* Effect) {
+	int FindStatusEffect(UBaseStatusEffect* Effect) {
 		return StatusList.Find(Effect);
 	}
 
-	BaseStatusEffect* FindStatusEffect(const FName& inName) {
-		BaseStatusEffect** res = nullptr;
-		res = StatusList.FindByPredicate([inName](const BaseStatusEffect* StatusEffect) {
+	UBaseStatusEffect* FindStatusEffect(const FName& inName) {
+		UBaseStatusEffect** res = nullptr;
+		res = StatusList.FindByPredicate([inName](const UBaseStatusEffect* StatusEffect) {
 			return StatusEffect->GetStatusName().IsEqual(inName);
 			});
 		return res ? *res : nullptr;
 	}
 	
-	TArray<BaseStatusEffect*>* GetStatusList() {
+	TArray<UBaseStatusEffect*>* GetStatusList() {
 		return &StatusList;
 	}
 
-	UStatusEffectProgressUI* GetProgressUI(BaseStatusEffect* Effect);
+	UStatusEffectProgressUI* GetProgressUI(UBaseStatusEffect* Effect);
 protected:
 	virtual void BeginPlay() override;
 		

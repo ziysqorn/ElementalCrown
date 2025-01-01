@@ -76,16 +76,17 @@ void UCustomGameInstance::SpawnReverseFlashScreen()
 
 void UCustomGameInstance::OpenLevel(FName LevelName)
 {
-	GetWorld()->GetTimerManager().SetTimer(SwitchLevelHandle, FTimerDelegate::CreateLambda([LevelName, this]() {
-		UGameplayStatics::OpenLevel(this, LevelName);
-	}), 1.0f, false);
+	GetWorld()->GetTimerManager().SetTimer(SwitchLevelHandle, FTimerDelegate::CreateUObject(this, &UCustomGameInstance::OpenLevelImmediate, LevelName), 1.0f, false);
 }
 
 void UCustomGameInstance::OpenLevelAfterFlash(FName LevelName)
 {
-	GetWorld()->GetTimerManager().SetTimer(SwitchLevelHandle, FTimerDelegate::CreateLambda([LevelName, this]() {
-		UGameplayStatics::OpenLevel(this, LevelName);
-	}), 1.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(SwitchLevelHandle, FTimerDelegate::CreateUObject(this, &UCustomGameInstance::OpenLevelImmediate, LevelName), 1.5f, false);
+}
+
+void UCustomGameInstance::OpenLevelImmediate(FName LevelName)
+{
+	UGameplayStatics::OpenLevel(this, LevelName);
 }
 
 void UCustomGameInstance::PlayBattleTheme()

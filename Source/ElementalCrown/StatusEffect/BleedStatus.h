@@ -3,16 +3,22 @@
 #include "CoreMinimal.h"
 #include "BaseStatusEffect.h"
 #include "../Effects/StatusEffect/Bleed.h"
+#include "BleedStatus.generated.h"
 
 /**
  *
  */
 
-class ELEMENTALCROWN_API BleedStatus : public BaseStatusEffect {
+UCLASS()
+class ELEMENTALCROWN_API UBleedStatus : public UBaseStatusEffect 
+{
+	GENERATED_BODY()
+
 protected:
 	FTimerHandle ApplyDelayHandle;
 public:
-	BleedStatus();
-	~BleedStatus() override;
+	UBleedStatus();
+	void BeginDestroy() override;
 	void ExecuteStatus() override;
+	void BloodSoaking();
 };

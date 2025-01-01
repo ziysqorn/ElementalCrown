@@ -59,6 +59,7 @@ void UShopUI::PopoutSkill()
 									if (EquippedIdxSkillList.IsValidIndex(idx)) {
 										EquippedIdxSkillList[idx] = -1;
 										UGameplayStatics::SaveGameToSlot(GameplaySave, "GameplaySave", 0);
+										MainCharacter->SavePlayerInfo();
 										SkillComponent->LoadSkill();
 										this->RefreshEquipSkillBox();
 										if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {

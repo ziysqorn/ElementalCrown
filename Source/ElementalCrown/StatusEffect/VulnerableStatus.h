@@ -5,14 +5,18 @@
 #include "CoreMinimal.h"
 #include "BaseStatusEffect.h"
 #include "../Effects/StatusEffect/Vulnerable.h"
+#include "VulnerableStatus.generated.h"
 
 /**
  *
  */
 
-class ELEMENTALCROWN_API VulnerableStatus : public BaseStatusEffect
+UCLASS()
+class ELEMENTALCROWN_API UVulnerableStatus : public UBaseStatusEffect
 {
+	GENERATED_BODY()
+
 public:
-	VulnerableStatus();
+	UVulnerableStatus();
 	void ExecuteStatus() override;
 };

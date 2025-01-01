@@ -17,7 +17,7 @@ bool UDrowsyCurePotion::Consume()
 		if (AMainCharacter* MainCharacter = ConsumableComponent->GetOwner<AMainCharacter>()) {
 			if (MainCharacter && Quantity > 0) {
 				if (UStatusEffectComponent* StatusEffectComponent = Cast<UStatusEffectComponent>(MainCharacter->GetStatusEffectComp())) {
-					BaseStatusEffect* FoundStatus = StatusEffectComponent->FindStatusEffect(FName("Drowsy"));
+					UBaseStatusEffect* FoundStatus = StatusEffectComponent->FindStatusEffect(FName("Drowsy"));
 					if (FoundStatus) {
 						--Quantity;
 						StatusEffectComponent->RemoveStatusEffect(FoundStatus);

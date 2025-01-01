@@ -28,14 +28,10 @@ void UDeadMessage::AnimEndAction()
 			if (AMainCharacter* MainCharacter = MainController->GetPawn<AMainCharacter>()) {
 				int PlayerLiveCount = MainCharacter->GetLiveCount();
 				if (PlayerLiveCount >= 0) {
-					GetWorld()->GetTimerManager().SetTimer(ReloadLevelHandle, FTimerDelegate::CreateLambda([this, CustomGameInstance]() {
-						CustomGameInstance->OpenLevel(FName(UGameplayStatics::GetCurrentLevelName(GetWorld())));
-					}), 1.0f, false);
+					CustomGameInstance->OpenLevel(FName(UGameplayStatics::GetCurrentLevelName(GetWorld())));
 				}
 				else {
-					GetWorld()->GetTimerManager().SetTimer(ReloadLevelHandle, FTimerDelegate::CreateLambda([this, CustomGameInstance]() {
-						CustomGameInstance->OpenLevel(FName("Jungle1"));
-					}), 1.0f, false);
+					CustomGameInstance->OpenLevel(FName("Jungle1"));
 				}
 			}
 		}

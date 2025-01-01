@@ -52,13 +52,13 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 {
 	if (CurrentHealth > 0) {
 		int FinalDamage = (int)DamageAmount;
-		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Drowsy")) {
+		if (UBaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Drowsy")) {
 			if (Effect->GetActivateStatus()) {
 				FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
 				StatusEffectComponent->RemoveStatusEffect(Effect);
 			}
 		}
-		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
+		if (UBaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
 			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
 		}
 		if (IGameplayInterface* CauserInteface = Cast<IGameplayInterface>(DamageCauser)) {

@@ -19,8 +19,6 @@ protected:
 	
 	void NativeConstruct() override;
 
-	FTimerHandle ReloadLevelHandle;
-
 public:
 	void AnimEndAction() override;
 

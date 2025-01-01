@@ -33,7 +33,7 @@ void ABaseCharacter::Tick(float DeltaSeconds)
 void ABaseCharacter::Landed(const FHitResult& Hit)
 {
 	if (CurrentState == CharacterState::AIRBORNE) {
-		BaseStatusEffect* FoundStatus = nullptr;
+		UBaseStatusEffect* FoundStatus = nullptr;
 		FoundStatus = StatusEffectComponent->FindStatusEffect(TEXT("Drowsy"));
 		if (!FoundStatus) FoundStatus = StatusEffectComponent->FindStatusEffect(TEXT("Stun"));
 		if (!FoundStatus || !FoundStatus->GetActivateStatus()) {
@@ -46,13 +46,13 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 {
 	if (CurrentHealth > 0) {
 		int FinalDamage = (int)DamageAmount;
-		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Drowsy")) {
+		if (UBaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Drowsy")) {
 			if (Effect->GetActivateStatus()) {
 				FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
 				StatusEffectComponent->RemoveStatusEffect(Effect);
 			}
 		}
-		if (BaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
+		if (UBaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
 			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
 		}
 		CurrentHealth -= FinalDamage;
