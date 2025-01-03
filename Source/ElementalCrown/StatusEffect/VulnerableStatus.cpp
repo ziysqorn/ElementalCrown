@@ -10,9 +10,9 @@ UVulnerableStatus::UVulnerableStatus()
 
 void UVulnerableStatus::ExecuteStatus()
 {
-	if (IsValid(OwningChar) && IsValid(AffectedChar)) {
+	if (IsValid(AffectedChar)) {
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = OwningChar;
+		//SpawnParams.Owner = OwningChar;
 		StatusEffectActor = GetWorld()->SpawnActor<AVulnerable>(AVulnerable::StaticClass(), FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
 		if (StatusEffectActor) {
 			StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);

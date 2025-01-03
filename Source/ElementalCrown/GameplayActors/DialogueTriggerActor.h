@@ -6,6 +6,7 @@
 #include "../ProjectIncludes.h"
 #include "../UI/DialogueUI/DialogueUI.h"
 #include "../Characters/Main Character/MainCharacter.h"
+#include "../Controller/MainController.h"
 #include "DialogueTriggerActor.generated.h"
 
 UCLASS()
@@ -41,6 +42,8 @@ protected:
 	void BeginOverlap(AActor* OverlappedActor, AActor* OtherActor);
 
 	void ActionAfterDialogue();
+
+	void DisplayDialogueBox(AMainController* MainController);
 
 public:
 

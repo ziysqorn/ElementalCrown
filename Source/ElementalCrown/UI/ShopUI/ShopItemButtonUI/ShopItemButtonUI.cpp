@@ -74,6 +74,7 @@ FReply UShopItemButtonUI::NativeOnPreviewMouseButtonDown(const FGeometry& InGeom
 										UGameplayStatics::SaveGameToSlot(ShopSave, "ShopSave", 0);
 									}
 									SkillComponent->LoadSkill();
+									MainCharacter->SaveGameplay();
 									if (AShopActor* Shop = Cast<AShopActor>(Skill->GetOuter())) {
 										Shop->RefreshShopItem();
 									}

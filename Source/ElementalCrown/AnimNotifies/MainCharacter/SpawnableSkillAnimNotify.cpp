@@ -9,12 +9,8 @@ void USpawnableSkillAnimNotify::OnReceiveNotify_Implementation(UPaperZDAnimInsta
 		if (ABaseCharacter* BaseCharacter = Cast<ABaseCharacter>(OwningInstance->GetOwningActor())) {
 			float CurrentPlaybackTime = OwningInstance->GetPlayer()->GetCurrentPlaybackTime();
 			float CurrentAnimSequenceDuration = OwningInstance->GetPlayer()->GetCurrentAnimSequence()->GetTotalDuration();
-			BaseCharacter->GetWorldTimerManager().SetTimer(FinishSkill, FTimerDelegate::CreateLambda([BaseCharacter]() {
-				if (BaseCharacter) {
-					BaseCharacter->SetCharacterState(CharacterState::NONE);
-					BaseCharacter->GetCharacterMovement()->GravityScale = 1.0f;
-				}
-				}), CurrentAnimSequenceDuration - CurrentPlaybackTime, false);
+			BaseCharacter->GetWorldTimerManager().SetTimer(FinishSkill, FTimerDelegate::CreateUObject(this, &USpawnableSkillAnimNotify::DoneUsingSkillAction, BaseCharacter), 
+				CurrentAnimSequenceDuration - CurrentPlaybackTime, false);
 			if (BaseCharacter->GetCharacterState() != CharacterState::SHOOT && BaseCharacter->GetCharacterMovement()->JumpZVelocity != 0.0f) {
 				BaseCharacter->GetCharacterMovement()->GravityScale = 0.5f;
 				BaseCharacter->GetCharacterMovement()->StopMovementImmediately();
@@ -38,6 +34,14 @@ void USpawnableSkillAnimNotify::SpawnSkillActor(ABaseCharacter* BaseCharacter) c
 		SpawnRot += AdditionalSpawnRot;
 		SpawnLoc += TempAdditionLoc;
 		BaseCharacter->GetWorld()->SpawnActor<ActorClass>(ActorClass::StaticClass(), SpawnLoc, SpawnRot, SpawnParams);
+	}
+}
+
+void USpawnableSkillAnimNotify::DoneUsingSkillAction(ABaseCharacter* BaseCharacter) const
+{
+	if (BaseCharacter) {
+		BaseCharacter->SetCharacterState(CharacterState::NONE);
+		BaseCharacter->GetCharacterMovement()->GravityScale = 1.0f;
 	}
 }
 

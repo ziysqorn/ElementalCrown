@@ -24,9 +24,9 @@ void UDrowsyStatus::BeginDestroy()
 
 void UDrowsyStatus::ExecuteStatus()
 {
-	if (IsValid(OwningChar) && IsValid(AffectedChar)) {
+	if (IsValid(AffectedChar)) {
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = OwningChar;
+		//SpawnParams.Owner = OwningChar;
 		StatusEffectActor = GetWorld()->SpawnActor<ADrowsy>(ADrowsy::StaticClass(), AffectedChar->GetActorLocation(), AffectedChar->GetActorRotation(), SpawnParams);
 		if (StatusEffectActor) {
 			StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);

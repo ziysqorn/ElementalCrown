@@ -16,6 +16,15 @@ UBaseSkill::UBaseSkill(const TCHAR* Ref)
 	SkillSprite = SpriteRef.Object;
 }
 
+void UBaseSkill::BeginDestroy()
+{
+	Super::BeginDestroy();
+
+	if (GetWorld()) {
+		GetWorld()->GetTimerManager().ClearTimer(CountdownProgHandle);
+	}
+}
+
 
 void UBaseSkill::PerformSkill()
 {
@@ -43,21 +52,19 @@ void UBaseSkill::PerformSkill()
 
 void UBaseSkill::CooldownSkill()
 {
-	if (this) {
-		if (USkillComponent* SkillComponent = Cast<USkillComponent>(this->GetOuter())) {
-			if (ABaseCharacter* OwningCharacter = SkillComponent->GetOwner<ABaseCharacter>()) {
-				if (AMainController* MainController = Cast<AMainController>(OwningCharacter->GetController())) {
-					if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
-						CurrentCooldown += 0.1f;
-						if (CurrentCooldown > CooldownTime) {
-							this->isAvailable = true;
-							CurrentCooldown = 0.0f;
-							MainHUD->HideSkillLoaderUI(this);
-							OwningCharacter->GetWorldTimerManager().ClearTimer(CountdownProgHandle);
-							return;
-						}
-						MainHUD->UpdateSkillCountdownProgUI(this, CurrentCooldown / CooldownTime);
+	if (USkillComponent* SkillComponent = Cast<USkillComponent>(this->GetOuter())) {
+		if (ABaseCharacter* OwningCharacter = SkillComponent->GetOwner<ABaseCharacter>()) {
+			if (AMainController* MainController = Cast<AMainController>(OwningCharacter->GetController())) {
+				if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
+					CurrentCooldown += 0.1f;
+					if (CurrentCooldown > CooldownTime) {
+						this->isAvailable = true;
+						CurrentCooldown = 0.0f;
+						MainHUD->HideSkillLoaderUI(this);
+						OwningCharacter->GetWorldTimerManager().ClearTimer(CountdownProgHandle);
+						return;
 					}
+					MainHUD->UpdateSkillCountdownProgUI(this, CurrentCooldown / CooldownTime);
 				}
 			}
 		}

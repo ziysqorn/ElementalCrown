@@ -75,6 +75,8 @@ public:
 	
 	void TurnBackAfterTime();
 
+	void TurnBackAfterTakingDamage(AController* EventInstigator);
+
 	UFUNCTION()
 	void TurnBackImmediate();
 
@@ -88,5 +90,13 @@ public:
 
 	void SetIsMovingAllowed(bool isAllowed) {
 		isMovingAllowed = isAllowed;
+	}
+
+	void SetAttackRecovered(bool inBool) {
+		AttackRecovered = inBool;
+	}
+
+	void DestroyAfterDead() {
+		this->Destroy();
 	}
 };

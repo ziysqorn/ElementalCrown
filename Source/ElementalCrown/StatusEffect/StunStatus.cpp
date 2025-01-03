@@ -24,9 +24,9 @@ void UStunStatus::BeginDestroy()
 
 void UStunStatus::ExecuteStatus()
 {
-	if (IsValid(OwningChar) && IsValid(AffectedChar)) {
+	if (IsValid(AffectedChar)) {
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = OwningChar;
+		//SpawnParams.Owner = OwningChar;
 		StatusEffectActor = GetWorld()->SpawnActor<AStun>(AStun::StaticClass(), AffectedChar->GetActorLocation(), AffectedChar->GetActorRotation(), SpawnParams);
 		if (StatusEffectActor) {
 			StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);

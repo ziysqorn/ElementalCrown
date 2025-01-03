@@ -83,6 +83,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void Dead() {};
 
+	void FlashWhenDamaged(float Value);
 
 	int GetMaxHealth() {
 		return MaxHealth;
@@ -131,6 +132,7 @@ public:
 	void SetCharacterState(const CharacterState&& State) {
 		this->CurrentState = State;
 	}
+
 	//Set Damage (min = 1) by a buff (pass in negative value = debuff)
 	void SetATKDamageByBuff(const int& Buff) {
 		if ((Buff < 0 && abs(Buff) < ATK_Damage) || Buff >= 0) {
@@ -192,5 +194,13 @@ public:
 		if (finalMana > MaxMana) CurrentMana = MaxMana;
 		else if (finalMana < 0) CurrentMana = 0;
 		else CurrentMana = finalMana;
+	}
+
+	void SetAttackToNoneState() {
+		if (CurrentState == CharacterState::ATTACK) CurrentState = CharacterState::NONE;
+	}
+
+	void SetHurtToNoneState() {
+		if (CurrentState == CharacterState::HURT) CurrentState = CharacterState::NONE;
 	}
 };

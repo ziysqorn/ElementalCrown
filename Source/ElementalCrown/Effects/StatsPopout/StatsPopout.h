@@ -42,6 +42,8 @@ public:
 	}
 
 	void SelfDestroy();
+
+	void PopoutFromOwner(float Value);
 	
 	void setDistanceZ(const float& newDistance) {
 		DistanceZ = newDistance;

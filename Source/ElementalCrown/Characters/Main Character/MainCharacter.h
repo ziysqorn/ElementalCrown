@@ -218,9 +218,17 @@ public:
 		CurrentState = CharacterState::NONE;
 	}
 	void EndAirAttack();
+
 	virtual void EndCombo() {
 		attackCounter = 0;
 	}
+
+	void SetDodgeToNoneState();
+
+	void CanDodgeEnable() {
+		if (!canDodge) canDodge = true;
+	}
+
 	void Dead() override;
 	//Events
 	//Event begin play

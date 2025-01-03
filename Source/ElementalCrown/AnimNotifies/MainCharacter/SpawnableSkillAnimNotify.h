@@ -32,5 +32,7 @@ public:
 	template<typename ActorClass>
 	void SpawnSkillActor(ABaseCharacter* BaseCharacter) const;
 
+	void DoneUsingSkillAction(ABaseCharacter* BaseCharacter) const;
+
 	void SpawnSkillActor(ABaseCharacter* BaseCharacter) const;
 };

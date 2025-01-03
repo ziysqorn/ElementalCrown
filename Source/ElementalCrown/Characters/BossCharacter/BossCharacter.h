@@ -61,8 +61,6 @@ public:
 
 	virtual void MakeDecision();
 
-	void SetAttackToNoneState();
-
 	void SetInvincible(bool inBool) {
 		isInvincible = inBool;
 	}

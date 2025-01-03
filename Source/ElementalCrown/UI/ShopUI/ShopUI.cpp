@@ -61,6 +61,7 @@ void UShopUI::PopoutSkill()
 										UGameplayStatics::SaveGameToSlot(GameplaySave, "GameplaySave", 0);
 										MainCharacter->SavePlayerInfo();
 										SkillComponent->LoadSkill();
+										MainCharacter->SaveGameplay();
 										this->RefreshEquipSkillBox();
 										if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
 											MainHUD->RefreshSkillSlots(SkillList);

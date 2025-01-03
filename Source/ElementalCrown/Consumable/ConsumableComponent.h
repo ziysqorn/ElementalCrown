@@ -70,4 +70,8 @@ public:
 	bool ReducePotion(UConsumable* DesiredConsumable, int Quantity);
 
 	void LoadConsumable();
+
+	void EnableCanConsume() {
+		canConsume = true;
+	}
 };

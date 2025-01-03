@@ -37,6 +37,8 @@ public:
 	UBaseSkill();
 	UBaseSkill(const TCHAR* Ref);
 
+	void BeginDestroy() override;
+
 	void SetPrice(int price) {
 		SkillPrice = price;
 	}

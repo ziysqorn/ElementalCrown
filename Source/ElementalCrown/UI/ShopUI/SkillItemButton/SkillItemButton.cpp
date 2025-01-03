@@ -29,6 +29,7 @@ FReply USkillItemButton::NativeOnPreviewMouseButtonDown(const FGeometry& InGeome
 										UGameplayStatics::SaveGameToSlot(GameplaySave, "GameplaySave", 0);
 										MainCharacter->SavePlayerInfo();
 										SkillComponent->LoadSkill();
+										MainCharacter->SaveGameplay();
 										if (UMainCharacterHUD* MainHUD = MainController->GetMainHUD()) {
 											MainHUD->RefreshSkillSlots(EquippedSkillList);
 										}

@@ -63,7 +63,7 @@ void UBaseStatusEffect::AffectingCountdown()
 
 void UBaseStatusEffect::BuildingUp(ABaseCharacter* OwningCharacter, const float& inBuildup)
 {
-	if (IsValid(OwningCharacter) && IsValid(AffectedChar)) {
+	if (IsValid(AffectedChar)) {
 		if (UStatusEffectComponent* EffectComp = AffectedChar->GetStatusEffectComp()) {
 			CurrentProgress += inBuildup;
 			if (GetWorld()->GetTimerManager().IsTimerActive(ResetHandle) || GetWorld()->GetTimerManager().IsTimerPending(ResetHandle)) {

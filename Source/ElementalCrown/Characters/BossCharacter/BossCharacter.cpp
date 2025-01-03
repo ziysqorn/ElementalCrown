@@ -38,7 +38,7 @@ float ABossCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 				}
 			}
 			if (UBaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
-				if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+				if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 2.0f / 100.0f);
 			}
 			if (IGameplayInterface* CauserInteface = Cast<IGameplayInterface>(DamageCauser)) {
 				if (UElemental* CauserElemental = CauserInteface->GetElemental()) {
@@ -50,17 +50,7 @@ float ABossCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 				Dead();
 			}
 			else {
-				/*if (CurrentState != CharacterState::ATTACK && CurrentState != CharacterState::HURT && CurrentState != CharacterState::STUN && CurrentState != CharacterState::AIRBORNE) {
-					ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
-					if (!StatusEffect) CurrentState = CharacterState::HURT;
-				}*/
 				FlashTimeline.PlayFromStart();
-				/*if (HurtSequence) {
-					GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {
-						if (this->CurrentState == CharacterState::HURT)
-							this->CurrentState = CharacterState::NONE;
-						}), HurtSequence->GetTotalDuration(), false);
-				}*/
 			}
 			if (StatsPopoutSubclass) {
 				FActorSpawnParameters SpawnParams;
@@ -134,11 +124,6 @@ void ABossCharacter::Dead()
 			MainController->BossDefeatMessageDisplay();
 		}
 	}
-	/*if (DeathSequence) {
-		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
-			this->Destroy();
-			}), DeathSequence->GetTotalDuration() + 1.50f, false);
-	}*/
 }
 
 void ABossCharacter::ChangePos()
@@ -167,9 +152,4 @@ void ABossCharacter::MakeDecision()
 			break;
 		}
 	}
-}
-
-void ABossCharacter::SetAttackToNoneState()
-{
-	if (CurrentState == CharacterState::ATTACK) CurrentState = CharacterState::NONE;
 }

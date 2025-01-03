@@ -47,8 +47,8 @@ void UStatusEffectComponent::RemoveStatusEffect(UBaseStatusEffect* Effect)
 			if (MainHUD) MainHUD->RemoveStatsEffectFromVerBox(removedIdx);
 		}
 	}
-	StatusList.RemoveAt(removedIdx);
 	Effect->ConditionalBeginDestroy();
+	StatusList.RemoveAt(removedIdx);
 }
 
 void UStatusEffectComponent::ClearAllStatusEffect()
@@ -61,9 +61,9 @@ void UStatusEffectComponent::ClearAllStatusEffect()
 				if (MainHUD) MainHUD->RemoveStatsEffectFromVerBox(i);
 			}
 		}
-		StatusList.RemoveAt(i);
 		Effect->ConditionalBeginDestroy();
 	}
+	StatusList.Empty();
 }
 
 

@@ -13,10 +13,7 @@ void ABaseCharacter::BeginPlay()
 {
 	Super::BeginPlay();
  	if (FlashCurveFloat) {
-		FlashTimeline.AddInterpFloat(FlashCurveFloat, FOnTimelineFloatStatic::CreateLambda([this](const float& Value) {
-			UMaterialInstanceDynamic* DynamicMaterial = this->GetSprite()->CreateDynamicMaterialInstance(0);
-			DynamicMaterial->SetScalarParameterValue("FlashMultiplier", Value);
-		}));
+		FlashTimeline.AddInterpFloat(FlashCurveFloat, FOnTimelineFloatStatic::CreateUObject(this, &ABaseCharacter::FlashWhenDamaged));
 	}
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel2, ECR_Ignore);
@@ -42,6 +39,12 @@ void ABaseCharacter::Landed(const FHitResult& Hit)
 	}
 }
 
+void ABaseCharacter::FlashWhenDamaged(float Value)
+{
+	UMaterialInstanceDynamic* DynamicMaterial = this->GetSprite()->CreateDynamicMaterialInstance(0);
+	DynamicMaterial->SetScalarParameterValue("FlashMultiplier", Value);
+}
+
 float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser)
 {
 	if (CurrentHealth > 0) {
@@ -53,7 +56,7 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 			}
 		}
 		if (UBaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
-			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 2.0f / 100.0f);
 		}
 		CurrentHealth -= FinalDamage;
 		if (CurrentHealth <= 0) {
@@ -66,10 +69,8 @@ float ABaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 			}
 			FlashTimeline.PlayFromStart();
 			if (HurtSequence) {
-				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {
-					if (this && this->CurrentState == CharacterState::HURT)
-						this->CurrentState = CharacterState::NONE;
-					}), HurtSequence->GetTotalDuration(), false);
+				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateUObject(this, &ABaseCharacter::SetHurtToNoneState), 
+					HurtSequence->GetTotalDuration(), false);
 			}
 		}
 		if (StatsPopoutSubclass) {

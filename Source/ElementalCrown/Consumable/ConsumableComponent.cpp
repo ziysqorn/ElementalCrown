@@ -55,9 +55,8 @@ void UConsumableComponent::UsePotion(UConsumable* DesiredConsumable)
 						UConsumableSlot* ConsumableSlot = MainHUD->GetConsumableSlot(idx);
 						if (ConsumableSlot) {
 							ConsumableSlot->SetQuantityText(FText::FromString(FString::FromInt(*(ConsumableList[idx]->GetCurrentQuant()))));
-							GetWorld()->GetTimerManager().SetTimer(ConsumeCooldownHandle, FTimerDelegate::CreateLambda([this]() {
-								if (this) canConsume = true;
-								}), 1.0f, false);
+							GetWorld()->GetTimerManager().SetTimer(ConsumeCooldownHandle, FTimerDelegate::CreateUObject(this, &UConsumableComponent::EnableCanConsume), 
+								1.0f, false);
 						}
 					}
 				}
@@ -78,9 +77,8 @@ void UConsumableComponent::UsePotion(const FInputActionValue& inputValue, int id
 							UConsumableSlot* ConsumableSlot = MainHUD->GetConsumableSlot(idx);
 							if (ConsumableSlot) {
 								ConsumableSlot->SetQuantityText(FText::FromString(FString::FromInt(*(ConsumableList[idx]->GetCurrentQuant()))));
-								GetWorld()->GetTimerManager().SetTimer(ConsumeCooldownHandle, FTimerDelegate::CreateLambda([this]() {
-									canConsume = true;
-									}), 1.0f, false);
+								GetWorld()->GetTimerManager().SetTimer(ConsumeCooldownHandle, FTimerDelegate::CreateUObject(this, &UConsumableComponent::EnableCanConsume),
+									1.0f, false);
 							}
 						}
 					}

@@ -20,6 +20,10 @@ protected:
 
 	FTimeline SurfTimeline;
 
+	FVector LastLoc;
+
+	FVector Destination;
+
 	FTimerHandle EndSurfTimer;
 
 public:
@@ -31,6 +35,10 @@ public:
 
 	UFUNCTION()
 	void OnTimelinePostUpdate();
+
+	void ActionAfterSurf();
+
+	void MoveAquasyWhenSurfing(float Value);
 
 	void Surf();
 

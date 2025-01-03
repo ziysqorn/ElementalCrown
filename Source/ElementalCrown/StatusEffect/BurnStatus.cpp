@@ -13,9 +13,9 @@ UBurnStatus::UBurnStatus()
 
 void UBurnStatus::ExecuteStatus()
 {
-	if (IsValid(OwningChar) && IsValid(AffectedChar)) {
+	if (IsValid(AffectedChar)) {
 		FActorSpawnParameters SpawnParams;
-		SpawnParams.Owner = OwningChar;
+		//SpawnParams.Owner = OwningChar;
 		StatusEffectActor = GetWorld()->SpawnActor<ABurn>(ABurn::StaticClass(), FVector(0.0f, 0.0f, 5.0f), FRotator(0.0f, 0.0f, 0.0f), SpawnParams);
 		if (StatusEffectActor) {
 			StatusEffectActor->AttachToActor(AffectedChar, FAttachmentTransformRules::KeepRelativeTransform);
@@ -35,7 +35,7 @@ void UBurnStatus::Burn()
 			}
 			TSubclassOf<UDamageType> DamageType = UDamageType::StaticClass();
 			if (DamageType) {
-				UGameplayStatics::ApplyDamage(AffectedChar, BurnDamage, OwningChar ? OwningChar->GetController() : AffectedChar->GetController(), StatusEffectActor, DamageType);
+				UGameplayStatics::ApplyDamage(AffectedChar, BurnDamage, IsValid(OwningChar) ? OwningChar->GetController() : AffectedChar->GetController(), StatusEffectActor, DamageType);
 			}
 			if (UStatusEffectProgressUI* ProgressUI = EffectComponent->GetProgressUI(this)) 
 				ProgressUI->GetProgressBar()->SetPercent(GetTimePercentage());

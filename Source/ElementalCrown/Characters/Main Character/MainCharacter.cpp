@@ -60,7 +60,7 @@ float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 			}
 		}
 		if (UBaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
-			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 2.0f / 100.0f);
 		}
 		CurrentHealth -= FinalDamage;
 		if (CurrentHealth <= 0) {
@@ -76,10 +76,7 @@ float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageE
 			}
 			FlashTimeline.PlayFromStart();
 			if (HurtSequence) {
-				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this]() {
-					if (this->CurrentState == CharacterState::HURT)
-						this->CurrentState = CharacterState::NONE;
-					}), HurtSequence->GetTotalDuration(), false);
+				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateUObject(this, &AMainCharacter::SetHurtToNoneState), HurtSequence->GetTotalDuration(), false);
 			}
 		}
 		if (StatsPopoutSubclass) {
@@ -190,20 +187,8 @@ void AMainCharacter::Dodge()
 		GetCharacterMovement()->GravityScale = 0.0f;
 		GetCapsuleComponent()->SetCollisionObjectType(ECC_GameTraceChannel2);
 		GetWorld()->SpawnActor<ASmoke>(RunSmokeSubclass, GetSprite()->GetSocketLocation(FName("RunSmoke")), GetSprite()->GetSocketRotation(FName("RunSmoke")));
-		this->GetWorldTimerManager().SetTimer(DodgeHandle, FTimerDelegate::CreateLambda([this]() {
-			if (this) {
-				if (CurrentState == CharacterState::DODGE) {
-					CurrentState = CharacterState::NONE;
-					GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
-					GetCharacterMovement()->GravityScale = 1.0f;
-				}
-			}
-			}), 0.35f, false);
-		this->GetWorldTimerManager().SetTimer(DodgeEnableHandle, FTimerDelegate::CreateLambda([this]() {
-			if (this) {
-				if (!canDodge) canDodge = true;
-			}
-			}), 1.0f, false);
+		GetWorldTimerManager().SetTimer(DodgeHandle, FTimerDelegate::CreateUObject(this, &AMainCharacter::SetDodgeToNoneState), 0.35f, false);
+		GetWorldTimerManager().SetTimer(DodgeEnableHandle, FTimerDelegate::CreateUObject(this, &AMainCharacter::CanDodgeEnable), 1.0f, false);
 	}
 }
 
@@ -315,6 +300,15 @@ void AMainCharacter::Shoot()
 	}
 }
 
+void AMainCharacter::SetDodgeToNoneState()
+{
+	if (CurrentState == CharacterState::DODGE) {
+		CurrentState = CharacterState::NONE;
+		GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+		GetCharacterMovement()->GravityScale = 1.0f;
+	}
+}
+
 void AMainCharacter::Dead()
 {
 	GetWorldTimerManager().ClearAllTimersForObject(this);
@@ -352,11 +346,6 @@ void AMainCharacter::Dead()
 	StatusEffectComponent->ClearAllStatusEffect();
 	CurrentState = CharacterState::DEATH;
 	GetCapsuleComponent()->SetCollisionObjectType(ECollisionChannel::ECC_GameTraceChannel1);
-	/*if (DeathSequence) {
-		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
-			this->Destroy();
-			}), DeathSequence->GetTotalDuration() + 1.50f, false);
-	}*/
 }
 
 void AMainCharacter::UseSkill()
@@ -372,12 +361,14 @@ void AMainCharacter::ChangeSkill()
 
 void AMainCharacter::Interact()
 {
-	TArray<AActor*> actors; 
-	this->GetOverlappingActors(actors, AActor::StaticClass());
-	for (int i = 0; i < actors.Num(); ++i) {
-		if (IInteractableInterface* InteractableInterface = Cast<IInteractableInterface>(actors[i])) {
-			InteractableInterface->Interact(this);
-			break;
+	if (CurrentState == CharacterState::NONE && GetVelocity().X == 0.0f && GetVelocity().Z == 0.0f) {
+		TArray<AActor*> actors;
+		this->GetOverlappingActors(actors, AActor::StaticClass());
+		for (int i = 0; i < actors.Num(); ++i) {
+			if (IInteractableInterface* InteractableInterface = Cast<IInteractableInterface>(actors[i])) {
+				InteractableInterface->Interact(this);
+				break;
+			}
 		}
 	}
 }

@@ -2,7 +2,6 @@
 
 
 #include "DialogueTriggerActor.h"
-#include "../Controller/MainController.h"
 #include "../Characters/BossCharacter/BossCharacter.h"
 #include "../CustomGameInstance/CustomGameInstance.h"
 
@@ -34,18 +33,8 @@ void ADialogueTriggerActor::BeginOverlap(AActor* OverlappedActor, AActor* OtherA
 		if (AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor)) {
 			if (AMainController* MainController = MainCharacter->GetController<AMainController>()) {
 				MainCharacter->DisableInput(MainController);
-				GetWorldTimerManager().SetTimer(DisplayDialogueHandle, FTimerDelegate::CreateLambda([this, MainController]() {
-					if (DialogueUISubclass) {
-						if (UDialogueUI* DialogueUI = CreateWidget<UDialogueUI>(MainController, DialogueUISubclass)) {
-							DialogueUI->DialogueEndDel.BindUObject(this, &ADialogueTriggerActor::ActionAfterDialogue);
-							DialogueUI->SetOwningPlayer(MainController);
-							DialogueUI->SetDialogueLines(&DialogueLines);
-							DialogueUI->AddToViewport(11);
-							DialogueUI->SetFocus();
-							isTrigger = true;
-						}
-					}
-				}), 1.5f, false);
+				GetWorldTimerManager().SetTimer(DisplayDialogueHandle, FTimerDelegate::CreateUObject(this, &ADialogueTriggerActor::DisplayDialogueBox, MainController), 
+				1.5f, false);
 			}
 		}
 	}
@@ -70,6 +59,20 @@ void ADialogueTriggerActor::ActionAfterDialogue()
 				}
 			}
 			break;
+		}
+	}
+}
+
+void ADialogueTriggerActor::DisplayDialogueBox(AMainController* MainController)
+{
+	if (MainController && DialogueUISubclass) {
+		if (UDialogueUI* DialogueUI = CreateWidget<UDialogueUI>(MainController, DialogueUISubclass)) {
+			DialogueUI->DialogueEndDel.BindUObject(this, &ADialogueTriggerActor::ActionAfterDialogue);
+			DialogueUI->SetOwningPlayer(MainController);
+			DialogueUI->SetDialogueLines(&DialogueLines);
+			DialogueUI->AddToViewport(11);
+			DialogueUI->SetFocus();
+			isTrigger = true;
 		}
 	}
 }

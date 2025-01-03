@@ -59,7 +59,7 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 			}
 		}
 		if (UBaseStatusEffect* Effect = StatusEffectComponent->FindStatusEffect("Vulnerable")) {
-			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 10.0f / 100.0f);
+			if (Effect->GetActivateStatus()) FinalDamage = FinalDamage + (int)ceil(MaxHealth * 2.0f / 100.0f);
 		}
 		if (IGameplayInterface* CauserInteface = Cast<IGameplayInterface>(DamageCauser)) {
 			if (UElemental* CauserElemental = CauserInteface->GetElemental()) {
@@ -77,17 +77,8 @@ float ABaseEnemyCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Da
 					ABaseStatus* StatusEffect = Cast<ABaseStatus>(DamageCauser);
 					if (!StatusEffect) CurrentState = CharacterState::HURT;
 				}
-				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateLambda([this, EventInstigator]() {
-					if (this && EventInstigator) {
-						if (this->CurrentState == CharacterState::HURT) {
-							this->CurrentState = CharacterState::NONE;
-						}
-						if (EventInstigator && EventInstigator->GetPawn()) {
-							FRotator CharacterRotation = (EventInstigator->GetPawn()->GetActorLocation().X > this->GetActorLocation().X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
-							this->SetActorRotation(CharacterRotation);
-						}
-					}
-					}), HurtSequence->GetTotalDuration(), false);
+				GetWorldTimerManager().SetTimer(HurtHandle, FTimerDelegate::CreateUObject(this, &ABaseEnemyCharacter::TurnBackAfterTakingDamage, EventInstigator), 
+					HurtSequence->GetTotalDuration(), false);
 			}
 		}
 		if (StatsPopoutSubclass) {
@@ -116,13 +107,10 @@ void ABaseEnemyCharacter::Attack()
 		CurrentState = CharacterState::ATTACK;
 		AttackRecovered = false; 
 		if (AttackSequence) {
-			GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateLambda([this]() {
-				if(CurrentState == CharacterState::ATTACK)
-				this->CurrentState = CharacterState::NONE;
-				}), AttackSequence->GetTotalDuration(), false);
-			GetWorldTimerManager().SetTimer(AttackRecoverHandle, FTimerDelegate::CreateLambda([this]() {
-				this->AttackRecovered = true;
-				}), AttackSequence->GetTotalDuration() + AttackSpeed, false);
+			GetWorldTimerManager().SetTimer(AttackHandle, FTimerDelegate::CreateUObject(this, &ABaseEnemyCharacter::SetAttackToNoneState), 
+				AttackSequence->GetTotalDuration(), false);
+			GetWorldTimerManager().SetTimer(AttackRecoverHandle, FTimerDelegate::CreateUObject(this, &ABaseEnemyCharacter::SetAttackRecovered, true), 
+				AttackSequence->GetTotalDuration() + AttackSpeed, false);
 		}
 	}
 }
@@ -142,9 +130,8 @@ void ABaseEnemyCharacter::Dead()
 		}
 	}
 	if (DeathSequence) {
-		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateLambda([this]() {
-			this->Destroy();
-			}), DeathSequence->GetTotalDuration() + 1.50f, false);
+		GetWorldTimerManager().SetTimer(DeathHandle, FTimerDelegate::CreateUObject(this, &ABaseEnemyCharacter::DestroyAfterDead), 
+			DeathSequence->GetTotalDuration() + 1.50f, false);
 	}
 }
 
@@ -152,6 +139,17 @@ void ABaseEnemyCharacter::TurnBackAfterTime()
 {
 	if (!GetWorldTimerManager().IsTimerActive(TurnBackHandle)) {
 		GetWorldTimerManager().SetTimer(TurnBackHandle, FTimerDelegate::CreateUObject(this, &ABaseEnemyCharacter::TurnBackImmediate), 3.0f, false);
+	}
+}
+
+void ABaseEnemyCharacter::TurnBackAfterTakingDamage(AController* EventInstigator)
+{
+	if (this->CurrentState == CharacterState::HURT) {
+		this->CurrentState = CharacterState::NONE;
+	}
+	if (EventInstigator && EventInstigator->GetPawn()) {
+		FRotator CharacterRotation = (EventInstigator->GetPawn()->GetActorLocation().X > this->GetActorLocation().X) ? FRotator(0, 0, 0) : FRotator(0, 180, 0);
+		this->SetActorRotation(CharacterRotation);
 	}
 }
 

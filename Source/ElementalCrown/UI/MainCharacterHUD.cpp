@@ -73,8 +73,10 @@ void UMainCharacterHUD::UpdateSkillCountdownProgUI(UBaseSkill* Skill, const floa
 			if (USkillComponent* SkillComponent = Cast<USkillComponent>(MainCharacter->GetSkillComp())) {
 				TArray<UWidget*> slotArr = HorBox_SkillSlotBox->GetAllChildren();
 				int idx = SkillComponent->FindSkill(Skill);
-				if (USkillSlot* skillSlot = Cast<USkillSlot>(slotArr[idx]))
-					skillSlot->UpdateCountdownProgress(inPercentage);
+				if (slotArr.IsValidIndex(idx)) {
+					if (USkillSlot* skillSlot = Cast<USkillSlot>(slotArr[idx]))
+						skillSlot->UpdateCountdownProgress(inPercentage);
+				}
 			}
 		}
 	}
@@ -111,9 +113,11 @@ void UMainCharacterHUD::HideSkillLoaderUI(UBaseSkill* Skill)
 			if (USkillComponent* SkillComponent = Cast<USkillComponent>(MainCharacter->GetSkillComp())) {
 				TArray<UWidget*> slotArr = HorBox_SkillSlotBox->GetAllChildren();
 				int idx = SkillComponent->FindSkill(Skill);
-				if (USkillSlot* skillSlot = Cast<USkillSlot>(slotArr[idx])) {
-					skillSlot->UpdateCountdownProgress(0.0f);
-					skillSlot->HideLoadBorder();
+				if (slotArr.IsValidIndex(idx)) {
+					if (USkillSlot* skillSlot = Cast<USkillSlot>(slotArr[idx])) {
+						skillSlot->UpdateCountdownProgress(0.0f);
+						skillSlot->HideLoadBorder();
+					}
 				}
 			}
 		}
